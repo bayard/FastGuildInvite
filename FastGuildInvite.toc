@@ -1,0 +1,65 @@
+## Interface: 80100
+## Author: Призер - Галакронд RU
+## Title: |cffffff00<|r|cff16ABB5FGI|r|cffffff00>|r |cff16ABB5FastGuildInvite|r
+## Version: 1.0
+## SavedVariables: FGI_DB
+## DefaultState: enabled
+
+
+
+Libs\LibStub\LibStub.lua
+Libs\AceAddon-3.0\AceAddon-3.0.xml
+Libs\AceConsole-3.0\AceConsole-3.0.xml
+Libs\AceDB-3.0\AceDB-3.0.xml
+Libs\CallbackHandler-1.0\CallbackHandler-1.0.xml
+Libs\AceEvent-3.0\AceEvent-3.0.xml
+Libs\AceKGUI-3.0\AceKGUI-3.0.xml
+
+Libs\GuildShield\GuildShield.xml
+Libs\ChatIntercept\ChatIntercept.xml
+Libs\Alerts\Alerts.lua
+
+Libs\LibWho-2.0\libs\LibStub\LibStub.lua
+Libs\LibWho-2.0\libs\CallbackHandler-1.0\CallbackHandler-1.0.lua
+Libs\LibWho-2.0\LibWho-2.0\LibWho-2.0.lua
+Libs\LibDataBroker-1.1\LibDataBroker-1.1.lua
+Libs\LibDBIcon-1.0\lib.xml
+
+init.lua
+
+Locale\Locale.xml
+
+
+FGI_Constants.lua
+
+functions.lua
+FGI_Core.lua
+mainFrame.lua
+settings.lua
+filtersFrame.lua
+Scan.lua
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+##SGI_Constants.lua
+##SGI_Core.lua
+
+##SGI_Blacklist.lua
+##SGI_AddOn_Message.lua
+##SGI_Filter.lua
+##SuperScan.lua
+##SGI_System_Message.lua
+##SGI_Events.lua
+
+##SGI_GUI.lua
