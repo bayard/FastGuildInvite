@@ -96,7 +96,7 @@ L["class"] = {
 	["Warrior"] = "전사",
 }
 L["race"] = {
-	L["Horde"] = {
+	["Horde"] = {
 		["BloodElf"] = "블러드 엘프",
 		["Goblin"] = "고블린",
 		["HightmountainTauren"] = "높은산 타우렌",
@@ -108,7 +108,7 @@ L["race"] = {
 		["Troll"] = "트롤",
 		["Undead"] = "언데드",
 	},
-	L["Alliance"] = {
+	["Alliance"] = {
 		["DarkIronDwarf"] = "검은무쇠 드워프",
 		["Draenei"] = "드레나이",
 		["Dwarf"] = "드워프",
