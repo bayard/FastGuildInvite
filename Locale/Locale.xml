@@ -9,6 +9,7 @@
 <Script file="esMX.lua"/>
 <Script file="ptBR.lua"/>
 <Script file="itIT.lua"/>
+<Script file="koKR.lua"/>
 <Script file="summary.lua"/>
 
 </Ui>

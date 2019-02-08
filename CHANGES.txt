@@ -1,1 +1,2 @@
-locales update 1
+enUS update
+add koKR
