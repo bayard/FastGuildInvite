@@ -1,2 +1,1 @@
-enUS update
-add koKR
+update koKR
