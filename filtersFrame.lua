@@ -50,9 +50,12 @@ local function defaultValues()
 	addfilterFrame.rasesCheckBoxIgnore:SetValue(true)
 	
 	addfilterFrame.filterNameEdit:SetText('')
+	addfilterFrame.filterNameEdit:SetDisabled(false)
 	addfilterFrame.excludeNameEditBox:SetText('')
 	addfilterFrame.lvlRangeEditBox:SetText('')
 	addfilterFrame.excludeRepeatEditBox:SetText('')
+	
+	addfilterFrame.change = false
 end
 
 
@@ -105,6 +108,9 @@ filtersFrame:AddChild(frame)
 
 
 
+filtersFrame.filterList = {}
+
+
 
 filtersFrame.addFilter = GUI:Create("Button")
 local frame = filtersFrame.addFilter
@@ -112,7 +118,18 @@ frame:SetText(L["Добавить фильтр"])
 fontSize(frame.text)
 frame:SetWidth(size.addFilter)
 frame:SetHeight(40)
-frame:SetCallback("OnClick", function() interface.addfilterFrame:Show();interface.filtersFrame:Hide() end)
+frame:SetCallback("OnClick", function()
+	local filters = 0
+	for k,v in pairs(DB.filtersList) do
+		filters = filters + 1
+	end
+	if filters >= FGI_FILTERSLIMIT then
+		BasicMessageDialog:SetFrameStrata("TOOLTIP")
+		return message(format(L.error["Максимальное количество фильтров %s. Пожалуйста измените или удалите имеющийся фильтр."], FGI_FILTERSLIMIT))
+	end
+	interface.addfilterFrame:Show()
+	interface.filtersFrame:Hide()
+end)
 filtersFrame:AddChild(frame)
 
 
@@ -180,7 +197,7 @@ frame:SetWidth(size.classLabel)
 frame.label:SetJustifyH("CENTER")
 addfilterFrame:AddChild(frame)
 
-local function classIgnoredToggle()
+function fn:classIgnoredToggle()
 	local value = addfilterFrame.classesCheckBoxIgnore:GetValue()
 	if not value then
 		addfilterFrame.classesCheckBoxDeathKnight:Show()
@@ -216,7 +233,7 @@ local frame = addfilterFrame.classesCheckBoxIgnore
 frame:SetWidth(size.Ignore)
 frame:SetLabel(L["Игнорировать"])
 fontSize(frame.text)
-frame:SetCallback("OnValueChanged", classIgnoredToggle)
+frame:SetCallback("OnValueChanged", function() fn:classIgnoredToggle() end)
 addfilterFrame:AddChild(frame)
 
 addfilterFrame.classesCheckBoxDeathKnight = GUI:Create("CheckBox")
@@ -315,7 +332,7 @@ frame:SetWidth(size.raceLabel)
 frame.label:SetJustifyH("CENTER")
 addfilterFrame:AddChild(frame)
 
-local function racesIgnoredToggle()
+function fn:racesIgnoredToggle()
 	local value = addfilterFrame.rasesCheckBoxIgnore:GetValue()
 	for i=1,#addfilterFrame.rasesCheckBoxRace do
 		if not value then
@@ -331,7 +348,7 @@ local frame = addfilterFrame.rasesCheckBoxIgnore
 frame:SetWidth(size.Ignore)
 frame:SetLabel(L["Игнорировать"])
 fontSize(frame.text)
-frame:SetCallback("OnValueChanged", racesIgnoredToggle)
+frame:SetCallback("OnValueChanged", function() fn:racesIgnoredToggle() end)
 addfilterFrame:AddChild(frame)
 
 addfilterFrame.rasesCheckBoxRace = {}
@@ -479,7 +496,7 @@ local function saveFilter()
 	
 	if not filterName then
 		table.insert(errors, format("%s \n %s", L["Имя фильтра"], L["Имя фильтра не может быть пустым"]))
-	elseif DB.filtersList[filterName] ~= nil then
+	elseif DB.filtersList[filterName] ~= nil and not addfilterFrame.change then
 		table.insert(errors, format("%s \n %s", L["Имя фильтра"], L["Имя фильтра занято"]))
 	end
 	
@@ -499,7 +516,6 @@ local function saveFilter()
 	if letterFilter then
 		if letterFilter:find("[\-]?%d+:[\-]?%d+") then
 			min, max = fn:split(letterFilter, ":")
-			print(min, max)
 			if min < 0 or max < 0 then
 				table.insert(errors, format("%s \n %s", L["Фильтр повторений в имени"], L["Числа должны быть больше 0"]))
 			end
@@ -509,29 +525,33 @@ local function saveFilter()
 	end
 	
 	local classFilter = classIgnore
-	if not classFilter then
+	if classFilter then
 		classFilter = {
-			DeathKnight = addfilterFrame.classesCheckBoxDeathKnight:GetValue(),
-			DemonHunter = addfilterFrame.classesCheckBoxDemonHunter:GetValue(),
-			Druid = addfilterFrame.classesCheckBoxDruid:GetValue(),
-			Hunter = addfilterFrame.classesCheckBoxHunter:GetValue(),
-			Mage = addfilterFrame.classesCheckBoxMage:GetValue(),
-			Monk = addfilterFrame.classesCheckBoxMonk:GetValue(),
-			Paladin = addfilterFrame.classesCheckBoxPaladin:GetValue(),
-			Priest = addfilterFrame.classesCheckBoxPriest:GetValue(),
-			Rogue = addfilterFrame.classesCheckBoxRogue:GetValue(),
-			Shaman = addfilterFrame.classesCheckBoxShaman:GetValue(),
-			Warlock = addfilterFrame.classesCheckBoxWarlock:GetValue(),
-			Warrior = addfilterFrame.classesCheckBoxWarrior:GetValue()
+			[L.class.DeathKnight] = addfilterFrame.classesCheckBoxDeathKnight:GetValue() or nil,
+			[L.class.DemonHunter] = addfilterFrame.classesCheckBoxDemonHunter:GetValue() or nil,
+			[L.class.Druid] = addfilterFrame.classesCheckBoxDruid:GetValue() or nil,
+			[L.class.Hunter] = addfilterFrame.classesCheckBoxHunter:GetValue() or nil,
+			[L.class.Mage] = addfilterFrame.classesCheckBoxMage:GetValue() or nil,
+			[L.class.Monk] = addfilterFrame.classesCheckBoxMonk:GetValue() or nil,
+			[L.class.Paladin] = addfilterFrame.classesCheckBoxPaladin:GetValue() or nil,
+			[L.class.Priest] = addfilterFrame.classesCheckBoxPriest:GetValue() or nil,
+			[L.class.Rogue] = addfilterFrame.classesCheckBoxRogue:GetValue() or nil,
+			[L.class.Shaman] = addfilterFrame.classesCheckBoxShaman:GetValue() or nil,
+			[L.class.Warlock] = addfilterFrame.classesCheckBoxWarlock:GetValue() or nil,
+			[L.class.Warrior] = addfilterFrame.classesCheckBoxWarrior:GetValue() or nil
 		}
+		classFilter = next(classFilter) ~= nil and classFilter or false
 	end
+	
+	
 	local raceFilter = raceIgnore
-	if not raceFilter then
+	if raceFilter then
 		for i=1,#addfilterFrame.rasesCheckBoxRace do
 			if addfilterFrame.rasesCheckBoxRace[i]:GetValue() then
 				raceFilter[addfilterFrame.rasesCheckBoxRace[i]:GetLabel()] = true
 			end
 		end
+		raceFilter = next(raceFilter) ~= nil and raceFilter or false
 	end
 		
 	
@@ -543,9 +563,11 @@ local function saveFilter()
 			lvlRange = lvlRange,
 			letterFilter = letterFilter,
 			classFilter = classFilter,
-			raceFilter = raceFilter
+			raceFilter = raceFilter,
+			filterOn = false,
+			filteredCount = 0,
 		}
-		dump(DB.filtersList)
+		fn:FiltersUpdate()
 	else
 		BasicMessageDialog:SetFrameStrata("TOOLTIP")
 		BasicMessageDialog.errorsList = errors

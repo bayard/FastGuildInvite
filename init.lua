@@ -1,15 +1,14 @@
-FGI = {}
 local addon = FGI
 
 addon.lib = LibStub("AceAddon-3.0"):NewAddon("FastGuildInvite")
 LibStub("AceEvent-3.0"):Embed(addon.lib)
 
 
-addon.L = {}
 addon.DB = {}
 addon.ruReg = "[%aабвгдеёжзийклмнопрстуфхцчшщъьыэюяАБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЬЫЭЮЯ%s]"
 addon.functions = {}
 addon.interface = {}
+addon.version = tonumber(GetAddOnMetadata('FastGuildInvite', 'Version'))
 addon.whoQueryList = {}
 addon.color = {
 	WARRIOR='|cffc79c6e',

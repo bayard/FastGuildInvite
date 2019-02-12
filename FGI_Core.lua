@@ -1,6 +1,7 @@
 local addon = FGI
 local fn = addon.functions
 local L = addon.L
+local interface = addon.interface
 local settings = L.settings
 local Console = LibStub("AceConsole-3.0")
 local GUI = LibStub("AceKGUI-3.0")
@@ -13,7 +14,7 @@ addon.dataBroker = LibStub("LibDataBroker-1.1"):NewDataObject("FGI",
 	{type = "launcher", label = "FGI", icon = "Interface\\AddOns\\FastGuildInvite\\img\\minimap\\MiniMapButton"}
 )
 local function mainFrameToggle()
-	local mf = addon.interface.mainFrame
+	local mf = interface.mainFrame
 	if mf.frame:IsShown() then
 		mf:Hide()
 	else
@@ -24,9 +25,9 @@ end
 function addon.dataBroker.OnClick(self, button)
 	local shift = IsShiftKeyDown()
 	if button == "LeftButton" and not shift then
-		addon.interface.scanFrame.invite.frame:Click()
+		interface.scanFrame.invite.frame:Click()
 	elseif button == "LeftButton" and shift then
-		addon.interface.scanFrame.pausePlay.frame:Click()
+		interface.scanFrame.pausePlay.frame:Click()
 	elseif button == "RightButton" then
 		mainFrameToggle()
 	end
@@ -34,17 +35,41 @@ end
 
 function addon.dataBroker.OnTooltipShow(GameTooltip)
 	local search = DB.SearchType == 3 and addon.smartSearch or addon.search
-	GameTooltip:SetText(format(L.minimapHelp,#search.inviteList,addon.interface.scanFrame.progressBar:GetProgress()), 1, 1, 1)
+	GameTooltip:SetText(format(L.help.minimap,#search.inviteList, interface.scanFrame.progressBar:GetProgress()), 1, 1, 1)
 end
 
 
 function FastGuildInvite:OnEnable()
+	fn:FiltersInit()
+	fn:FiltersUpdate()
+	if DB.mainFrame then
+		interface.mainFrame:ClearAllPoints()
+		interface.mainFrame:SetPoint(DB.mainFrame.point, UIParent, DB.mainFrame.relativePoint, DB.mainFrame.xOfs, DB.mainFrame.yOfs)
+	end
+	if DB.scanFrame then
+		interface.scanFrame:ClearAllPoints()
+		interface.scanFrame:SetPoint(DB.scanFrame.point, UIParent, DB.scanFrame.relativePoint, DB.scanFrame.xOfs, DB.scanFrame.yOfs)
+	end
+	if DB.settingsFrame then
+		interface.settingsFrame:ClearAllPoints()
+		interface.settingsFrame:SetPoint(DB.settingsFrame.point, UIParent, DB.settingsFrame.relativePoint, DB.settingsFrame.xOfs, DB.settingsFrame.yOfs)
+	end
+	if DB.filtersFrame then
+		interface.filtersFrame:ClearAllPoints()
+		interface.filtersFrame:SetPoint(DB.filtersFrame.point, UIParent, DB.filtersFrame.relativePoint, DB.filtersFrame.xOfs, DB.filtersFrame.yOfs)
+	end
+	if DB.addfilterFrame then
+		interface.addfilterFrame:ClearAllPoints()
+		interface.addfilterFrame:SetPoint(DB.addfilterFrame.point, UIParent, DB.addfilterFrame.relativePoint, DB.addfilterFrame.xOfs, DB.addfilterFrame.yOfs)
+	end
+	
 	Console:RegisterChatCommand('fgi', 'FGIInput')
 	Console:RegisterChatCommand('FastGuildInvite', 'FGIInput')
 end
 
 function FastGuildInvite:OnInitialize()
 	self.db = LibStub("AceDB-3.0"):New("FGI_DB")
+	self.db.RegisterCallback(self, "OnDatabaseReset", function() UIReload() end)
 	
 	DB = self.db.global
 	addon.DB = DB
@@ -66,8 +91,8 @@ function FastGuildInvite:OnInitialize()
 	DB.alredySended = type(DB.alredySended)=="table" and DB.alredySended or {}
 	DB.filtersList = type(DB.filtersList)=="table" and DB.filtersList or {}
 	
-	for k,v in pairs(DB.alredySended) do	-- delete player from sended DB after "FGI_RESETDBTIME"
-		if difftime(time({year = date("%Y"), month = date("%m"), day = date("%d")}), v) >= FGI_RESETDBTIME then
+	for k,v in pairs(DB.alredySended) do	-- delete player from sended DB after "FGI_RESETSENDDBTIME"
+		if difftime(time({year = date("%Y"), month = date("%m"), day = date("%d")}), v) >= FGI_RESETSENDDBTIME then
 			DB.alredySended[k] = nil
 		end
 	end
@@ -81,10 +106,9 @@ end
 
 function Console:FGIInput(str)
 	if str == '' then return Console:FGIHelp()
-	elseif str == 'show' then return addon.interface.mainFrame:Show()
+	elseif str == 'show' then return interface.mainFrame:Show()
 	elseif str == 'resetDB' then DB.alredySended = {}
 	elseif str == 'resetWindowsPos' then
-		local interface = addon.interface
 		
 		interface.mainFrame:ClearAllPoints()
 		interface.scanFrame:ClearAllPoints()
@@ -97,11 +121,20 @@ function Console:FGIInput(str)
 		interface.settingsFrame:SetPoint("CENTER", UIParent)
 		interface.filtersFrame:SetPoint("CENTER", UIParent)
 		interface.addfilterFrame:SetPoint("CENTER", UIParent)
+		
+		DB.mainFrame = nil
+		DB.scanFrame = nil
+		DB.settingsFrame = nil
+		DB.filtersFrame = nil
+		DB.addfilterFrame = nil
+	elseif str == "factorySettings" then
+		FastGuildInvite.db:ResetDB()
 	end
 end
 
 function Console:FGIHelp()
 	print(L.help.show)
 	print(L.help.resetDB)
+	print(L.help.factorySettings)
 	print(L.help.resetWindowsPos)
 end

@@ -103,6 +103,7 @@ frame:SetHeight(40)
 frame.frame.pause = true
 frame.frame:SetNormalTexture("Interface\\Buttons\\UI-SpellbookIcon-NextPage-Up")
 frame:SetCallback("OnClick", function(self)
+	if not fn:inGuildCanInvite() then return print(L.error["Вы не состоите в гильдии или у вас нет прав для приглашения."]) end
 	self = self.frame
 	if self.pause then
 		self:SetNormalTexture("Interface\\TimeManager\\PauseButton")

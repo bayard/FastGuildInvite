@@ -3,6 +3,7 @@ local fn=addon.functions
 local L = addon.L
 local interface = addon.interface
 local settings = L.settings
+local GUI = LibStub("AceKGUI-3.0")
 local color = addon.color
 local FastGuildInvite = addon.lib
 addon.search = {progress=1, inviteList={}, state='stop', timeShift=0, tempSendedInvites={}, whoQueryList = {}}
@@ -12,15 +13,115 @@ local DB
 local nextSearch
 LibStub:GetLibrary("LibWho-2.0"):Embed(addon.libWho);
 
-local time = time
+local time, next = time, next
 
 
 
 --ERR_GUILD_INVITE_S,ERR_GUILD_DECLINE_S,ERR_ALREADY_IN_GUILD_S,ERR_ALREADY_INVITED_TO_GUILD_S,ERR_GUILD_DECLINE_AUTO_S,ERR_GUILD_JOIN_S,ERR_GUILD_PLAYER_NOT_FOUND_S,ERR_CHAT_PLAYER_NOT_FOUND_S
 --	CanGuildInvite()
 
+function fn:FiltersInit()
+	local parent = interface.filtersFrame
+	local list = parent.filterList
+	for i=1, FGI_FILTERSLIMIT do
+		local frame = GUI:Create("FilterButton")
+		interface.filtersFrame:AddChild(frame)
+		
+		table.insert(list, frame)
+	end
+	for i=1, FGI_FILTERSLIMIT do
+		interface.filtersFrame.filterList[i]:Hide()
+	end
+end
 
+function fn:FilterChange(id)
+	local filtersFrame = interface.filtersFrame
+	local addfilterFrame = interface.addfilterFrame
+	local filter = FGI.DB.filtersList[id]
+	local class = filter.classFilter
+	local raceFilter = filter.raceFilter
+	
+	filtersFrame:Hide()
+	addfilterFrame:Show()
+	
+	if not class then
+		addfilterFrame.classesCheckBoxIgnore:SetValue(true)
+	else
+		addfilterFrame.classesCheckBoxIgnore:SetValue(false)
+		addfilterFrame.classesCheckBoxDeathKnight:SetValue(class[L.class.DeathKnight] or false)
+		addfilterFrame.classesCheckBoxDemonHunter:SetValue(class[L.class.DemonHunter] or false)
+		addfilterFrame.classesCheckBoxDruid:SetValue(class[L.class.Druid] or false)
+		addfilterFrame.classesCheckBoxHunter:SetValue(class[L.class.Hunter] or false)
+		addfilterFrame.classesCheckBoxMage:SetValue(class[L.class.Mage] or false)
+		addfilterFrame.classesCheckBoxMonk:SetValue(class[L.class.Monk] or false)
+		addfilterFrame.classesCheckBoxPaladin:SetValue(class[L.class.Paladin] or false)
+		addfilterFrame.classesCheckBoxPriest:SetValue(class[L.class.Priest] or false)
+		addfilterFrame.classesCheckBoxRogue:SetValue(class[L.class.Rogue] or false)
+		addfilterFrame.classesCheckBoxShaman:SetValue(class[L.class.Shaman] or false)
+		addfilterFrame.classesCheckBoxWarlock:SetValue(class[L.class.Warlock] or false)
+		addfilterFrame.classesCheckBoxWarrior:SetValue(class[L.class.Warrior] or false)
+	end
+	
+	if not raceFilter then 
+		addfilterFrame.rasesCheckBoxIgnore:SetValue(true)
+	else
+		addfilterFrame.rasesCheckBoxIgnore:SetValue(false)
+		for i=1, #addfilterFrame.rasesCheckBoxRace do
+			local race = addfilterFrame.rasesCheckBoxRace[i]
+			local name = race:GetLabel()
+			race:SetValue(raceFilter[name] and true or false)
+		end
+	end
+	
+	addfilterFrame.filterNameEdit:SetText(id)
+	addfilterFrame.filterNameEdit:SetDisabled(true)
+	addfilterFrame.excludeNameEditBox:SetText(filter.filterByName or "")
+	addfilterFrame.lvlRangeEditBox:SetText(filter.lvlRange or "")
+	addfilterFrame.excludeRepeatEditBox:SetText(filter.letterFilter or "")
+	
+	fn:classIgnoredToggle()
+	fn:racesIgnoredToggle()
+	addfilterFrame.change = true
+end
 
+function fn:FiltersUpdate()
+	for i=1, FGI_FILTERSLIMIT do
+		interface.filtersFrame.filterList[i]:Hide()
+	end
+	local parent = interface.filtersFrame
+	local list = parent.filterList
+	local i = 1
+	for name,v in pairs(FGI.DB.filtersList) do
+		local filter = FGI.DB.filtersList[name]
+		local frame = list[i]
+		frame:SetID(name)
+		frame:SetText(name)
+		local state = filter.filterOn and L["Включен"]:upper() or L["Выключен"]:upper()
+		local lvlRange = filter.lvlRange or L["Откл."]
+		local filterByName = filter.filterByName or L["Откл."]
+		local letterFilterVowels, letterFilterConsonants = filter.letterFilter==false and 0,0 or fn:split(filter.letterFilter, ":")
+		local class = ""
+		if not filter.classFilter then
+			class = L["Откл."]
+		else
+			for k,v in pairs(filter.classFilter) do class = class..k.."," end
+			class = class:sub(1, -2)
+		end
+		local race = ""
+		if not filter.raceFilter then
+			race = L["Откл."]
+		else
+			for k,v in pairs(filter.raceFilter) do race = race..k.."," end
+			race = race:sub(1, -2)
+		end
+		local count = filter.filteredCount
+		
+		frame:SetTooltip(format(L.help["filterTooltip"], name, state, filterByName, lvlRange, letterFilterVowels, letterFilterConsonants, class, race, count))
+		
+		i = i + 1
+		
+	end
+end
 
 
 local RaceClassCombo = {
@@ -56,14 +157,13 @@ local function getEasyWhoList()
 		next = next<=max and next or max
 		table.insert(query, i.."-"..next)
 	end
-	dump(query)
 	return query
 end
 
 local function getWhoList(interval)
 	local min = DB.lowLimit
 	local max = DB.highLimit
-	interval = DB.deepSearch and (interval or DB.searchInterval) or 1
+	interval = DB.deepSearch and (interval or DB.searchInterval) or (interval or 1)
 	local raceFilter = DB.raceFilterVal
 	local classFilter = DB.classFilterVal
 	local query = {}
@@ -139,6 +239,21 @@ local frame = CreateFrame('Frame')
 frame:RegisterEvent('PLAYER_ENTERING_WORLD')
 frame:SetScript('OnEvent', function()
 	DB = addon.DB
+	local parent = interface.filtersFrame
+	local list = parent.filterList
+	for i=1, #list do
+		local frame = list[i]
+		frame:ClearAllPoints()
+		if i == 1 then
+			frame:SetPoint("TOPLEFT", parent.frame, "TOPLEFT", 15, -50)
+		else
+			if mod(i-1,7) == 0 then
+				frame:SetPoint("TOP", list[7*math.floor(i/7)+1-7].frame, "BOTTOM", 0, -10)
+			else
+				frame:SetPoint("LEFT", list[i-1].frame, "RIGHT", 5, 0)
+			end
+		end
+	end
 end)
 
 local function getSearchDeepLvl(query)
@@ -223,11 +338,50 @@ local function smartSearchAddWhoList(query, lvl)
 	elseif lvl == 2 then
 		CLASSsplit(query, queryParams.race)
 	end
-	--dump(addon.smartSearch.whoQueryList)
+end
+
+local function filtered(player)
+	for k,v in pairs(DB.filtersList) do
+		if v.filterOn then
+			if v.lvlRange then
+				local min, max = fn:split(v.lvlRange, ":", -1)
+				if player.Level >= min and player.Level <= max then
+					v.filteredCount = v.filteredCount + 1
+					fn:FiltersUpdate()
+					return true
+				end
+			end
+			if v.filterByName then
+				if player.Name:find(v.filterByName) then
+					v.filteredCount = v.filteredCount + 1
+					fn:FiltersUpdate()
+					return true
+				end
+			end
+			--[[if v.letterFilter then
+				local min, max = fn:split(v.lvlRange, ":", -1)
+			end]]
+			if v.classFilter then
+				if v.classFilter[player.Class] then
+					v.filteredCount = v.filteredCount + 1
+					fn:FiltersUpdate()
+					return true
+				end
+			end
+			if v.raceFilter then
+				if v.raceFilter[player.Race] then
+					v.filteredCount = v.filteredCount + 1
+					fn:FiltersUpdate()
+					return true
+				end
+			end
+			
+		end
+	end
 end
 
 local function addNewPlayer(t, p)
-	if p.Guild == "" and not t.tempSendedInvites[p.Name] and not DB.alredySended[p.Name] then
+	if p.Guild == "" and not t.tempSendedInvites[p.Name] and not DB.alredySended[p.Name] and not filtered(p) then
 		table.insert(t.inviteList, {name = p.Name, lvl = p.Level, race = p.Race, class = p.Class})
 		t.tempSendedInvites[p.Name] = true
 	end
@@ -252,7 +406,6 @@ end
 
 local function WhoResultCallback(query, results, complete)
 	if #results == FGI_MAXWHORETURN and DB.SearchType ~= 1 then print(format(L["Поиск вернул 50 или более результатов, рекомендуется изменить настройки поиска. Запрос: %s"],query)) end
-	--print(query,#results,complete)
 	for i=1,#results do
 		local player = results[i]
 		addNewPlayer(addon.search, player)
@@ -267,7 +420,7 @@ nextSearch = function()
 		if DB.SearchType == 1 and #addon.search.whoQueryList == 0 then
 			addon.search.whoQueryList = getEasyWhoList()
 		elseif DB.SearchType == 2 and #addon.search.whoQueryList == 0 then
-			addon.search.whoQueryList = getWhoList()
+			addon.search.whoQueryList = getWhoList(DB.searchInterval)
 		end
 		interface.scanFrame.progressBar:SetMinMax(GetTime(), GetTime()+#addon.search.whoQueryList*FGI_SCANINTERVALTIME)
 	elseif DB.SearchType == 3 then
@@ -344,6 +497,13 @@ function fn:split(inputstr, sep, isNumber)
 		table.insert(t, (tonumber(str)==nil and not isNumber) and str or (tonumber(str) or isNumber))
 	end
 	return unpack(t)
+end
+
+function fn:inGuildCanInvite()
+	if not IsInGuild() then return false end
+	if not CanGuildInvite() then return false end
+	
+	return true
 end
 
 function fn:StartSearch(timer)
