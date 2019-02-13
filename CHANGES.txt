@@ -1,5 +1,1 @@
-save frame position
-add check IsInGuild and CanGuildInvite
-add filters
-
-if after this update the addon doesn't working, use "/fgi factorySettings"
+update koKR
