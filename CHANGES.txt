@@ -1,1 +1,3 @@
-update koKR
+fixed:
+	error after 50 who result
+	Filters work only when the checkbox is on.

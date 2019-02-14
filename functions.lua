@@ -348,40 +348,43 @@ local function filtered(player)
 				if player.Level >= min and player.Level <= max then
 					v.filteredCount = v.filteredCount + 1
 					fn:FiltersUpdate()
-					return true
+					return true--,"lvl"
 				end
 			end
 			if v.filterByName then
 				if player.Name:find(v.filterByName) then
 					v.filteredCount = v.filteredCount + 1
 					fn:FiltersUpdate()
-					return true
+					return true--,"name"
 				end
 			end
 			--[[if v.letterFilter then
-				local min, max = fn:split(v.lvlRange, ":", -1)
+				
 			end]]
 			if v.classFilter then
 				if v.classFilter[player.Class] then
 					v.filteredCount = v.filteredCount + 1
 					fn:FiltersUpdate()
-					return true
+					return true--,"class"
 				end
 			end
 			if v.raceFilter then
 				if v.raceFilter[player.Race] then
 					v.filteredCount = v.filteredCount + 1
 					fn:FiltersUpdate()
-					return true
+					return true--,"race"
 				end
 			end
 			
 		end
 	end
+	return false
 end
 
 local function addNewPlayer(t, p)
-	if p.Guild == "" and not t.tempSendedInvites[p.Name] and not DB.alredySended[p.Name] and not filtered(p) then
+	local f,r = filtered(p)
+	--if f then print('filtered by',r); dump(p)end]]
+	if p.Guild == "" and not t.tempSendedInvites[p.Name] and not DB.alredySended[p.Name] and (DB.enableFilters and not f or true) then
 		table.insert(t.inviteList, {name = p.Name, lvl = p.Level, race = p.Race, class = p.Class})
 		t.tempSendedInvites[p.Name] = true
 	end
@@ -405,7 +408,9 @@ local function SmartSearchWhoResultCallback(query, results, complete)
 end
 
 local function WhoResultCallback(query, results, complete)
-	if #results == FGI_MAXWHORETURN and DB.SearchType ~= 1 then print(format(L["Поиск вернул 50 или более результатов, рекомендуется изменить настройки поиска. Запрос: %s"],query)) end
+	if #results == FGI_MAXWHORETURN and DB.SearchType ~= 1 then
+		print(format(L.error["Поиск вернул 50 или более результатов, рекомендуется изменить настройки поиска. Запрос: %s"], query))
+	end
 	for i=1,#results do
 		local player = results[i]
 		addNewPlayer(addon.search, player)
@@ -437,12 +442,12 @@ nextSearch = function()
 	if DB.SearchType ~= 3 then
 		addon.search.progress = (addon.search.progress <= (#addon.search.whoQueryList or 1)) and addon.search.progress or 1
 		curQuery = addon.search.whoQueryList[addon.search.progress]
-		addon.libWho:Who(tostring(curQuery),{queue = addon.libWho.WHOLIB_QUERY_QUIET, callback = WhoResultCallback})
+		addon.libWho:Who(tostring(curQuery),{queue = addon.libWho.WHOLIB_QUEUE_QUIET, callback = WhoResultCallback})
 		addon.search.progress = addon.search.progress + 1
 	else
 		addon.smartSearch.progress = (addon.smartSearch.progress <= (#addon.smartSearch.whoQueryList or 1)) and addon.smartSearch.progress or 1
 		curQuery = addon.smartSearch.whoQueryList[addon.smartSearch.progress]
-		addon.libWho:Who(tostring(curQuery),{queue = addon.libWho.WHOLIB_QUERY_QUIET, callback = SmartSearchWhoResultCallback})
+		addon.libWho:Who(tostring(curQuery),{queue = addon.libWho.WHOLIB_QUEUE_QUIET, callback = SmartSearchWhoResultCallback})
 		addon.smartSearch.progress = addon.smartSearch.progress + 1
 	end
 end
@@ -500,10 +505,11 @@ function fn:split(inputstr, sep, isNumber)
 end
 
 function fn:inGuildCanInvite()
-	if not IsInGuild() then return false end
+	return true
+	--[[if not IsInGuild() then return false end
 	if not CanGuildInvite() then return false end
 	
-	return true
+	return true]]
 end
 
 function fn:StartSearch(timer)
