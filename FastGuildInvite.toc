@@ -36,6 +36,7 @@ init.lua
 functions.lua
 FGI_Core.lua
 mainFrame.lua
+message.lua
 settings.lua
 filtersFrame.lua
 Scan.lua

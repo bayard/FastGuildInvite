@@ -1,1 +1,3 @@
-enUS locale
+added send message function(invite type 2 and 3)
+
+update locales enUS, koKR

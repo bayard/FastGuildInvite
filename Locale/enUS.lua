@@ -5,19 +5,21 @@ local L = FGI.L
 -- FAQ
 L["help"] = {
 	["factorySettings"] = "/fgi factorySettings - Full reset of the addon database",
-	["filter"] = "LMB-enable/disable\nRMB-change\nShift+LMB-delete\n\n",
-	["filterTooltip"] = "Filter Name:%s\nstatus:%s\nfilter by Name:%s\nlevel range:%s\nrepeat filter in name:%u:%u\nclasses:%s\nrace:%s\nnumber of filter triggers:%u",
-	["minimap"] = "LMB-invite\nRMB-Open main window\nShift+:LMB-Pause/continue\n\nQueue:%u\nprogress:%s",
+	["filter"] = "LMB-enable/disable\\nRMB-change\\nShift+LMB-delete\\n\\n",
+	["filterTooltip"] = "Filter Name:%s\\nstatus:%s\\nfilter by Name:%s\\nlevel range:%s\\nrepeat filter in name:%u:%u\\nclasses:%s\\nrace:%s\\nnumber of filter triggers:%u",
+	["minimap"] = "LMB-invite\\nRMB-Open main window\\nShift+:LMB-Pause/continue\\n\\nQueue:%u\\nprogress:%s",
 	["resetDB"] = "/fgi resetDB - Clear the list of sent invitations.",
 	["resetWindowsPos"] = "/fgi resetWindowsPos - Reset the position of the window(s).",
 	["show"] = "/fgi show - Open the main window of the addon",
 }
 L["error"] = {
 	["Вы не состоите в гильдии или у вас нет прав для приглашения."] = "You are not a member of the guild or you do not have permission to invite.",
+	["Выберите сообщение"] = "Select message",
 	["Максимальное количество фильтров %s. Пожалуйста измените или удалите имеющийся фильтр."] = "The maximum number of filters %s. Please change or remove existing filter.",
+	["Нельзя добавить пустое сообщение"] = "Cannot add empty message",
+	["Нельзя сохранить пустое сообщение"] = "Cannot save empty message",
 	["Поиск вернул 50 или более результатов, рекомендуется изменить настройки поиска. Запрос: %s"] = "Search returned 50 or more results, it is recommended to change the search settings. Query: %s",
 }
-
 
 -- interface
 L["Включен"] = "Included"
@@ -27,8 +29,10 @@ L["Выключен"] = "Switched off"
 L["Выключить отправляемые сообщения"] = "Disable sent messages"
 L["Выключить системные сообщения"] = "Turn off system messages"
 L["Выключить сообщения аддона"] = "Disable addon messages"
+L["Да"] = "Yes"
 L["Диапазон уровней"] = "Level range"
 L["Диапазон уровней (Мин:Макс)"] = "Level Range (Min: Max)"
+L["Добавить"] = "Add"
 L["Добавить фильтр"] = "Add filter"
 L["Запускать в фоновом режиме"] = "Run in the background"
 L["Игнорировать"] = "Ignore"
@@ -45,8 +49,9 @@ L["Настройки"] = "Settings"
 L["Начать сканирование"] = "Start Scan"
 L["Не отображать значок у миникарты"] = "Do not display the minimap icon."
 L["Неправильный шаблон"] = "Wrong template"
+L["Нет"] = "No"
 L["Обычный поиск"] = "Normal Search"
-L["Обязательное поле \"Имя фильтра\", пустые текстовые поля не используются при фильтрации."] = "Required field \"Filter name\",\nempty text boxes are not used in filtering. "
+L["Обязательное поле \\\"Имя фильтра\\\", пустые текстовые поля не используются при фильтрации."] = "Required field \\\"Filter name\\\",\\nempty text boxes are not used in filtering. "
 L["Откл."] = "Turn off"
 L["Поле может содержать только буквы"] = "This field can only contain letters. "
 L["Пригласить: %u"] = "Invite: %u"
@@ -54,7 +59,10 @@ L["Расширенное сканирование"] = "Advanced Scan"
 L["Расы:"] = "Race:"
 L["Режим приглашения"] = "Invitation mode"
 L["Сбросить"] = "Reset"
+L["Слово NAME заглавными буквами будет заменено на название вашей гильдии."] = "The word NAME in capital letters will be replaced with the name of your guild."
 L["Сохранить"] = "Save"
+L["Текущее сообщение: %s"] = "Current message: %s"
+L["Удалить"] = "Delete"
 L["Умный поиск"] = "Smart Search"
 L["Фильтр классов начало:"] = "Class Filter Start:"
 L["Фильтр по имени"] = "Filter by name"
@@ -66,10 +74,10 @@ L["Числа не могут быть меньше или равны 0. Мин�
 L["Чтобы быть отфильтрованным, игрок должен соответствовать критериям ВСЕХ фильтров"] = "To be filtered, the player must meet the criteria of all filters"
 L["tooltip"] = {
 	["Автоматическое увеличение детализации поиска"] = "Automatically increase search details.",
-	["Введите диапазон уровней для фильтра.\nНапример: %s55%s:%s58%s\nбудут подходить только те игроки, уровень\nкоторых варьируется от %s55%s до %s58%s (включительно)"] = "Enter a range of levels for the filter.\nfor Example:%s55%s:%s58%s\nwill be approached only by those players, the level\nwhich varies from%s55%s to %s58%s (inclusive)",
-	["Введите максимальное количество последовательных\nгласных и согласных, которое может содержать имя игрока.\nНапример: %s3%s:%s5%s\nБудет означать, что игроки с более чем %s3%s гласными подряд\nили более %s5%s согласными подряд не будут добавлены в очередь."] = "Enter the maximum number of consecutive\nvowels and consonants that may contain the player's name.\nfor Example:%s3%s:%s5%s\nwill mean that players with more than%s3%s vowels in a row\nor more%s5%s consonants will not be added to Queue.",
+	["Введите диапазон уровней для фильтра.\\nНапример: %s55%s:%s58%s\\nбудут подходить только те игроки, уровень\\nкоторых варьируется от %s55%s до %s58%s (включительно)"] = "Enter a range of levels for the filter.\\nfor Example:%s55%s:%s58%s\\nwill be approached only by those players, the level\\nwhich varies from%s55%s to %s58%s (inclusive)",
+	["Введите максимальное количество последовательных\\nгласных и согласных, которое может содержать имя игрока.\\nНапример: %s3%s:%s5%s\\nБудет означать, что игроки с более чем %s3%s гласными подряд\\nили более %s5%s согласными подряд не будут добавлены в очередь."] = "Enter the maximum number of consecutive\\nvowels and consonants that may contain the player's name.\\nfor Example:%s3%s:%s5%s\\nwill mean that players with more than%s3%s vowels in a row\\nor more%s5%s consonants will not be added to Queue.",
 	["Дополнительные настройки сканирования"] = "Advanced Scan Settings",
-	["Если имя игрока содержит введенную\nфразу, он не будет добавлен в очередь"] = "If the player name contains the entered\nphrase, it will not be added to the queue",
+	["Если имя игрока содержит введенную\\nфразу, он не будет добавлен в очередь"] = "If the player name contains the entered\\nphrase, it will not be added to the queue",
 	["Запускать поиск в фоновом режиме"] = "Run a background search",
 	["Количество уровней сканируемых за один раз"] = "Number of levels scanned at one time",
 	["Назначить клавишу для приглашения"] = "Assign a key to the invitation",

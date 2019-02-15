@@ -62,6 +62,10 @@ function FastGuildInvite:OnEnable()
 		interface.addfilterFrame:ClearAllPoints()
 		interface.addfilterFrame:SetPoint(DB.addfilterFrame.point, UIParent, DB.addfilterFrame.relativePoint, DB.addfilterFrame.xOfs, DB.addfilterFrame.yOfs)
 	end
+	if DB.messageFrame then
+		interface.addfilterFrame:ClearAllPoints()
+		interface.addfilterFrame:SetPoint(DB.messageFrame.point, UIParent, DB.messageFrame.relativePoint, DB.messageFrame.xOfs, DB.messageFrame.yOfs)
+	end
 	
 	Console:RegisterChatCommand('fgi', 'FGIInput')
 	Console:RegisterChatCommand('FastGuildInvite', 'FGIInput')
@@ -73,6 +77,8 @@ function FastGuildInvite:OnInitialize()
 	
 	DB = self.db.global
 	addon.DB = DB
+	
+	DB.inviteType = DB.inviteType or 1
 	
 	DB.lowLimit = DB.lowLimit or FGI_MINLVL
 	DB.highLimit = DB.highLimit or FGI_MAXLVL
@@ -87,6 +93,9 @@ function FastGuildInvite:OnInitialize()
 	DB.addonMSG = DB.addonMSG or false
 	DB.systemMSG = DB.systemMSG or false
 	DB.sendMSG = DB.sendMSG or false
+	
+	DB.messageList = type(DB.messageList) == "table" and DB.messageList or {}
+	DB.curMessage = DB.curMessage or 0
 	
 	DB.alredySended = type(DB.alredySended)=="table" and DB.alredySended or {}
 	DB.filtersList = type(DB.filtersList)=="table" and DB.filtersList or {}

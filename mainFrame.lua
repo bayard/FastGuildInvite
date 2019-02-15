@@ -399,7 +399,7 @@ frame:SetScript('OnEvent', function()
 	mainFrame:Show()
 	DB = addon.DB
 	
-	inviteTypeGRP.drop:SetValue(DB.inviteType or 1)
+	inviteTypeGRP.drop:SetValue(DB.inviteType)
 	
 	mainCheckBoxGRP.normalSearch:SetValue(DB.SearchType==1)
 	mainCheckBoxGRP.deepSearch:SetValue(DB.SearchType==2)

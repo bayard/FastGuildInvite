@@ -151,7 +151,10 @@ frame:SetText(L["Настроить сообщения"])
 fontSize(frame.text)
 frame:SetWidth(size.setMSG)
 frame:SetHeight(40)
-frame:SetDisabled(true)
+frame:SetCallback("OnClick", function()
+	interface.messageFrame:Show()
+	settingsFrame:Hide()
+end)
 settingsButtonsGRP:AddChild(frame)
 
 

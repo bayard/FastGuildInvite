@@ -201,18 +201,49 @@ local function getWhoList(interval)
 	return (#query>FGI_MAXWHOQUERY and interval<=max-min) and getWhoList(interval+1) or query
 end
 
+local function sendWhisper(msg, name)
+	if msg:find("NAME") then
+		local guildName, guildRankName, guildRankIndex, realm = GetGuildInfo("player")
+		msg = msg:gsub("NAME", guildName or 'GUILD_NAME')
+	end
+	if not addon.debug then
+		if msg ~= nil then
+			SendChatMessage(msg, 'WHISPER', GetDefaultLanguage("player"), name)
+		else
+			print(L.error["Выберите сообщение"])
+		end
+	else
+		if msg ~= nil then
+			print(msg, 'WHISPER', GetDefaultLanguage("player"), name)
+		else
+			print(L.error["Выберите сообщение"])
+		end	
+	end
+end
+
 function fn:invitePlayer()
 	if DB.SearchType == 3 then
 		local list = addon.smartSearch.inviteList
 		if #list==0 then return end
-		GuildInvite(list[1].name)
+		if DB.inviteType == 1 or DB.inviteType == 2 then
+			GuildInvite(list[1].name)
+		end
+		if DB.inviteType == 2 or DB.inviteType == 3 then
+			local msg = DB.messageList[DB.curMessage]
+			sendWhisper(msg, list[1].name)
+		end
 		DB.alredySended[list[1].name] = time({year = date("%Y"), month = date("%m"), day = date("%d")})
 		table.remove(addon.smartSearch.inviteList, 1)
 		interface.scanFrame.invite:SetText(format(L["Пригласить: %u"], #addon.smartSearch.inviteList))
 	else
 		local list = addon.search.inviteList
 		if #list==0 then return end
-		GuildInvite(list[1].name)
+		
+		
+		
+		
+		
+		
 		DB.alredySended[list[1].name] = time({year = date("%Y"), month = date("%m"), day = date("%d")})
 		table.remove(addon.search.inviteList, 1)
 		interface.scanFrame.invite:SetText(format(L["Пригласить: %u"], #addon.search.inviteList))
@@ -505,11 +536,12 @@ function fn:split(inputstr, sep, isNumber)
 end
 
 function fn:inGuildCanInvite()
-	return true
-	--[[if not IsInGuild() then return false end
-	if not CanGuildInvite() then return false end
+	if not addon.debug then
+		if not IsInGuild() then return false end
+		if not CanGuildInvite() then return false end
+	end
 	
-	return true]]
+	return true	
 end
 
 function fn:StartSearch(timer)
