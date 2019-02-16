@@ -213,7 +213,7 @@ frame:SetText(L["Выбрать приглашения"])
 fontSize(frame.text)
 frame:SetWidth(size.chooseInvites)
 frame:SetHeight(mainButtonsGRP.startScan.frame:GetHeight())
-frame:SetDisabled(true)
+frame:SetCallback("OnClick", function() interface.chooseInvites:Show() end)
 mainButtonsGRP:AddChild(frame)
 
 mainButtonsGRP.settingsBtn = GUI:Create("Button")

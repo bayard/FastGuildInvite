@@ -221,33 +221,35 @@ local function sendWhisper(msg, name)
 	end
 end
 
-function fn:invitePlayer()
+function fn:invitePlayer(noInv)
+	local list
 	if DB.SearchType == 3 then
-		local list = addon.smartSearch.inviteList
+		list = addon.smartSearch.inviteList
 		if #list==0 then return end
-		if DB.inviteType == 1 or DB.inviteType == 2 then
+		if (DB.inviteType == 1 or DB.inviteType == 2) and not noInv then
 			GuildInvite(list[1].name)
 		end
-		if DB.inviteType == 2 or DB.inviteType == 3 then
+		if (DB.inviteType == 2 or DB.inviteType == 3) and not noInv then
 			local msg = DB.messageList[DB.curMessage]
 			sendWhisper(msg, list[1].name)
 		end
-		DB.alredySended[list[1].name] = time({year = date("%Y"), month = date("%m"), day = date("%d")})
+		if not noInv then
+			DB.alredySended[list[1].name] = time({year = date("%Y"), month = date("%m"), day = date("%d")})
+		end
 		table.remove(addon.smartSearch.inviteList, 1)
 		interface.scanFrame.invite:SetText(format(L["Пригласить: %u"], #addon.smartSearch.inviteList))
 	else
-		local list = addon.search.inviteList
+		list = addon.search.inviteList
 		if #list==0 then return end
-		
-		
-		
-		
-		
-		
-		DB.alredySended[list[1].name] = time({year = date("%Y"), month = date("%m"), day = date("%d")})
+		if not noInv then
+			GuildInvite(list[1].name)
+			DB.alredySended[list[1].name] = time({year = date("%Y"), month = date("%m"), day = date("%d")})
+		end
 		table.remove(addon.search.inviteList, 1)
 		interface.scanFrame.invite:SetText(format(L["Пригласить: %u"], #addon.search.inviteList))
 	end
+	
+	interface.chooseInvites.player:SetText(#list > 0 and format("%s%s %u %s %s|r", color[list[1].NoLocaleClass:upper()], list[1].name, list[1].lvl, list[1].class, list[1].race) or "")
 end
 
 local function SearchOnUpdate()
@@ -416,9 +418,11 @@ local function addNewPlayer(t, p)
 	local f,r = filtered(p)
 	--if f then print('filtered by',r); dump(p)end]]
 	if p.Guild == "" and not t.tempSendedInvites[p.Name] and not DB.alredySended[p.Name] and (DB.enableFilters and not f or true) then
-		table.insert(t.inviteList, {name = p.Name, lvl = p.Level, race = p.Race, class = p.Class})
+		table.insert(t.inviteList, {name = p.Name, lvl = p.Level, race = p.Race, class = p.Class,  NoLocaleClass = p.NoLocaleClass})
 		t.tempSendedInvites[p.Name] = true
 	end
+	local list = t.inviteList
+	interface.chooseInvites.player:SetText(#list > 0 and format("%s%s %u %s %s|r", color[list[1].NoLocaleClass:upper()], list[1].name, list[1].lvl, list[1].class, list[1].race) or "")
 end
 
 local function SmartSearchWhoResultCallback(query, results, complete)

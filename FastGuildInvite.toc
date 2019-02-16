@@ -35,6 +35,7 @@ init.lua
 
 functions.lua
 FGI_Core.lua
+chooseInvites.lua
 mainFrame.lua
 message.lua
 settings.lua
