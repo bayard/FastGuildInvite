@@ -213,8 +213,8 @@ L.settings = {
 		Draenei = 100,
 		Worgen = 100,
 		VoidElf = 100,
-		LightforgedDraenei = 100,
-		DarkIronDwarf = 100,
+		LightforgedDraenei = 150,
+		DarkIronDwarf = 150,
 		
 		filterNameLabel = 200,
 		excludeNameLabel = 200,
