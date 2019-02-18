@@ -52,7 +52,7 @@ L["Неправильный шаблон"] = "Wrong template"
 L["Нет"] = "No"
 L["Обычный поиск"] = "Normal Search"
 L["Обязательное поле \"Имя фильтра\", пустые текстовые поля не используются при фильтрации."] = "Required field \"Filter name\",\nempty text boxes are not used in filtering. "
-L["Откл."] = "Turn off"
+L["Откл."] = "Off"
 L["Отклонить"] = "Reject"
 L["Поле может содержать только буквы"] = "This field can only contain letters. "
 L["Пригласить"] = "Invite"
@@ -138,3 +138,13 @@ L["race"] = {
 		["Worgen"] = "Worgen",
 	},
 }
+
+
+
+L.settings.size.Mage = 60
+L.settings.size.Priest = 80
+L.settings.size.Shaman = 80
+L.settings.size.Warrior = 80
+
+L.settings.size.DarkIronDwarf = 150
+L.settings.size.LightforgedDraenei = 150

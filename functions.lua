@@ -201,11 +201,16 @@ local function getWhoList(interval)
 	return (#query>FGI_MAXWHOQUERY and interval<=max-min) and getWhoList(interval+1) or query
 end
 
-local function sendWhisper(msg, name)
+function fn:msgMod(msg)
 	if msg:find("NAME") then
 		local guildName, guildRankName, guildRankIndex, realm = GetGuildInfo("player")
 		msg = msg:gsub("NAME", guildName or 'GUILD_NAME')
 	end
+	return msg
+end
+
+local function sendWhisper(msg, name)
+	msg = fn:msgMod(msg)
 	if not addon.debug then
 		if msg ~= nil then
 			SendChatMessage(msg, 'WHISPER', GetDefaultLanguage("player"), name)

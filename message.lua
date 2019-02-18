@@ -20,7 +20,9 @@ local function defaultValues()
 	messageFrame.drop:SetList(DB.messageList)
 	messageFrame.drop:SetValue(DB.curMessage)
 	messageFrame.message:SetText(DB.messageList[DB.curMessage] or "")
-	messageFrame.curMessage:SetText(format(L["Текущее сообщение: %s"], DB.messageList[DB.curMessage] or L["Нет"]))
+	local msg = DB.messageList[DB.curMessage]
+	msg = fn:msgMod(msg)
+	messageFrame.curMessage:SetText(format(L["Текущее сообщение: %s"], msg or L["Нет"]))
 end
 
 local function EditBoxChange(frame)
