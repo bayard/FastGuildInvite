@@ -1,4 +1,4 @@
-local L = FGI.L
+local L = {}
 
 -- FAQ
 L["help"] = {
@@ -232,3 +232,4 @@ L.settings = {
 }
 
 
+FGI.L["ruRU"] = L

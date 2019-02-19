@@ -1,5 +1,9 @@
-if not(GetLocale() == "deDE") then
-  return
-end
+-- if not(GetLocale() == "deDE") then
+  -- return
+-- end
 
-local L = FGI.L
+local L = {}
+
+
+
+FGI.L["deDE"] = L

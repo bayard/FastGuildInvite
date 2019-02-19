@@ -1,7 +1,7 @@
-if not(GetLocale() == "enUS") then
-  return
-end
-local L = FGI.L
+-- if not(GetLocale() == "enUS") then
+  -- return
+-- end
+local L = {}
 -- FAQ
 L["help"] = {
 	["factorySettings"] = "/fgi factorySettings - Full reset of the addon database",
@@ -140,11 +140,14 @@ L["race"] = {
 }
 
 
+L.settings = {
+	size = {
+		Mage = 60,
+		Priest = 80,
+		Shaman = 80,
+		Warrior = 80,
+	}
+}
 
-L.settings.size.Mage = 60
-L.settings.size.Priest = 80
-L.settings.size.Shaman = 80
-L.settings.size.Warrior = 80
 
-L.settings.size.DarkIronDwarf = 150
-L.settings.size.LightforgedDraenei = 150
+FGI.L["enUS"] = L

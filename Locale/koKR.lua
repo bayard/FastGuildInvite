@@ -1,7 +1,7 @@
-if not(GetLocale() == "koKR") then
-  return
-end
-local L = FGI.L
+-- if not(GetLocale() == "koKR") then
+  -- return
+-- end
+local L = {}
 
 -- FAQ
 L["help"] = {
@@ -139,3 +139,6 @@ L["race"] = {
 		["Worgen"] = "늑대인간",
 	},
 }
+
+
+FGI.L["koKR"] = L
