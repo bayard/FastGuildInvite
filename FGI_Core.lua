@@ -42,6 +42,10 @@ end
 function FastGuildInvite:OnEnable()
 	fn:FiltersInit()
 	fn:FiltersUpdate()
+	if DB.keyBind then
+		-- SetBindingClick(DB.keyBind, interface.scanFrame.invite.frame:GetName())
+	end
+	fn:SetKeybind(DB.keyBind)
 	if DB.mainFrame then
 		interface.mainFrame:ClearAllPoints()
 		interface.mainFrame:SetPoint(DB.mainFrame.point, UIParent, DB.mainFrame.relativePoint, DB.mainFrame.xOfs, DB.mainFrame.yOfs)
@@ -93,6 +97,7 @@ function FastGuildInvite:OnInitialize()
 	DB.addonMSG = DB.addonMSG or false
 	DB.systemMSG = DB.systemMSG or false
 	DB.sendMSG = DB.sendMSG or false
+	DB.keyBind = DB.keyBind or false
 	
 	DB.messageList = type(DB.messageList) == "table" and DB.messageList or {}
 	DB.curMessage = DB.curMessage or 0

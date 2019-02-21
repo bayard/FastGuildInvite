@@ -3,7 +3,7 @@ local locale = GetLocale()
 local function GetL(ru,en,cur)
   ru = ru or FGI.L["ruRU"]
   en = en or FGI.L["enUS"]
-  cur = cur or FGI.L[locale]
+  cur = cur or FGI.L[locale] or {}
   local L = {}
   for k,v in pairs(ru) do
     if type(v) == "table" then

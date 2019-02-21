@@ -17,6 +17,7 @@ L["error"] = {
 	["Выберите сообщение"] = "Выберите сообщение",
 	["Нельзя добавить пустое сообщение"] = "Нельзя добавить пустое сообщение",
 	["Нельзя сохранить пустое сообщение"] = "Нельзя сохранить пустое сообщение",
+	["Сочетание клавиш уже занято"] = "Сочетание клавиш уже занято",
 }
 
 -- interface
@@ -208,13 +209,13 @@ L.settings = {
 		Pandaren = 95,
 		Human = 100,
 		Dwarf = 100,
-		NightElf = 100,
+		NightElf = 120,
 		Gnome = 100,
 		Draenei = 100,
 		Worgen = 100,
-		VoidElf = 100,
+		VoidElf = 130,
 		LightforgedDraenei = 150,
-		DarkIronDwarf = 150,
+		DarkIronDwarf = 160,
 		
 		filterNameLabel = 200,
 		excludeNameLabel = 200,

@@ -19,6 +19,7 @@ L["error"] = {
 	["Нельзя добавить пустое сообщение"] = "Cannot add empty message",
 	["Нельзя сохранить пустое сообщение"] = "Cannot save empty message",
 	["Поиск вернул 50 или более результатов, рекомендуется изменить настройки поиска. Запрос: %s"] = "Search returned 50 or more results, it is recommended to change the search settings. Query: %s",
+	["Сочетание клавиш уже занято"] = "Keyboard shortcut busy",
 }
 
 -- interface

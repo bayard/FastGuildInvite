@@ -20,6 +20,22 @@ local time, next = time, next
 --ERR_GUILD_INVITE_S,ERR_GUILD_DECLINE_S,ERR_ALREADY_IN_GUILD_S,ERR_ALREADY_INVITED_TO_GUILD_S,ERR_GUILD_DECLINE_AUTO_S,ERR_GUILD_JOIN_S,ERR_GUILD_PLAYER_NOT_FOUND_S,ERR_CHAT_PLAYER_NOT_FOUND_S
 --	CanGuildInvite()
 
+function fn:SetKeybind(key)
+	if key then
+		if GetBindingAction(key) == "" or addon.DB.keyBind == key then
+			addon.DB.keyBind = key
+			SetBindingClick(key, interface.scanFrame.invite.frame:GetName())
+		else
+			BasicMessageDialog:SetFrameStrata("TOOLTIP")
+			message(L.error["Сочетание клавиш уже занято"])
+		end
+	else
+		addon.DB.keyBind = false
+	end
+	interface.settingsFrame.settingsButtonsGRP.keyBind:SetLabel(format(L["Назначить кнопку (%s)"], addon.DB.keyBind or "none"))
+	interface.settingsFrame.settingsButtonsGRP.keyBind:SetKey(addon.DB.keyBind)
+end
+
 function fn:FiltersInit()
 	local parent = interface.filtersFrame
 	local list = parent.filterList

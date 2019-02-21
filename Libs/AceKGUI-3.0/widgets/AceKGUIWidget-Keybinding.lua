@@ -22,10 +22,16 @@ Scripts
 -------------------------------------------------------------------------------]]
 
 local function Control_OnEnter(frame)
+	if frame.tooltip ~= nil and frame.tooltip ~= '' then
+		GameTooltip:SetOwner(frame, "ANCHOR_TOP")
+		GameTooltip:AddLine(frame.tooltip)
+		GameTooltip:Show()
+	end
 	frame.obj:Fire("OnEnter")
 end
 
 local function Control_OnLeave(frame)
+	GameTooltip:Hide()
 	frame.obj:Fire("OnLeave")
 end
 
@@ -152,6 +158,10 @@ local methods = {
 			self:SetHeight(44)
 		end
 	end,
+	
+	["SetTooltip"] = function(self, tooltip)
+		self.button.tooltip = tooltip
+	end
 }
 
 --[[-----------------------------------------------------------------------------
@@ -187,12 +197,15 @@ local function Constructor()
 	button:SetPoint("BOTTOMRIGHT")
 	button:SetHeight(24)
 	button:EnableKeyboard(false)
+	
+	button.tooltip = ''
 
 	local text = button:GetFontString()
 	text:SetPoint("LEFT", 7, 0)
 	text:SetPoint("RIGHT", -7, 0)
 
-	local label = frame:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
+	-- local label = frame:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
+	local label = frame:CreateFontString(nil, "TOOLTIP", "GameFontHighlight")
 	label:SetPoint("TOPLEFT")
 	label:SetPoint("TOPRIGHT")
 	label:SetJustifyH("CENTER")
@@ -202,10 +215,11 @@ local function Constructor()
 	msgframe:SetHeight(30)
 	msgframe:SetBackdrop(ControlBackdrop)
 	msgframe:SetBackdropColor(0,0,0)
-	msgframe:SetFrameStrata("FULLSCREEN_DIALOG")
+	msgframe:SetFrameStrata("TOOLTIP")
 	msgframe:SetFrameLevel(1000)
 
-	local msg = msgframe:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+	-- local msg = msgframe:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+	local msg = msgframe:CreateFontString(nil, "TOOLTIP", "GameFontNormal")
 	msg:SetText("Press a key to bind, ESC to clear the binding or click the button again to cancel.")
 	msgframe.msg = msg
 	msg:SetPoint("TOPLEFT", 5, -5)

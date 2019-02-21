@@ -135,14 +135,14 @@ frame:SetCallback("OnClick", function()
 end)
 settingsButtonsGRP:AddChild(frame)
 
-settingsButtonsGRP.keyBind = GUI:Create("Button")
+settingsButtonsGRP.keyBind = GUI:Create("Keybinding")
 local frame = settingsButtonsGRP.keyBind
-frame:SetText(format(L["Назначить кнопку (%s)"], "none"))
+-- frame:SetLabel(format(L["Назначить кнопку (%s)"], "none"))
 frame:SetTooltip(L.tooltip["Назначить клавишу для приглашения"])
-fontSize(frame.text)
+fontSize(frame.label)
 frame:SetWidth(size.keyBind)
 frame:SetHeight(40)
-frame:SetDisabled(true)
+frame:SetCallback("OnKeyChanged", function(self) fn:SetKeybind(self:GetKey()) end)
 settingsButtonsGRP:AddChild(frame)
 
 settingsButtonsGRP.setMSG = GUI:Create("Button")
@@ -171,8 +171,6 @@ frame:SetScript('OnEvent', function()
 	settingsCheckBoxGRP.systemMSG:SetValue(DB.systemMSG or false)
 	settingsCheckBoxGRP.sendMSG:SetValue(DB.sendMSG or false)
 	settingsCheckBoxGRP.minimapButton:SetValue(DB.minimap.hide or false)
-	
-	settingsButtonsGRP.keyBind:SetText(format(L["Назначить кнопку (%s)"], DB.keyBind or "none"))
 	
 	settingsFrame.closeButton:ClearAllPoints()
 	settingsFrame.closeButton:SetPoint("CENTER", settingsFrame.frame, "TOPRIGHT", -8, -8)
