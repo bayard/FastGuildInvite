@@ -2,7 +2,7 @@ local L = {}
 local locale = GetLocale()
 local function GetL(ru,en,cur)
   ru = ru or FGI.L["ruRU"]
-  en = en or FGI.L["enUS"]
+  en = en or FGI.L["enUS"] or {}
   cur = cur or FGI.L[locale] or {}
   local L = {}
   for k,v in pairs(ru) do
