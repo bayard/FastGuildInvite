@@ -1,2 +1,3 @@
-msg mod fn
-locales update
+Undiscovered players are not remembered
+keyBind add
+disabled not working flags
