@@ -15,6 +15,28 @@ local function fontSize(self, font, size)
 	self:SetFont(font, size)
 end
 
+local function playerHaveInvite(msg)
+	place = strfind(ERR_GUILD_PLAYER_NOT_FOUND_S,"%s",1,true)
+	if (place) then
+		n = strsub(msg,place)
+		name = strsub(n,1,(strfind(n,"%s") or 2)-2)
+		if format(ERR_GUILD_PLAYER_NOT_FOUND_S,name) == msg then
+			return false, name
+		end
+	end
+	
+	place = strfind(ERR_CHAT_PLAYER_NOT_FOUND_S,"%s",1,true)
+	if (place) then
+		n = strsub(msg,place)
+		name = strsub(n,1,(strfind(n,"%s") or 2)-2)
+		if format(ERR_CHAT_PLAYER_NOT_FOUND_S,name) == msg then
+			return false, name
+		end
+	end
+	
+	return true
+end
+
 
 interface.scanFrame = GUI:Create("Frame")
 local scanFrame = interface.scanFrame
@@ -94,7 +116,14 @@ end)
 scanFrame:AddChild(frame)
 
 
-
+scanFrame.pausePlayFilter = CreateFrame("Frame")
+local frame = scanFrame.pausePlayFilter
+frame:SetScript("OnEvent", function(_,_,msg)
+	local inv, name = playerHaveInvite(msg)
+	if not inv then
+		DB.alredySended[name] = nil
+	end
+end)
 
 scanFrame.pausePlay = GUI:Create("Button")
 local frame = scanFrame.pausePlay
@@ -110,11 +139,13 @@ frame:SetCallback("OnClick", function(self)
 		LibDBIcon10_FGI.icon:SetTexture("Interface\\AddOns\\FastGuildInvite\\img\\minimap\\MiniMapButton-Search")
 		self.pause = false
 		fn:StartSearch()
+		scanFrame.pausePlayFilter:RegisterEvent("CHAT_MSG_SYSTEM")
 	else
 		self:SetNormalTexture("Interface\\Buttons\\UI-SpellbookIcon-NextPage-Up")
 		LibDBIcon10_FGI.icon:SetTexture("Interface\\AddOns\\FastGuildInvite\\img\\minimap\\MiniMapButton")
 		self.pause = true
 		fn:PauseSearch()
+		scanFrame.pausePlayFilter:UnregisterEvent("CHAT_MSG_SYSTEM")
 	end
 end)
 scanFrame:AddChild(frame)
