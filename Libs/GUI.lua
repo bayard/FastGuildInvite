@@ -45,7 +45,7 @@ end
 local function Control_OnEnter(frame)
 	if frame.obj.tooltip ~= nil and frame.obj.tooltip ~= '' then
 		GameTooltip:SetOwner(frame, "ANCHOR_TOP")
-		GameTooltip:AddLine(format("%s\n\n%s", L.help["filter"], frame.obj.tooltip))
+		GameTooltip:AddLine(format("%s\n\n%s", L.FAQ.help["filter"], frame.obj.tooltip))
 		GameTooltip:Show()
 	end
 	frame.obj:Fire("OnEnter")

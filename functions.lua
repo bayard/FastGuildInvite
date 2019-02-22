@@ -27,12 +27,12 @@ function fn:SetKeybind(key)
 			SetBindingClick(key, interface.scanFrame.invite.frame:GetName())
 		else
 			BasicMessageDialog:SetFrameStrata("TOOLTIP")
-			message(L.error["Сочетание клавиш уже занято"])
+			message(L.FAQ.error["Сочетание клавиш уже занято"])
 		end
 	else
 		addon.DB.keyBind = false
 	end
-	interface.settingsFrame.settingsButtonsGRP.keyBind:SetLabel(format(L["Назначить кнопку (%s)"], addon.DB.keyBind or "none"))
+	interface.settingsFrame.settingsButtonsGRP.keyBind:SetLabel(format(L.interface["Назначить кнопку (%s)"], addon.DB.keyBind or "none"))
 	interface.settingsFrame.settingsButtonsGRP.keyBind:SetKey(addon.DB.keyBind)
 end
 
@@ -64,18 +64,18 @@ function fn:FilterChange(id)
 		addfilterFrame.classesCheckBoxIgnore:SetValue(true)
 	else
 		addfilterFrame.classesCheckBoxIgnore:SetValue(false)
-		addfilterFrame.classesCheckBoxDeathKnight:SetValue(class[L.class.DeathKnight] or false)
-		addfilterFrame.classesCheckBoxDemonHunter:SetValue(class[L.class.DemonHunter] or false)
-		addfilterFrame.classesCheckBoxDruid:SetValue(class[L.class.Druid] or false)
-		addfilterFrame.classesCheckBoxHunter:SetValue(class[L.class.Hunter] or false)
-		addfilterFrame.classesCheckBoxMage:SetValue(class[L.class.Mage] or false)
-		addfilterFrame.classesCheckBoxMonk:SetValue(class[L.class.Monk] or false)
-		addfilterFrame.classesCheckBoxPaladin:SetValue(class[L.class.Paladin] or false)
-		addfilterFrame.classesCheckBoxPriest:SetValue(class[L.class.Priest] or false)
-		addfilterFrame.classesCheckBoxRogue:SetValue(class[L.class.Rogue] or false)
-		addfilterFrame.classesCheckBoxShaman:SetValue(class[L.class.Shaman] or false)
-		addfilterFrame.classesCheckBoxWarlock:SetValue(class[L.class.Warlock] or false)
-		addfilterFrame.classesCheckBoxWarrior:SetValue(class[L.class.Warrior] or false)
+		addfilterFrame.classesCheckBoxDeathKnight:SetValue(class[L.SYSTEM.class.DeathKnight] or false)
+		addfilterFrame.classesCheckBoxDemonHunter:SetValue(class[L.SYSTEM.class.DemonHunter] or false)
+		addfilterFrame.classesCheckBoxDruid:SetValue(class[L.SYSTEM.class.Druid] or false)
+		addfilterFrame.classesCheckBoxHunter:SetValue(class[L.SYSTEM.class.Hunter] or false)
+		addfilterFrame.classesCheckBoxMage:SetValue(class[L.SYSTEM.class.Mage] or false)
+		addfilterFrame.classesCheckBoxMonk:SetValue(class[L.SYSTEM.class.Monk] or false)
+		addfilterFrame.classesCheckBoxPaladin:SetValue(class[L.SYSTEM.class.Paladin] or false)
+		addfilterFrame.classesCheckBoxPriest:SetValue(class[L.SYSTEM.class.Priest] or false)
+		addfilterFrame.classesCheckBoxRogue:SetValue(class[L.SYSTEM.class.Rogue] or false)
+		addfilterFrame.classesCheckBoxShaman:SetValue(class[L.SYSTEM.class.Shaman] or false)
+		addfilterFrame.classesCheckBoxWarlock:SetValue(class[L.SYSTEM.class.Warlock] or false)
+		addfilterFrame.classesCheckBoxWarrior:SetValue(class[L.SYSTEM.class.Warrior] or false)
 	end
 	
 	if not raceFilter then 
@@ -112,27 +112,27 @@ function fn:FiltersUpdate()
 		local frame = list[i]
 		frame:SetID(name)
 		frame:SetText(name)
-		local state = filter.filterOn and L["Включен"]:upper() or L["Выключен"]:upper()
-		local lvlRange = filter.lvlRange or L["Откл."]
-		local filterByName = filter.filterByName or L["Откл."]
+		local state = filter.filterOn and L.interface["Включен"]:upper() or L.interface["Выключен"]:upper()
+		local lvlRange = filter.lvlRange or L.interface["Откл."]
+		local filterByName = filter.filterByName or L.interface["Откл."]
 		local letterFilterVowels, letterFilterConsonants = filter.letterFilter==false and 0,0 or fn:split(filter.letterFilter, ":")
 		local class = ""
 		if not filter.classFilter then
-			class = L["Откл."]
+			class = L.interface["Откл."]
 		else
 			for k,v in pairs(filter.classFilter) do class = class..k.."," end
 			class = class:sub(1, -2)
 		end
 		local race = ""
 		if not filter.raceFilter then
-			race = L["Откл."]
+			race = L.interface["Откл."]
 		else
 			for k,v in pairs(filter.raceFilter) do race = race..k.."," end
 			race = race:sub(1, -2)
 		end
 		local count = filter.filteredCount
 		
-		frame:SetTooltip(format(L.help["filterTooltip"], name, state, filterByName, lvlRange, letterFilterVowels, letterFilterConsonants, class, race, count))
+		frame:SetTooltip(format(L.FAQ.help["filterTooltip"], name, state, filterByName, lvlRange, letterFilterVowels, letterFilterConsonants, class, race, count))
 		
 		i = i + 1
 		
@@ -141,25 +141,25 @@ end
 
 
 local RaceClassCombo = {
-	Orc = {L.class.Warrior,L.class.Hunter,L.class.Rogue,L.class.Shaman,L.class.Mage,L.class.Warlock,L.class.Monk,L.class.DeathKnight},
-	Undead = {L.class.Warrior,L.class.Hunter,L.class.Rogue,L.class.Priest,L.class.Mage,L.class.Warlock,L.class.Monk,L.class.DeathKnight},
-	Tauren = {L.class.Warrior,L.class.Paladin,L.class.Hunter,L.class.Priest,L.class.Shaman,L.class.Monk,L.class.Druid,L.class.DeathKnight},
-	Troll = {L.class.Warrior,L.class.Hunter,L.class.Rogue,L.class.Priest,L.class.Shaman,L.class.Mage,L.class.Warlock,L.class.Monk,L.class.Druid,L.class.DeathKnight},
-	BloodElf = {L.class.Warrior,L.class.Paladin,L.class.Hunter,L.class.Priest,L.class.Mage,L.class.Warlock,L.class.Monk,L.class.DemonHunter,L.class.DeathKnight},
-	Goblin = {L.class.Warrior,L.class.Hunter,L.class.Rogue,L.class.Priest,L.class.Shaman,L.class.Mage,L.class.Warlock,L.class.DeathKnight},
-	Nightborne = {L.class.Warrior,L.class.Hunter,L.class.Rogue,L.class.Priest,L.class.Mage,L.class.Warlock,L.class.Monk},
-	HightmountainTauren = {L.class.Warrior,L.class.Hunter,L.class.Shaman,L.class.Monk,L.class.Druid},
-	MagharOrc = {L.class.Warrior,L.class.Hunter,L.class.Rogue,L.class.Priest,L.class.Shaman,L.class.Mage,L.class.Monk},
-	Pandaren = {L.class.Warrior,L.class.Hunter,L.class.Rogue,L.class.Priest,L.class.Shaman,L.class.Mage,L.class.Monk},
-	Human = {L.class.Warrior,L.class.Paladin,L.class.Hunter,L.class.Rogue,L.class.Priest,L.class.Mage,L.class.Warlock,L.class.Monk,L.class.DeathKnight},
-	Dwarf = {L.class.Warrior,L.class.Paladin,L.class.Hunter,L.class.Rogue,L.class.Priest,L.class.Shaman,L.class.Mage,L.class.Warlock,L.class.Monk,L.class.DeathKnight},
-	NightElf = {L.class.Warrior,L.class.Hunter,L.class.Rogue,L.class.Priest,L.class.Mage,L.class.Monk,L.class.Druid,L.class.DemonHunter,L.class.DeathKnight},
-	Gnome = {L.class.Warrior,L.class.Hunter,L.class.Rogue,L.class.Priest,L.class.Mage,L.class.Warlock,L.class.Monk,L.class.DeathKnight},
-	Draenei = {L.class.Warrior,L.class.Paladin,L.class.Hunter,L.class.Priest,L.class.Shaman,L.class.Mage,L.class.Monk,L.class.DeathKnight},
-	Worgen = {L.class.Warrior,L.class.Hunter,L.class.Rogue,L.class.Priest,L.class.Mage,L.class.Warlock,L.class.Druid,L.class.DeathKnight},
-	VoidElf = {L.class.Warrior,L.class.Hunter,L.class.Rogue,L.class.Priest,L.class.Mage,L.class.Warlock,L.class.Monk},
-	LightforgedDraenei = {L.class.Warrior,L.class.Paladin,L.class.Hunter,L.class.Priest,L.class.Mage},
-	DarkIronDwarf = {L.class.Warrior,L.class.Paladin,L.class.Hunter,L.class.Rogue,L.class.Priest,L.class.Shaman,L.class.Mage,L.class.Warlock,L.class.Monk},
+	Orc = {L.SYSTEM.class.Warrior,L.SYSTEM.class.Hunter,L.SYSTEM.class.Rogue,L.SYSTEM.class.Shaman,L.SYSTEM.class.Mage,L.SYSTEM.class.Warlock,L.SYSTEM.class.Monk,L.SYSTEM.class.DeathKnight},
+	Undead = {L.SYSTEM.class.Warrior,L.SYSTEM.class.Hunter,L.SYSTEM.class.Rogue,L.SYSTEM.class.Priest,L.SYSTEM.class.Mage,L.SYSTEM.class.Warlock,L.SYSTEM.class.Monk,L.SYSTEM.class.DeathKnight},
+	Tauren = {L.SYSTEM.class.Warrior,L.SYSTEM.class.Paladin,L.SYSTEM.class.Hunter,L.SYSTEM.class.Priest,L.SYSTEM.class.Shaman,L.SYSTEM.class.Monk,L.SYSTEM.class.Druid,L.SYSTEM.class.DeathKnight},
+	Troll = {L.SYSTEM.class.Warrior,L.SYSTEM.class.Hunter,L.SYSTEM.class.Rogue,L.SYSTEM.class.Priest,L.SYSTEM.class.Shaman,L.SYSTEM.class.Mage,L.SYSTEM.class.Warlock,L.SYSTEM.class.Monk,L.SYSTEM.class.Druid,L.SYSTEM.class.DeathKnight},
+	BloodElf = {L.SYSTEM.class.Warrior,L.SYSTEM.class.Paladin,L.SYSTEM.class.Hunter,L.SYSTEM.class.Priest,L.SYSTEM.class.Mage,L.SYSTEM.class.Warlock,L.SYSTEM.class.Monk,L.SYSTEM.class.DemonHunter,L.SYSTEM.class.DeathKnight},
+	Goblin = {L.SYSTEM.class.Warrior,L.SYSTEM.class.Hunter,L.SYSTEM.class.Rogue,L.SYSTEM.class.Priest,L.SYSTEM.class.Shaman,L.SYSTEM.class.Mage,L.SYSTEM.class.Warlock,L.SYSTEM.class.DeathKnight},
+	Nightborne = {L.SYSTEM.class.Warrior,L.SYSTEM.class.Hunter,L.SYSTEM.class.Rogue,L.SYSTEM.class.Priest,L.SYSTEM.class.Mage,L.SYSTEM.class.Warlock,L.SYSTEM.class.Monk},
+	HightmountainTauren = {L.SYSTEM.class.Warrior,L.SYSTEM.class.Hunter,L.SYSTEM.class.Shaman,L.SYSTEM.class.Monk,L.SYSTEM.class.Druid},
+	MagharOrc = {L.SYSTEM.class.Warrior,L.SYSTEM.class.Hunter,L.SYSTEM.class.Rogue,L.SYSTEM.class.Priest,L.SYSTEM.class.Shaman,L.SYSTEM.class.Mage,L.SYSTEM.class.Monk},
+	Pandaren = {L.SYSTEM.class.Warrior,L.SYSTEM.class.Hunter,L.SYSTEM.class.Rogue,L.SYSTEM.class.Priest,L.SYSTEM.class.Shaman,L.SYSTEM.class.Mage,L.SYSTEM.class.Monk},
+	Human = {L.SYSTEM.class.Warrior,L.SYSTEM.class.Paladin,L.SYSTEM.class.Hunter,L.SYSTEM.class.Rogue,L.SYSTEM.class.Priest,L.SYSTEM.class.Mage,L.SYSTEM.class.Warlock,L.SYSTEM.class.Monk,L.SYSTEM.class.DeathKnight},
+	Dwarf = {L.SYSTEM.class.Warrior,L.SYSTEM.class.Paladin,L.SYSTEM.class.Hunter,L.SYSTEM.class.Rogue,L.SYSTEM.class.Priest,L.SYSTEM.class.Shaman,L.SYSTEM.class.Mage,L.SYSTEM.class.Warlock,L.SYSTEM.class.Monk,L.SYSTEM.class.DeathKnight},
+	NightElf = {L.SYSTEM.class.Warrior,L.SYSTEM.class.Hunter,L.SYSTEM.class.Rogue,L.SYSTEM.class.Priest,L.SYSTEM.class.Mage,L.SYSTEM.class.Monk,L.SYSTEM.class.Druid,L.SYSTEM.class.DemonHunter,L.SYSTEM.class.DeathKnight},
+	Gnome = {L.SYSTEM.class.Warrior,L.SYSTEM.class.Hunter,L.SYSTEM.class.Rogue,L.SYSTEM.class.Priest,L.SYSTEM.class.Mage,L.SYSTEM.class.Warlock,L.SYSTEM.class.Monk,L.SYSTEM.class.DeathKnight},
+	Draenei = {L.SYSTEM.class.Warrior,L.SYSTEM.class.Paladin,L.SYSTEM.class.Hunter,L.SYSTEM.class.Priest,L.SYSTEM.class.Shaman,L.SYSTEM.class.Mage,L.SYSTEM.class.Monk,L.SYSTEM.class.DeathKnight},
+	Worgen = {L.SYSTEM.class.Warrior,L.SYSTEM.class.Hunter,L.SYSTEM.class.Rogue,L.SYSTEM.class.Priest,L.SYSTEM.class.Mage,L.SYSTEM.class.Warlock,L.SYSTEM.class.Druid,L.SYSTEM.class.DeathKnight},
+	VoidElf = {L.SYSTEM.class.Warrior,L.SYSTEM.class.Hunter,L.SYSTEM.class.Rogue,L.SYSTEM.class.Priest,L.SYSTEM.class.Mage,L.SYSTEM.class.Warlock,L.SYSTEM.class.Monk},
+	LightforgedDraenei = {L.SYSTEM.class.Warrior,L.SYSTEM.class.Paladin,L.SYSTEM.class.Hunter,L.SYSTEM.class.Priest,L.SYSTEM.class.Mage},
+	DarkIronDwarf = {L.SYSTEM.class.Warrior,L.SYSTEM.class.Paladin,L.SYSTEM.class.Hunter,L.SYSTEM.class.Rogue,L.SYSTEM.class.Priest,L.SYSTEM.class.Shaman,L.SYSTEM.class.Mage,L.SYSTEM.class.Warlock,L.SYSTEM.class.Monk},
 }
 
 local function getEasyWhoList()
@@ -191,25 +191,30 @@ local function getWhoList(interval)
 		if DB.deepSearch then
 			if next<=max then
 				if raceFilter <= max and (raceFilter <= cur or raceFilter == next) and classFilter <= max and (classFilter <= cur or classFilter == next) then
-					for k,v in pairs(L.race) do
+					for k,v in pairs(L.SYSTEM.race) do
 						for _,j in pairs(RaceClassCombo[k]) do
-							table.insert(query, cur.."-"..next..L[" r-"]..v..L[" c-"]..j)
+							-- table.insert(query, cur.."-"..next..L.interface["r-"]..v..L.interface["c-"]..j)
+							table.insert(query, format("%d-%d %s%s %s%s", cur, next, L.SYSTEM["r-"], v, L.SYSTEM["c-"], j))
 						end
 					end
 				elseif raceFilter <= max and (raceFilter <= cur or raceFilter == next) then
-					for _,v in pairs(L.race) do
-						table.insert(query, cur.."-"..next..L[" r-"]..v)
+					for _,v in pairs(L.SYSTEM.race) do
+						-- table.insert(query, cur.."-"..next..L.interface["r-"]..v)
+						table.insert(query, format("%d-%d %s%s", cur, next, L.SYSTEM["r-"], v))
 					end
 				elseif classFilter <= max and (classFilter <= cur or classFilter == next) then
-					for _,j in pairs(L.class) do
-						table.insert(query, cur.."-"..next..L[" c-"]..j)
+					for _,j in pairs(L.SYSTEM.class) do
+						-- table.insert(query, cur.."-"..next..L.interface["c-"]..j)
+						table.insert(query, format("%d-%d %s%s", cur, next, L.SYSTEM["c-"], j))
 					end
 				else
-					table.insert(query, cur.."-"..next)
+					-- table.insert(query, cur.."-"..next)
+					table.insert(query, format("%d-%d", cur, next))
 				end
 			end
 		else
-			table.insert(query, cur.."-"..next)
+			-- table.insert(query, cur.."-"..next)
+			table.insert(query, format("%d-%d", cur, next))
 		end
 		if next==max then break end
 	end
@@ -231,15 +236,19 @@ local function sendWhisper(msg, name)
 		if msg ~= nil then
 			SendChatMessage(msg, 'WHISPER', GetDefaultLanguage("player"), name)
 		else
-			print(L.error["Выберите сообщение"])
+			print(L.FAQ.error["Выберите сообщение"])
 		end
 	else
 		if msg ~= nil then
 			print(msg, 'WHISPER', GetDefaultLanguage("player"), name)
 		else
-			print(L.error["Выберите сообщение"])
+			print(L.FAQ.error["Выберите сообщение"])
 		end	
 	end
+end
+
+local function inviteBtnText(text)
+	interface.scanFrame.invite:SetText(text)
 end
 
 function fn:invitePlayer(noInv)
@@ -258,7 +267,7 @@ function fn:invitePlayer(noInv)
 			DB.alredySended[list[1].name] = time({year = date("%Y"), month = date("%m"), day = date("%d")})
 		end
 		table.remove(addon.smartSearch.inviteList, 1)
-		interface.scanFrame.invite:SetText(format(L["Пригласить: %u"], #addon.smartSearch.inviteList))
+		inviteBtnText(format(L.interface["Пригласить: %d"], #addon.smartSearch.inviteList))
 	else
 		list = addon.search.inviteList
 		if #list==0 then return end
@@ -267,10 +276,10 @@ function fn:invitePlayer(noInv)
 			DB.alredySended[list[1].name] = time({year = date("%Y"), month = date("%m"), day = date("%d")})
 		end
 		table.remove(addon.search.inviteList, 1)
-		interface.scanFrame.invite:SetText(format(L["Пригласить: %u"], #addon.search.inviteList))
+		inviteBtnText(format(L.interface["Пригласить: %d"], #addon.search.inviteList))
 	end
 	
-	interface.chooseInvites.player:SetText(#list > 0 and format("%s%s %u %s %s|r", color[list[1].NoLocaleClass:upper()], list[1].name, list[1].lvl, list[1].class, list[1].race) or "")
+	interface.chooseInvites.player:SetText(#list > 0 and format("%s%s %d %s %s|r", color[list[1].NoLocaleClass:upper()], list[1].name, list[1].lvl, list[1].class, list[1].race) or "")
 end
 
 local function SearchOnUpdate()
@@ -311,9 +320,9 @@ frame:SetScript('OnEvent', function()
 end)
 
 local function getSearchDeepLvl(query)
-	if query:find(("%%d+%%-%%d+%s%%\"%s+%%\"%s"):format(L[" r-"],addon.ruReg,L[" c-"]):gsub("-","%%-")) then
+	if query:find(("%%d+%%-%%d+ %s%%\"%s+%%\" %s"):format(L.SYSTEM["r-"],addon.ruReg,L.SYSTEM["c-"]):gsub("-","%%-")) then
 		return 3
-	elseif query:find(("%%d+%%-%%d+%s%%\"%s+"):format(L[" r-"],addon.ruReg):gsub("-","%%-")) then
+	elseif query:find(("%%d+%%-%%d+ %s%%\"%s+"):format(L.SYSTEM["r-"],addon.ruReg):gsub("-","%%-")) then
 		return 2
 	elseif query:find("%d+%-%d+") then
 		return 1
@@ -323,8 +332,8 @@ local function getSearchDeepLvl(query)
 end
 
 local function smartSearchGetParams(query)
-	local class = query:match(("%s%%\"(%s)+%%\""):format(L[" c-"],addon.ruReg):gsub("-","%%-"))
-	local race = query:match(("%s%%\"(%s+)%%\""):format(L[" r-"],addon.ruReg):gsub("-","%%-"))
+	local class = query:match(("%s%%\"(%s)+%%\""):format(L.SYSTEM["c-"],addon.ruReg):gsub("-","%%-"))
+	local race = query:match(("%s%%\"(%s+)%%\""):format(L.SYSTEM["r-"],addon.ruReg):gsub("-","%%-"))
 	local lvl = {}
 	for s in query:gmatch("%d+") do
 		table.insert(lvl, s)
@@ -356,8 +365,8 @@ local function smartSearchAddWhoList(query, lvl)
 	local function RACEsplit(query)
 		local new = 0
 		table.remove(addon.smartSearch.whoQueryList, progress)
-		for _,v in pairs(L.race) do
-			table.insert(addon.smartSearch.whoQueryList, progress+new,format("%s%s\"%s\"",query,L[" r-"],v))
+		for _,v in pairs(L.SYSTEM.race) do
+			table.insert(addon.smartSearch.whoQueryList, progress+new,format("%s%s\"%s\"",query,L.SYSTEM["r-"],v))
 			new = new + 1
 		end
 		if new==0 then return table.insert(addon.smartSearch.whoQueryList, progress, query) end
@@ -368,7 +377,7 @@ local function smartSearchAddWhoList(query, lvl)
 	local function CLASSsplit(query, race)
 		local new = 0
 		table.remove(addon.smartSearch.whoQueryList, progress)
-		for k,v in pairs(L.race) do
+		for k,v in pairs(L.SYSTEM.race) do
 			if v==race then
 				race = k
 				break
@@ -376,7 +385,7 @@ local function smartSearchAddWhoList(query, lvl)
 		end
 		if not RaceClassCombo[race] then return print("Error race -",race) end
 		for k,v in pairs(RaceClassCombo[race]) do
-			table.insert(addon.smartSearch.whoQueryList, progress+k-1,format("%s%s\"%s\"",query,L[" c-"],v))
+			table.insert(addon.smartSearch.whoQueryList, progress+k-1,format("%s %s\"%s\"",query,L.SYSTEM["c-"],v))
 		end
 		if #RaceClassCombo[race]==0 then return table.insert(addon.smartSearch.whoQueryList, progress, query) end
 		local min, max = interface.scanFrame.progressBar:GetMinMax()
@@ -443,7 +452,7 @@ local function addNewPlayer(t, p)
 		t.tempSendedInvites[p.Name] = true
 	end
 	local list = t.inviteList
-	interface.chooseInvites.player:SetText(#list > 0 and format("%s%s %u %s %s|r", color[list[1].NoLocaleClass:upper()], list[1].name, list[1].lvl, list[1].class, list[1].race) or "")
+	interface.chooseInvites.player:SetText(#list > 0 and format("%s%s %d %s %s|r", color[list[1].NoLocaleClass:upper()], list[1].name, list[1].lvl, list[1].class, list[1].race) or "")
 end
 
 local function SmartSearchWhoResultCallback(query, results, complete)
@@ -460,19 +469,19 @@ local function SmartSearchWhoResultCallback(query, results, complete)
 		addNewPlayer(addon.smartSearch, player)
 	end
 	
-	interface.scanFrame.invite:SetText(format(L["Пригласить: %u"],#addon.smartSearch.inviteList))
+	inviteBtnText(format(L.interface["Пригласить: %d"], #addon.smartSearch.inviteList))
 end
 
 local function WhoResultCallback(query, results, complete)
 	if #results == FGI_MAXWHORETURN and DB.SearchType ~= 1 then
-		print(format(L.error["Поиск вернул 50 или более результатов, рекомендуется изменить настройки поиска. Запрос: %s"], query))
+		print(format(L.FAQ.error["Поиск вернул 50 или более результатов, рекомендуется изменить настройки поиска. Запрос: %s"], query))
 	end
 	for i=1,#results do
 		local player = results[i]
 		addNewPlayer(addon.search, player)
 	end
 	
-	interface.scanFrame.invite:SetText(format(L["Пригласить: %u"],#addon.search.inviteList))
+	inviteBtnText(format(L.interface["Пригласить: %d"], #addon.search.inviteList))
 end
 
 nextSearch = function()

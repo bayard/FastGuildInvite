@@ -22,7 +22,7 @@ local function defaultValues()
 	messageFrame.message:SetText(DB.messageList[DB.curMessage] or "")
 	local msg = DB.messageList[DB.curMessage]
 	msg = fn:msgMod(msg)
-	messageFrame.curMessage:SetText(format(L["Текущее сообщение: %s"], msg or L["Нет"]))
+	messageFrame.curMessage:SetText(format(L.interface["Текущее сообщение: %s"], msg or L.interface["Нет"]))
 end
 
 local function EditBoxChange(frame)
@@ -82,7 +82,7 @@ messageFrame:AddChild(frame)
 
 messageFrame.intro = GUI:Create("Label")
 local frame = messageFrame.intro
-frame:SetText(L["Слово NAME заглавными буквами будет заменено на название вашей гильдии."])
+frame:SetText(L.interface["Слово NAME заглавными буквами будет заменено на название вашей гильдии."])
 fontSize(frame.label)
 frame:SetWidth(messageFrame.frame:GetWidth()-30)
 frame.label:SetJustifyH("CENTER")
@@ -105,7 +105,7 @@ messageFrame:AddChild(frame)
 
 messageFrame.save = GUI:Create("Button")
 local frame = messageFrame.save
-frame:SetText(L["Сохранить"])
+frame:SetText(L.interface["Сохранить"])
 fontSize(frame.text)
 frame:SetWidth(size.save)
 frame:SetHeight(40)
@@ -113,7 +113,7 @@ frame:SetCallback("OnClick", function()
 	local msg = messageFrame.message:GetText()
 	if msg == "" then
 		BasicMessageDialog:SetFrameStrata("TOOLTIP")
-		return message(L.error["Нельзя сохранить пустое сообщение"])
+		return message(L.FAQ.error["Нельзя сохранить пустое сообщение"])
 	else
 		DB.messageList[messageFrame.drop:GetValue()] = msg
 		DB.curMessage = messageFrame.drop:GetValue()
@@ -124,7 +124,7 @@ messageFrame:AddChild(frame)
 
 messageFrame.add = GUI:Create("Button")
 local frame = messageFrame.add
-frame:SetText(L["Добавить"])
+frame:SetText(L.interface["Добавить"])
 fontSize(frame.text)
 frame:SetWidth(size.add)
 frame:SetHeight(40)
@@ -132,7 +132,7 @@ frame:SetCallback("OnClick", function()
 	local msg = messageFrame.message:GetText()
 	if msg == "" then
 		BasicMessageDialog:SetFrameStrata("TOOLTIP")
-		return message(L.error["Нельзя добавить пустое сообщение"])
+		return message(L.FAQ.error["Нельзя добавить пустое сообщение"])
 	else
 		table.insert(DB.messageList, msg)
 		DB.curMessage = #DB.messageList
@@ -143,7 +143,7 @@ messageFrame:AddChild(frame)
 
 messageFrame.delete = GUI:Create("Button")
 local frame = messageFrame.delete
-frame:SetText(L["Удалить"])
+frame:SetText(L.interface["Удалить"])
 fontSize(frame.text)
 frame:SetWidth(size.delete)
 frame:SetHeight(40)
@@ -151,7 +151,7 @@ frame:SetCallback("OnClick", function()
 	local msg = messageFrame.drop:GetValue()
 	if DB.messageList[msg] == nil then
 		BasicMessageDialog:SetFrameStrata("TOOLTIP")
-		return message(L.error["Выберите сообщение"])
+		return message(L.FAQ.error["Выберите сообщение"])
 	else
 		if DB.curMessage == msg then
 			DB.curMessage = 0
@@ -166,7 +166,7 @@ messageFrame:AddChild(frame)
 
 messageFrame.curMessage = GUI:Create("Label")
 local frame = messageFrame.curMessage
---frame:SetText(format(L["Текущее сообщение: %s"], L["Нет"]))
+--frame:SetText(format(L.interface["Текущее сообщение: %s"], L.interface["Нет"]))
 fontSize(frame.label)
 frame:SetWidth(messageFrame.frame:GetWidth()-30)
 frame.label:SetJustifyH("CENTER")

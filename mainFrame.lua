@@ -64,7 +64,7 @@ mainFrame:AddChild(inviteTypeGRP)
 
 inviteTypeGRP.inviteType = GUI:Create("Label")
 local frame = inviteTypeGRP.inviteType
-frame:SetText(L["Режим приглашения"])
+frame:SetText(L.interface["Режим приглашения"])
 fontSize(frame.label)
 frame.label:SetJustifyH("CENTER")
 frame:SetWidth(size.inviteTypeGRP)
@@ -73,7 +73,8 @@ inviteTypeGRP:AddChild(frame)
 inviteTypeGRP.drop = GUI:Create("Dropdown")
 local frame = inviteTypeGRP.drop
 frame:SetWidth(size.inviteTypeGRP)
-frame:SetList(L.invType)
+-- frame:SetList(L.invType)
+frame:SetList({L.interface.invType["Только пригласить"], L.interface.invType["Отправить сообщение и пригласить"], L.interface.invType["Только сообщение"],})
 frame:SetValue(1)
 frame:SetCallback("OnValueChanged", function(key)
 	DB.inviteType = inviteTypeGRP.drop:GetValue()
@@ -125,7 +126,7 @@ end
 mainCheckBoxGRP.normalSearch = GUI:Create("CheckBox")
 local frame = mainCheckBoxGRP.normalSearch
 frame:SetWidth(size.normalSearch)
-frame:SetLabel(L["Обычный поиск"])
+frame:SetLabel(L.interface["Обычный поиск"])
 frame:SetType("radio")
 fontSize(frame.text)
 frame.frame:SetScript("OnClick", function()
@@ -136,8 +137,8 @@ mainCheckBoxGRP:AddChild(frame)
 mainCheckBoxGRP.deepSearch = GUI:Create("CheckBox")
 local frame = mainCheckBoxGRP.deepSearch
 frame:SetWidth(size.deepSearch)
-frame:SetLabel(L["Расширенное сканирование"])
-frame:SetTooltip(L.tooltip["Дополнительные настройки сканирования"])
+frame:SetLabel(L.interface["Расширенное сканирование"])
+frame:SetTooltip(L.interface.tooltip["Дополнительные настройки сканирования"])
 frame:SetType("radio")
 fontSize(frame.text)
 frame.frame:SetScript("OnClick", function()
@@ -148,8 +149,8 @@ mainCheckBoxGRP:AddChild(frame)
 mainCheckBoxGRP.smartSearch = GUI:Create("CheckBox")
 local frame = mainCheckBoxGRP.smartSearch
 frame:SetWidth(size.smartSearch)
-frame:SetLabel(L["Умный поиск"])
-frame:SetTooltip(L.tooltip["Автоматическое увеличение детализации поиска"])
+frame:SetLabel(L.interface["Умный поиск"])
+frame:SetTooltip(L.interface.tooltip["Автоматическое увеличение детализации поиска"])
 frame:SetType("radio")
 fontSize(frame.text)
 frame.frame:SetScript("OnClick", function()
@@ -160,8 +161,8 @@ mainCheckBoxGRP:AddChild(frame)
 mainCheckBoxGRP.backgroundRun = GUI:Create("CheckBox")
 local frame = mainCheckBoxGRP.backgroundRun
 frame:SetWidth(size.backgroundRun)
-frame:SetLabel(L["Запускать в фоновом режиме"])
-frame:SetTooltip(L.tooltip["Запускать поиск в фоновом режиме"])
+frame:SetLabel(L.interface["Запускать в фоновом режиме"])
+frame:SetTooltip(L.interface.tooltip["Запускать поиск в фоновом режиме"])
 fontSize(frame.text)
 frame.frame:HookScript("OnClick", function()
 	DB.backgroundRun = mainCheckBoxGRP.backgroundRun:GetValue()
@@ -171,7 +172,7 @@ mainCheckBoxGRP:AddChild(frame)
 mainCheckBoxGRP.enableFilters = GUI:Create("CheckBox")
 local frame = mainCheckBoxGRP.enableFilters
 frame:SetWidth(size.enableFilters)
-frame:SetLabel(L["Включить фильтры"])
+frame:SetLabel(L.interface["Включить фильтры"])
 frame:SetTooltip("")
 fontSize(frame.text)
 frame.frame:HookScript("OnClick", function()
@@ -192,12 +193,12 @@ mainFrame:AddChild(mainButtonsGRP)
 
 mainButtonsGRP.startScan = GUI:Create("Button")
 local frame = mainButtonsGRP.startScan
-frame:SetText(L["Начать сканирование"])
+frame:SetText(L.interface["Начать сканирование"])
 fontSize(frame.text)
 frame:SetWidth(size.startScan)
 frame:SetHeight(40)
 frame:SetCallback("OnClick", function()
-	if not fn:inGuildCanInvite() then return print(L.error["Вы не состоите в гильдии или у вас нет прав для приглашения."]) end
+	if not fn:inGuildCanInvite() then return print(L.FAQ.error["Вы не состоите в гильдии или у вас нет прав для приглашения."]) end
 	if not DB.backgroundRun or addon.search.state ~= "stop" then
 		interface.scanFrame:Show()
 	end
@@ -209,7 +210,7 @@ mainButtonsGRP:AddChild(frame)
 
 mainButtonsGRP.chooseInvites = GUI:Create("Button")
 local frame = mainButtonsGRP.chooseInvites
-frame:SetText(L["Выбрать приглашения"])
+frame:SetText(L.interface["Выбрать приглашения"])
 fontSize(frame.text)
 frame:SetWidth(size.chooseInvites)
 frame:SetHeight(mainButtonsGRP.startScan.frame:GetHeight())
@@ -218,7 +219,7 @@ mainButtonsGRP:AddChild(frame)
 
 mainButtonsGRP.settingsBtn = GUI:Create("Button")
 local frame = mainButtonsGRP.settingsBtn
-frame:SetText(L["Настройки"])
+frame:SetText(L.interface["Настройки"])
 fontSize(frame.text)
 frame:SetWidth(size.settingsBtn)
 frame:SetHeight(mainButtonsGRP.startScan.frame:GetHeight())
@@ -241,7 +242,7 @@ mainFrame:AddChild(searchRangeGRP)
 
 searchRangeGRP.lvlRange = GUI:Create("Label")
 local frame = searchRangeGRP.lvlRange
-frame:SetText(L["Диапазон уровней"])
+frame:SetText(L.interface["Диапазон уровней"])
 fontSize(frame.label)
 frame:SetWidth(size.lvlRange)
 frame.label:SetJustifyH("CENTER")
@@ -289,8 +290,8 @@ searchRangeGRP:AddChild(frame)
 
 searchRangeGRP.searchInterval = GUI:Create("Label")
 local frame = searchRangeGRP.searchInterval
-frame:SetText(L["Интервал"])
-frame:SetTooltip(L.tooltip["Количество уровней сканируемых за один раз"])
+frame:SetText(L.interface["Интервал"])
+frame:SetTooltip(L.interface.tooltip["Количество уровней сканируемых за один раз"])
 fontSize(frame.label)
 frame:SetWidth(size.searchInterval)
 frame.label:SetJustifyH("CENTER")
@@ -320,8 +321,8 @@ searchRangeGRP:AddChild(frame)
 
 searchRangeGRP.raceFilterStart = GUI:Create("Label")
 local frame = searchRangeGRP.raceFilterStart
-frame:SetText(L["Фильтр рас начало:"])
-frame:SetTooltip(L.tooltip["Уровень, с которого начинается фильтр по расам"])
+frame:SetText(L.interface["Фильтр рас начало:"])
+frame:SetTooltip(L.interface.tooltip["Уровень, с которого начинается фильтр по расам"])
 fontSize(frame.label)
 frame:SetWidth(size.raceFilterStart)
 frame.label:SetJustifyH("CENTER")
@@ -335,7 +336,7 @@ searchRangeGRP:AddChild(frame)
 
 searchRangeGRP.raceFilterStartVal = GUI:Create("Label")
 local frame = searchRangeGRP.raceFilterStartVal
-frame:SetText(FGI_DEFAULT_RACEFILTERSTART == FGI_MAXLVL+1 and L["Откл."] or FGI_DEFAULT_RACEFILTERSTART)
+frame:SetText(FGI_DEFAULT_RACEFILTERSTART == FGI_MAXLVL+1 and L.interface["Откл."] or FGI_DEFAULT_RACEFILTERSTART)
 fontSize(frame.label)
 frame:SetWidth(40)
 frame.label:SetJustifyH("CENTER")
@@ -349,14 +350,14 @@ frame.frame:SetScript("OnMouseWheel",function(self,mod)
 	elseif mod == -1 and DB.raceFilterVal-1 >= DB.lowLimit then
 		DB.raceFilterVal = DB.raceFilterVal - 1
 	end
-	searchRangeGRP.raceFilterStartVal:SetText(DB.raceFilterVal == FGI_MAXLVL+1 and L["Откл."] or DB.raceFilterVal)
+	searchRangeGRP.raceFilterStartVal:SetText(DB.raceFilterVal == FGI_MAXLVL+1 and L.interface["Откл."] or DB.raceFilterVal)
 end)
 searchRangeGRP:AddChild(frame)
 
 searchRangeGRP.classFilterStart = GUI:Create("Label")
 local frame = searchRangeGRP.classFilterStart
-frame:SetText(L["Фильтр классов начало:"])
-frame:SetTooltip(L.tooltip["Уровень, с которого начинается фильтр по классам"])
+frame:SetText(L.interface["Фильтр классов начало:"])
+frame:SetTooltip(L.interface.tooltip["Уровень, с которого начинается фильтр по классам"])
 fontSize(frame.label)
 frame:SetWidth(size.classFilterStart)
 frame.label:SetJustifyH("CENTER")
@@ -370,7 +371,7 @@ searchRangeGRP:AddChild(frame)
 
 searchRangeGRP.classFilterStartVal = GUI:Create("Label")
 local frame = searchRangeGRP.classFilterStartVal
-frame:SetText(FGI_DEFAULT_CLASSFILTERSTART == FGI_MAXLVL+1 and L["Откл."] or FGI_DEFAULT_CLASSFILTERSTART)
+frame:SetText(FGI_DEFAULT_CLASSFILTERSTART == FGI_MAXLVL+1 and L.interface["Откл."] or FGI_DEFAULT_CLASSFILTERSTART)
 fontSize(frame.label)
 frame:SetWidth(40)
 frame.label:SetJustifyH("CENTER")
@@ -384,7 +385,7 @@ frame.frame:SetScript("OnMouseWheel",function(self,mod)
 	elseif mod == -1 and DB.classFilterVal-1 >= DB.lowLimit then
 		DB.classFilterVal = DB.classFilterVal - 1
 	end
-	searchRangeGRP.classFilterStartVal:SetText(DB.classFilterVal == FGI_MAXLVL+1 and L["Откл."] or DB.classFilterVal)
+	searchRangeGRP.classFilterStartVal:SetText(DB.classFilterVal == FGI_MAXLVL+1 and L.interface["Откл."] or DB.classFilterVal)
 end)
 searchRangeGRP:AddChild(frame)
 
@@ -410,8 +411,8 @@ frame:SetScript('OnEvent', function()
 	searchRangeGRP.lvlRangeMin:SetText(DB.lowLimit)
 	searchRangeGRP.lvlRangeMax:SetText(DB.highLimit)
 	searchRangeGRP.searchIntervalVal:SetText(DB.searchInterval)
-	searchRangeGRP.raceFilterStartVal:SetText(DB.raceFilterVal == FGI_MAXLVL+1 and L["Откл."] or DB.raceFilterVal)
-	searchRangeGRP.classFilterStartVal:SetText(DB.classFilterVal == FGI_MAXLVL+1 and L["Откл."] or DB.classFilterVal)
+	searchRangeGRP.raceFilterStartVal:SetText(DB.raceFilterVal == FGI_MAXLVL+1 and L.interface["Откл."] or DB.raceFilterVal)
+	searchRangeGRP.classFilterStartVal:SetText(DB.classFilterVal == FGI_MAXLVL+1 and L.interface["Откл."] or DB.classFilterVal)
 	if not(mainCheckBoxGRP.deepSearch:GetValue()) then
 		searchRangeGRP.searchInterval.frame:Hide()
 		searchRangeGRP.raceFilterStart.frame:Hide()

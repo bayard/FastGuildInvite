@@ -35,7 +35,7 @@ end
 
 function addon.dataBroker.OnTooltipShow(GameTooltip)
 	local search = DB.SearchType == 3 and addon.smartSearch or addon.search
-	GameTooltip:SetText(format(L.help.minimap,#search.inviteList, interface.scanFrame.progressBar:GetProgress()), 1, 1, 1)
+	GameTooltip:SetText(format(L.FAQ.help.minimap,#search.inviteList, interface.scanFrame.progressBar:GetProgress()), 1, 1, 1)
 end
 
 
@@ -147,8 +147,8 @@ function Console:FGIInput(str)
 end
 
 function Console:FGIHelp()
-	print(L.help.show)
-	print(L.help.resetDB)
-	print(L.help.factorySettings)
-	print(L.help.resetWindowsPos)
+	print(L.FAQ.help.show)
+	print(L.FAQ.help.resetDB)
+	print(L.FAQ.help.factorySettings)
+	print(L.FAQ.help.resetWindowsPos)
 end

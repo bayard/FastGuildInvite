@@ -64,7 +64,7 @@ chooseInvites:AddChild(frame)
 
 chooseInvites.invite = GUI:Create("Button")
 local frame = chooseInvites.invite
-frame:SetText(L["Пригласить"])
+frame:SetText(L.interface["Пригласить"])
 fontSize(frame.text)
 frame:SetWidth(size.invite)
 frame:SetHeight(40)
@@ -75,7 +75,7 @@ chooseInvites:AddChild(frame)
 
 chooseInvites.reject = GUI:Create("Button")
 local frame = chooseInvites.reject
-frame:SetText(L["Отклонить"])
+frame:SetText(L.interface["Отклонить"])
 fontSize(frame.text)
 frame:SetWidth(size.reject)
 frame:SetHeight(40)

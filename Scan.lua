@@ -107,7 +107,7 @@ scanFrame:AddChild(frame)
 
 scanFrame.invite = GUI:Create("Button")
 local frame = scanFrame.invite
-frame:SetText(format(L["Пригласить: %u"],0))
+frame:SetText(format(L.interface["Пригласить: %d"],0))
 frame:SetWidth(size.inviteBTN)
 frame:SetHeight(40)
 frame:SetCallback("OnClick", function(self)
@@ -132,7 +132,7 @@ frame:SetHeight(40)
 frame.frame.pause = true
 frame.frame:SetNormalTexture("Interface\\Buttons\\UI-SpellbookIcon-NextPage-Up")
 frame:SetCallback("OnClick", function(self)
-	if not fn:inGuildCanInvite() then return print(L.error["Вы не состоите в гильдии или у вас нет прав для приглашения."]) end
+	if not fn:inGuildCanInvite() then return print(L.FAQ.error["Вы не состоите в гильдии или у вас нет прав для приглашения."]) end
 	self = self.frame
 	if self.pause then
 		self:SetNormalTexture("Interface\\TimeManager\\PauseButton")
@@ -155,11 +155,11 @@ scanFrame:AddChild(frame)
 
 scanFrame.clear = GUI:Create("Button")
 local frame = scanFrame.clear
-frame:SetText(L["Сбросить"])
+frame:SetText(L.interface["Сбросить"])
 frame:SetWidth(size.clearBTN)
 frame:SetHeight(40)
 frame:SetCallback("OnClick", function()
-	scanFrame.invite:SetText(format(L["Пригласить: %u"],0))
+	scanFrame.invite:SetText(format(L.interface["Пригласить: %d"],0))
 	local resume = addon.search.state == "start"
 	if resume then
 		scanFrame.pausePlay.frame:Click()

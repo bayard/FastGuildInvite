@@ -100,7 +100,7 @@ filtersFrame:AddChild(frame)
 
 filtersFrame.head = GUI:Create("Label")
 local frame = filtersFrame.head
-frame:SetText(L["Нажмите на фильтр для изменения состояния"])
+frame:SetText(L.interface["Нажмите на фильтр для изменения состояния"])
 fontSize(frame.label)
 frame:SetWidth(filtersFrame.frame:GetWidth())
 frame.label:SetJustifyH("CENTER")
@@ -114,7 +114,7 @@ filtersFrame.filterList = {}
 
 filtersFrame.addFilter = GUI:Create("Button")
 local frame = filtersFrame.addFilter
-frame:SetText(L["Добавить фильтр"])
+frame:SetText(L.interface["Добавить фильтр"])
 fontSize(frame.text)
 frame:SetWidth(size.addFilter)
 frame:SetHeight(40)
@@ -125,7 +125,7 @@ frame:SetCallback("OnClick", function()
 	end
 	if filters >= FGI_FILTERSLIMIT then
 		BasicMessageDialog:SetFrameStrata("TOOLTIP")
-		return message(format(L.error["Максимальное количество фильтров %s. Пожалуйста измените или удалите имеющийся фильтр."], FGI_FILTERSLIMIT))
+		return message(format(L.FAQ.error["Максимальное количество фильтров %s. Пожалуйста измените или удалите имеющийся фильтр."], FGI_FILTERSLIMIT))
 	end
 	interface.addfilterFrame:Show()
 	interface.filtersFrame:Hide()
@@ -180,7 +180,7 @@ addfilterFrame:AddChild(frame)
 
 addfilterFrame.topHint = GUI:Create("Label")
 local frame = addfilterFrame.topHint
-frame:SetText(L["Обязательное поле \"Имя фильтра\", пустые текстовые поля не используются при фильтрации."])
+frame:SetText(L.interface["Обязательное поле \"Имя фильтра\", пустые текстовые поля не используются при фильтрации."])
 fontSize(frame.label)
 frame:SetWidth(addfilterFrame.frame:GetWidth()-20)
 frame.label:SetJustifyH("CENTER")
@@ -191,7 +191,7 @@ addfilterFrame:AddChild(frame)
 
 addfilterFrame.classLabel = GUI:Create("Label")
 local frame = addfilterFrame.classLabel
-frame:SetText(L["Классы:"])
+frame:SetText(L.interface["Классы:"])
 fontSize(frame.label)
 frame:SetWidth(size.classLabel)
 frame.label:SetJustifyH("CENTER")
@@ -231,7 +231,7 @@ end
 addfilterFrame.classesCheckBoxIgnore = GUI:Create("CheckBox")
 local frame = addfilterFrame.classesCheckBoxIgnore
 frame:SetWidth(size.Ignore)
-frame:SetLabel(L["Игнорировать"])
+frame:SetLabel(L.interface["Игнорировать"])
 fontSize(frame.text)
 frame:SetCallback("OnValueChanged", function() fn:classIgnoredToggle() end)
 addfilterFrame:AddChild(frame)
@@ -239,84 +239,84 @@ addfilterFrame:AddChild(frame)
 addfilterFrame.classesCheckBoxDeathKnight = GUI:Create("CheckBox")
 local frame = addfilterFrame.classesCheckBoxDeathKnight
 frame:SetWidth(size.DeathKnight)
-frame:SetLabel(L.class.DeathKnight)
+frame:SetLabel(L.SYSTEM.class.DeathKnight)
 fontSize(frame.text)
 addfilterFrame:AddChild(frame)
 
 addfilterFrame.classesCheckBoxDemonHunter = GUI:Create("CheckBox")
 local frame = addfilterFrame.classesCheckBoxDemonHunter
 frame:SetWidth(size.DemonHunter)
-frame:SetLabel(L.class.DemonHunter)
+frame:SetLabel(L.SYSTEM.class.DemonHunter)
 fontSize(frame.text)
 addfilterFrame:AddChild(frame)
 
 addfilterFrame.classesCheckBoxDruid = GUI:Create("CheckBox")
 local frame = addfilterFrame.classesCheckBoxDruid
 frame:SetWidth(size.Druid)
-frame:SetLabel(L.class.Druid)
+frame:SetLabel(L.SYSTEM.class.Druid)
 fontSize(frame.text)
 addfilterFrame:AddChild(frame)
 
 addfilterFrame.classesCheckBoxHunter = GUI:Create("CheckBox")
 local frame = addfilterFrame.classesCheckBoxHunter
 frame:SetWidth(size.Hunter)
-frame:SetLabel(L.class.Hunter)
+frame:SetLabel(L.SYSTEM.class.Hunter)
 fontSize(frame.text)
 addfilterFrame:AddChild(frame)
 
 addfilterFrame.classesCheckBoxMage = GUI:Create("CheckBox")
 local frame = addfilterFrame.classesCheckBoxMage
 frame:SetWidth(size.Mage)
-frame:SetLabel(L.class.Mage)
+frame:SetLabel(L.SYSTEM.class.Mage)
 fontSize(frame.text)
 addfilterFrame:AddChild(frame)
 
 addfilterFrame.classesCheckBoxMonk = GUI:Create("CheckBox")
 local frame = addfilterFrame.classesCheckBoxMonk
 frame:SetWidth(size.Monk)
-frame:SetLabel(L.class.Monk)
+frame:SetLabel(L.SYSTEM.class.Monk)
 fontSize(frame.text)
 addfilterFrame:AddChild(frame)
 
 addfilterFrame.classesCheckBoxPaladin = GUI:Create("CheckBox")
 local frame = addfilterFrame.classesCheckBoxPaladin
 frame:SetWidth(size.Paladin)
-frame:SetLabel(L.class.Paladin)
+frame:SetLabel(L.SYSTEM.class.Paladin)
 fontSize(frame.text)
 addfilterFrame:AddChild(frame)
 
 addfilterFrame.classesCheckBoxPriest = GUI:Create("CheckBox")
 local frame = addfilterFrame.classesCheckBoxPriest
 frame:SetWidth(size.Priest)
-frame:SetLabel(L.class.Priest)
+frame:SetLabel(L.SYSTEM.class.Priest)
 fontSize(frame.text)
 addfilterFrame:AddChild(frame)
 
 addfilterFrame.classesCheckBoxRogue = GUI:Create("CheckBox")
 local frame = addfilterFrame.classesCheckBoxRogue
 frame:SetWidth(size.Rogue)
-frame:SetLabel(L.class.Rogue)
+frame:SetLabel(L.SYSTEM.class.Rogue)
 fontSize(frame.text)
 addfilterFrame:AddChild(frame)
 
 addfilterFrame.classesCheckBoxShaman = GUI:Create("CheckBox")
 local frame = addfilterFrame.classesCheckBoxShaman
 frame:SetWidth(size.Shaman)
-frame:SetLabel(L.class.Shaman)
+frame:SetLabel(L.SYSTEM.class.Shaman)
 fontSize(frame.text)
 addfilterFrame:AddChild(frame)
 
 addfilterFrame.classesCheckBoxWarlock = GUI:Create("CheckBox")
 local frame = addfilterFrame.classesCheckBoxWarlock
 frame:SetWidth(size.Warlock)
-frame:SetLabel(L.class.Warlock)
+frame:SetLabel(L.SYSTEM.class.Warlock)
 fontSize(frame.text)
 addfilterFrame:AddChild(frame)
 
 addfilterFrame.classesCheckBoxWarrior = GUI:Create("CheckBox")
 local frame = addfilterFrame.classesCheckBoxWarrior
 frame:SetWidth(size.Warrior)
-frame:SetLabel(L.class.Warrior)
+frame:SetLabel(L.SYSTEM.class.Warrior)
 fontSize(frame.text)
 addfilterFrame:AddChild(frame)
 
@@ -326,7 +326,7 @@ addfilterFrame:AddChild(frame)
 
 addfilterFrame.raceLabel = GUI:Create("Label")
 local frame = addfilterFrame.raceLabel
-frame:SetText(L["Расы:"])
+frame:SetText(L.interface["Расы:"])
 fontSize(frame.label)
 frame:SetWidth(size.raceLabel)
 frame.label:SetJustifyH("CENTER")
@@ -346,7 +346,7 @@ end
 addfilterFrame.rasesCheckBoxIgnore = GUI:Create("CheckBox")
 local frame = addfilterFrame.rasesCheckBoxIgnore
 frame:SetWidth(size.Ignore)
-frame:SetLabel(L["Игнорировать"])
+frame:SetLabel(L.interface["Игнорировать"])
 fontSize(frame.text)
 frame:SetCallback("OnValueChanged", function() fn:racesIgnoredToggle() end)
 addfilterFrame:AddChild(frame)
@@ -422,7 +422,7 @@ end
 
 addfilterFrame.filterNameLabel = GUI:Create("Label")
 local frame = addfilterFrame.filterNameLabel
-frame:SetText(L["Имя фильтра"])
+frame:SetText(L.interface["Имя фильтра"])
 fontSize(frame.label)
 frame:SetWidth(size.filterNameLabel)
 frame.label:SetJustifyH("CENTER")
@@ -436,8 +436,8 @@ addfilterFrame:AddChild(frame)
 
 addfilterFrame.excludeNameLabel = GUI:Create("Label")
 local frame = addfilterFrame.excludeNameLabel
-frame:SetText(L["Фильтр по имени"])
-frame:SetTooltip(L.tooltip["Если имя игрока содержит введенную\nфразу, он не будет добавлен в очередь"])
+frame:SetText(L.interface["Фильтр по имени"])
+frame:SetTooltip(L.interface.tooltip["Если имя игрока содержит введенную\nфразу, он не будет добавлен в очередь"])
 fontSize(frame.label)
 frame:SetWidth(size.excludeNameLabel)
 frame.label:SetJustifyH("CENTER")
@@ -451,8 +451,8 @@ addfilterFrame:AddChild(frame)
 
 addfilterFrame.lvlRangeLabel = GUI:Create("Label")
 local frame = addfilterFrame.lvlRangeLabel
-frame:SetText(L["Диапазон уровней (Мин:Макс)"])
-frame:SetTooltip(format(L.tooltip["Введите диапазон уровней для фильтра.\nНапример: %s55%s:%s58%s\nбудут подходить только те игроки, уровень\nкоторых варьируется от %s55%s до %s58%s (включительно)"], "|cff00ff00", "|r", "|cff00A2FF", "|r", "|cff00ff00", "|r", "|cff00A2FF", "|r"))
+frame:SetText(L.interface["Диапазон уровней (Мин:Макс)"])
+frame:SetTooltip(format(L.interface.tooltip["Введите диапазон уровней для фильтра.\nНапример: %s55%s:%s58%s\nбудут подходить только те игроки, уровень\nкоторых варьируется от %s55%s до %s58%s (включительно)"], "|cff00ff00", "|r", "|cff00A2FF", "|r", "|cff00ff00", "|r", "|cff00A2FF", "|r"))
 fontSize(frame.label)
 frame:SetWidth(size.lvlRangeLabel)
 frame.label:SetJustifyH("CENTER")
@@ -466,8 +466,8 @@ addfilterFrame:AddChild(frame)
 
 addfilterFrame.excludeRepeatLabel = GUI:Create("Label")
 local frame = addfilterFrame.excludeRepeatLabel
-frame:SetText(L["Фильтр повторений в имени"])
-frame:SetTooltip(format(L.tooltip["Введите максимальное количество последовательных\nгласных и согласных, которое может содержать имя игрока.\nНапример: %s3%s:%s5%s\nБудет означать, что игроки с более чем %s3%s гласными подряд\nили более %s5%s согласными подряд не будут добавлены в очередь."], "|cff00ff00", "|r", "|cff00A2FF", "|r", "|cff00ff00", "|r", "|cff00A2FF", "|r"))
+frame:SetText(L.interface["Фильтр повторений в имени"])
+frame:SetTooltip(format(L.interface.tooltip["Введите максимальное количество последовательных\nгласных и согласных, которое может содержать имя игрока.\nНапример: %s3%s:%s5%s\nБудет означать, что игроки с более чем %s3%s гласными подряд\nили более %s5%s согласными подряд не будут добавлены в очередь."], "|cff00ff00", "|r", "|cff00A2FF", "|r", "|cff00ff00", "|r", "|cff00A2FF", "|r"))
 fontSize(frame.label)
 frame:SetWidth(size.excludeRepeatLabel)
 frame.label:SetJustifyH("CENTER")
@@ -495,50 +495,50 @@ local function saveFilter()
 	addfilterFrame.excludeRepeatEditBox:GetText() ~= "" and addfilterFrame.excludeRepeatEditBox:GetText() or false
 	
 	if not filterName then
-		table.insert(errors, format("%s \n %s", L["Имя фильтра"], L["Имя фильтра не может быть пустым"]))
+		table.insert(errors, format("%s \n %s", L.interface["Имя фильтра"], L.interface["Имя фильтра не может быть пустым"]))
 	elseif DB.filtersList[filterName] ~= nil and not addfilterFrame.change then
-		table.insert(errors, format("%s \n %s", L["Имя фильтра"], L["Имя фильтра занято"]))
+		table.insert(errors, format("%s \n %s", L.interface["Имя фильтра"], L.interface["Имя фильтра занято"]))
 	end
 	
 	if filterByName and not filterByName:find("^"..addon.ruReg.."+$") then
-		table.insert(errors, format("%s \n %s", L["Фильтр по имени"], L["Поле может содержать только буквы"]))
+		table.insert(errors, format("%s \n %s", L.interface["Фильтр по имени"], L.interface["Поле может содержать только буквы"]))
 	end
 	if lvlRange then
 		if lvlRange:find(("[\-]?%d+:[\-]?%d+")) then
 			min, max = fn:split(lvlRange, ":", -1)
 			if min <= 0 or max <= 0 or min > max then
-				table.insert(errors, format("%s \n %s", L["Диапазон уровней (Мин:Макс)"], L["Числа не могут быть меньше или равны 0. Минимальный уровень не может быть больше максимального"]))
+				table.insert(errors, format("%s \n %s", L.interface["Диапазон уровней (Мин:Макс)"], L.interface["Числа не могут быть меньше или равны 0. Минимальный уровень не может быть больше максимального"]))
 			end
 		else
-			table.insert(errors, format("%s \n %s", L["Диапазон уровней (Мин:Макс)"], L["Неправильный шаблон"]))
+			table.insert(errors, format("%s \n %s", L.interface["Диапазон уровней (Мин:Макс)"], L.interface["Неправильный шаблон"]))
 		end
 	end
 	if letterFilter then
 		if letterFilter:find("[\-]?%d+:[\-]?%d+") then
 			min, max = fn:split(letterFilter, ":")
 			if min < 0 or max < 0 then
-				table.insert(errors, format("%s \n %s", L["Фильтр повторений в имени"], L["Числа должны быть больше 0"]))
+				table.insert(errors, format("%s \n %s", L.interface["Фильтр повторений в имени"], L.interface["Числа должны быть больше 0"]))
 			end
 		else
-			table.insert(errors, format("%s \n %s", L["Фильтр повторений в имени"], L["Неправильный шаблон"]))
+			table.insert(errors, format("%s \n %s", L.interface["Фильтр повторений в имени"], L.interface["Неправильный шаблон"]))
 		end
 	end
 	
 	local classFilter = classIgnore
 	if classFilter then
 		classFilter = {
-			[L.class.DeathKnight] = addfilterFrame.classesCheckBoxDeathKnight:GetValue() or nil,
-			[L.class.DemonHunter] = addfilterFrame.classesCheckBoxDemonHunter:GetValue() or nil,
-			[L.class.Druid] = addfilterFrame.classesCheckBoxDruid:GetValue() or nil,
-			[L.class.Hunter] = addfilterFrame.classesCheckBoxHunter:GetValue() or nil,
-			[L.class.Mage] = addfilterFrame.classesCheckBoxMage:GetValue() or nil,
-			[L.class.Monk] = addfilterFrame.classesCheckBoxMonk:GetValue() or nil,
-			[L.class.Paladin] = addfilterFrame.classesCheckBoxPaladin:GetValue() or nil,
-			[L.class.Priest] = addfilterFrame.classesCheckBoxPriest:GetValue() or nil,
-			[L.class.Rogue] = addfilterFrame.classesCheckBoxRogue:GetValue() or nil,
-			[L.class.Shaman] = addfilterFrame.classesCheckBoxShaman:GetValue() or nil,
-			[L.class.Warlock] = addfilterFrame.classesCheckBoxWarlock:GetValue() or nil,
-			[L.class.Warrior] = addfilterFrame.classesCheckBoxWarrior:GetValue() or nil
+			[L.SYSTEM.class.DeathKnight] = addfilterFrame.classesCheckBoxDeathKnight:GetValue() or nil,
+			[L.SYSTEM.class.DemonHunter] = addfilterFrame.classesCheckBoxDemonHunter:GetValue() or nil,
+			[L.SYSTEM.class.Druid] = addfilterFrame.classesCheckBoxDruid:GetValue() or nil,
+			[L.SYSTEM.class.Hunter] = addfilterFrame.classesCheckBoxHunter:GetValue() or nil,
+			[L.SYSTEM.class.Mage] = addfilterFrame.classesCheckBoxMage:GetValue() or nil,
+			[L.SYSTEM.class.Monk] = addfilterFrame.classesCheckBoxMonk:GetValue() or nil,
+			[L.SYSTEM.class.Paladin] = addfilterFrame.classesCheckBoxPaladin:GetValue() or nil,
+			[L.SYSTEM.class.Priest] = addfilterFrame.classesCheckBoxPriest:GetValue() or nil,
+			[L.SYSTEM.class.Rogue] = addfilterFrame.classesCheckBoxRogue:GetValue() or nil,
+			[L.SYSTEM.class.Shaman] = addfilterFrame.classesCheckBoxShaman:GetValue() or nil,
+			[L.SYSTEM.class.Warlock] = addfilterFrame.classesCheckBoxWarlock:GetValue() or nil,
+			[L.SYSTEM.class.Warrior] = addfilterFrame.classesCheckBoxWarrior:GetValue() or nil
 		}
 		classFilter = next(classFilter) ~= nil and classFilter or false
 	end
@@ -572,7 +572,7 @@ local function saveFilter()
 		BasicMessageDialog:SetFrameStrata("TOOLTIP")
 		BasicMessageDialog.errorsList = errors
 		if #errors > 1 then
-			table.insert(errors, 1, format(L["Количество ошибок: %u"],#errors))
+			table.insert(errors, 1, format(L.interface["Количество ошибок: %d"],#errors))
 		end
 		message(errors[1])
 	end
@@ -591,7 +591,7 @@ end)
 
 addfilterFrame.saveButton = GUI:Create('Button')
 local frame = addfilterFrame.saveButton
-frame:SetText(L["Сохранить"])
+frame:SetText(L.interface["Сохранить"])
 frame:SetWidth(size.saveButton)
 frame:SetHeight(40)
 frame:SetCallback('OnClick', saveFilter)
@@ -602,7 +602,7 @@ addfilterFrame:AddChild(frame)
 
 addfilterFrame.bottomHint = GUI:Create("Label")
 local frame = addfilterFrame.bottomHint
-frame:SetText(L["Чтобы быть отфильтрованным, игрок должен соответствовать критериям ВСЕХ фильтров"])
+frame:SetText(L.interface["Чтобы быть отфильтрованным, игрок должен соответствовать критериям ВСЕХ фильтров"])
 fontSize(frame.label)
 frame:SetWidth(addfilterFrame.frame:GetWidth()-20)
 frame.label:SetJustifyH("CENTER")
@@ -623,7 +623,7 @@ frame:SetScript('OnEvent', function()
 	DB = addon.DB
 	
 	local i = 1
-	for k,v in pairs(L.race) do
+	for k,v in pairs(L.SYSTEM.race) do
 		local frame = addfilterFrame.rasesCheckBoxRace[i]
 		frame:SetWidth(size[k])
 		frame:SetLabel(v)
