@@ -232,19 +232,19 @@ end
 
 local function sendWhisper(msg, name)
 	msg = fn:msgMod(msg)
-	if not addon.debug then
+	-- if not addon.debug then
 		if msg ~= nil then
 			SendChatMessage(msg, 'WHISPER', GetDefaultLanguage("player"), name)
 		else
 			print(L.FAQ.error["Выберите сообщение"])
 		end
-	else
+	--[[else
 		if msg ~= nil then
 			print(msg, 'WHISPER', GetDefaultLanguage("player"), name)
 		else
 			print(L.FAQ.error["Выберите сообщение"])
 		end	
-	end
+	end]]
 end
 
 local function inviteBtnText(text)

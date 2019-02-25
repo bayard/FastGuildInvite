@@ -1,1 +1,1 @@
-locales update
+release
