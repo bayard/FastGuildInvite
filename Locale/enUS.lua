@@ -23,6 +23,7 @@ local L = {
 		}
 	},
 	["interface"] = {
+		["Для изменения значений используйте колесо мыши"] = "Use the mouse wheel to change the values.",
 		["Включен"] = "Included",
 		["Включить фильтры"] = "Enable filters",
 		["Выбрать приглашения"] = "Choose invitations",
