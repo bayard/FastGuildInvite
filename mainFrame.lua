@@ -338,7 +338,7 @@ searchRangeGRP.raceFilterStartVal = GUI:Create("Label")
 local frame = searchRangeGRP.raceFilterStartVal
 frame:SetText(FGI_DEFAULT_RACEFILTERSTART == FGI_MAXLVL+1 and L.interface["Откл."] or FGI_DEFAULT_RACEFILTERSTART)
 fontSize(frame.label)
-frame:SetWidth(40)
+frame:SetWidth(80)
 frame.label:SetJustifyH("CENTER")
 frame.frame:SetScript("OnMouseWheel",function(self,mod)
 	if mod == 1 then
@@ -373,7 +373,7 @@ searchRangeGRP.classFilterStartVal = GUI:Create("Label")
 local frame = searchRangeGRP.classFilterStartVal
 frame:SetText(FGI_DEFAULT_CLASSFILTERSTART == FGI_MAXLVL+1 and L.interface["Откл."] or FGI_DEFAULT_CLASSFILTERSTART)
 fontSize(frame.label)
-frame:SetWidth(40)
+frame:SetWidth(80)
 frame.label:SetJustifyH("CENTER")
 frame.frame:SetScript("OnMouseWheel",function(self,mod)
 	if mod == 1 then
@@ -388,6 +388,17 @@ frame.frame:SetScript("OnMouseWheel",function(self,mod)
 	searchRangeGRP.classFilterStartVal:SetText(DB.classFilterVal == FGI_MAXLVL+1 and L.interface["Откл."] or DB.classFilterVal)
 end)
 searchRangeGRP:AddChild(frame)
+
+
+
+
+mainFrame.wheelHint = GUI:Create("Label")
+local frame = mainFrame.wheelHint
+frame:SetText(L.interface["Для изменения значений используйте колесо мыши"])
+fontSize(frame.label)
+frame:SetWidth(size.wheelHint)
+frame.label:SetJustifyH("CENTER")
+mainFrame:AddChild(frame)
 
 
 
@@ -435,8 +446,11 @@ frame:SetScript('OnEvent', function()
 	mainCheckBoxGRP.normalSearch:ClearAllPoints()
 	mainCheckBoxGRP.normalSearch:SetPoint("TOPLEFT", mainCheckBoxGRP.frame, "TOPLEFT", 0, 0)
 	
+	mainFrame.wheelHint:ClearAllPoints()
+	mainFrame.wheelHint:SetPoint("TOPLEFT", inviteTypeGRP.frame, "TOPRIGHT", 15, 0)
+	
 	searchRangeGRP:ClearAllPoints()
-	searchRangeGRP:SetPoint("TOPLEFT", inviteTypeGRP.frame, "TOPRIGHT", 15, 0)
+	searchRangeGRP:SetPoint("TOPLEFT", mainFrame.wheelHint.frame, "BOTTOMLEFT", 0, -10)
 	
 	searchRangeGRP.lvlRange:ClearAllPoints()
 	searchRangeGRP.lvlRange:SetPoint("TOPLEFT", searchRangeGRP.frame, "TOPLEFT", 0, 0)
