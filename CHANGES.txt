@@ -1,1 +1,3 @@
-release
+Fixed bug with sending messages in invitation mode 1 and 2
+Locales update
+wheel hint add
