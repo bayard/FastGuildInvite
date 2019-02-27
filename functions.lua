@@ -252,42 +252,20 @@ local function inviteBtnText(text)
 end
 
 function fn:invitePlayer(noInv)
-	local list
-	if DB.SearchType == 3 then
-		list = addon.smartSearch.inviteList
-		if #list==0 then return end
-		if (DB.inviteType == 1 or DB.inviteType == 2) and not noInv then
-			GuildInvite(list[1].name)
-		end
-		if (DB.inviteType == 2 or DB.inviteType == 3) and not noInv then
-			local msg = DB.messageList[DB.curMessage]
-			sendWhisper(msg, list[1].name)
-		end
-		if not noInv then
-			DB.alredySended[list[1].name] = time({year = date("%Y"), month = date("%m"), day = date("%d")})
-		end
-		table.remove(addon.smartSearch.inviteList, 1)
-		inviteBtnText(format(L.interface["Пригласить: %d"], #addon.smartSearch.inviteList))
-	else
-		list = addon.search.inviteList
-		if #list==0 then return end
-		--[[if not noInv then
-			GuildInvite(list[1].name)
-			DB.alredySended[list[1].name] = time({year = date("%Y"), month = date("%m"), day = date("%d")})
-		end]]
-		if (DB.inviteType == 1 or DB.inviteType == 2) and not noInv then
-			GuildInvite(list[1].name)
-		end
-		if (DB.inviteType == 2 or DB.inviteType == 3) and not noInv then
-			local msg = DB.messageList[DB.curMessage]
-			sendWhisper(msg, list[1].name)
-		end
-		if not noInv then
-			DB.alredySended[list[1].name] = time({year = date("%Y"), month = date("%m"), day = date("%d")})
-		end
-		table.remove(addon.search.inviteList, 1)
-		inviteBtnText(format(L.interface["Пригласить: %d"], #addon.search.inviteList))
+	local list = DB.SearchType == 3 and addon.smartSearch.inviteList or addon.search.inviteList
+	if #list==0 then return end
+	if (DB.inviteType == 1 or DB.inviteType == 2) and not noInv then
+		GuildInvite(list[1].name)
 	end
+	if (DB.inviteType == 2 or DB.inviteType == 3) and not noInv then
+		local msg = DB.messageList[DB.curMessage]
+		sendWhisper(msg, list[1].name)
+	end
+	if not noInv then
+		DB.alredySended[list[1].name] = time({year = date("%Y"), month = date("%m"), day = date("%d")})
+	end
+	table.remove(list, 1)
+	inviteBtnText(format(L.interface["Пригласить: %d"], #list))
 	
 	interface.chooseInvites.player:SetText(#list > 0 and format("%s%s %d %s %s|r", color[list[1].NoLocaleClass:upper()], list[1].name, list[1].lvl, list[1].class, list[1].race) or "")
 end
