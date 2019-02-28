@@ -92,7 +92,6 @@ local frame = settingsCheckBoxGRP.sendMSG
 frame:SetWidth(size.sendMSG)
 frame:SetLabel(L.interface["Выключить отправляемые сообщения"])
 frame:SetTooltip(L.interface.tooltip["Не отображать в чате отправляемые сообщения"])
-frame:SetDisabled(true)
 fontSize(frame.text)
 frame.frame:HookScript("OnClick", function()
 	DB.sendMSG = settingsCheckBoxGRP.sendMSG:GetValue()
