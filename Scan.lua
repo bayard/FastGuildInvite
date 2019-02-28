@@ -122,6 +122,7 @@ frame:SetScript("OnEvent", function(_,_,msg)
 	local inv, name = playerHaveInvite(msg)
 	if not inv then
 		DB.alredySended[name] = nil
+		print(format(ERR_GUILD_PLAYER_NOT_FOUND_S, name).." "..L["Игрок не добавлен в список исключений."]))
 	end
 end)
 
