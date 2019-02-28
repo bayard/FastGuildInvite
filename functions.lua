@@ -233,19 +233,11 @@ end
 
 local function sendWhisper(msg, name)
 	msg = fn:msgMod(msg)
-	-- if not addon.debug then
-		if msg ~= nil then
-			SendChatMessage(msg, 'WHISPER', GetDefaultLanguage("player"), name)
-		else
-			print(L.FAQ.error["Выберите сообщение"])
-		end
-	--[[else
-		if msg ~= nil then
-			print(msg, 'WHISPER', GetDefaultLanguage("player"), name)
-		else
-			print(L.FAQ.error["Выберите сообщение"])
-		end	
-	end]]
+	if msg ~= nil then
+		SendChatMessage(msg, 'WHISPER', GetDefaultLanguage("player"), name)
+	else
+		print(L.FAQ.error["Выберите сообщение"])
+	end
 end
 
 local function inviteBtnText(text)
@@ -355,7 +347,7 @@ local function smartSearchAddWhoList(query, lvl)
 		local new = 0
 		table.remove(addon.smartSearch.whoQueryList, progress)
 		for _,v in pairs(L.SYSTEM.race) do
-			table.insert(addon.smartSearch.whoQueryList, progress+new,format("%s%s\"%s\"",query,L.SYSTEM["r-"],v))
+			table.insert(addon.smartSearch.whoQueryList, progress+new,format("%s %s\"%s\"",query,L.SYSTEM["r-"],v))
 			new = new + 1
 		end
 		if new==0 then return table.insert(addon.smartSearch.whoQueryList, progress, query) end
