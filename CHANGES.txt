@@ -1,3 +1,2 @@
-fix race filter bug
-"Disable sent messages" checkbox enabled
-Player not found, update
+Added delay (5sec) sending messages in invitation mode 2
+"Disable sent messages" now work

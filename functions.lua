@@ -231,8 +231,14 @@ function fn:msgMod(msg)
 	return msg
 end
 
+local function hideWhisper(...)
+	ChatFrame_RemoveMessageEventFilter("CHAT_MSG_WHISPER_INFORM", hideWhisper)
+	return true
+end
+
 local function sendWhisper(msg, name)
 	msg = fn:msgMod(msg)
+	if DB.sendMSG then ChatFrame_AddMessageEventFilter("CHAT_MSG_WHISPER_INFORM", hideWhisper) end
 	if msg ~= nil then
 		SendChatMessage(msg, 'WHISPER', GetDefaultLanguage("player"), name)
 	else
@@ -252,7 +258,7 @@ function fn:invitePlayer(noInv)
 	end
 	if (DB.inviteType == 2 or DB.inviteType == 3) and not noInv then
 		local msg = DB.messageList[DB.curMessage]
-		sendWhisper(msg, list[1].name)
+		C_Timer.After(DB.inviteType == 2 and 5 or 0, function() sendWhisper(msg, list[1].name) end)
 	end
 	if not noInv then
 		DB.alredySended[list[1].name] = time({year = date("%Y"), month = date("%m"), day = date("%d")})
