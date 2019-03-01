@@ -16,21 +16,21 @@ local function fontSize(self, font, size)
 end
 
 local function playerHaveInvite(msg)
-	place = strfind(ERR_GUILD_PLAYER_NOT_FOUND_S,"%s",1,true)
+	local place = strfind(ERR_GUILD_PLAYER_NOT_FOUND_S,"%s",1,true)
 	if (place) then
 		n = strsub(msg,place)
 		name = strsub(n,1,(strfind(n,"%s") or 2)-2)
 		if format(ERR_GUILD_PLAYER_NOT_FOUND_S,name) == msg then
 			return false, name
 		end
-	end
-	
-	place = strfind(ERR_CHAT_PLAYER_NOT_FOUND_S,"%s",1,true)
-	if (place) then
-		n = strsub(msg,place)
-		name = strsub(n,1,(strfind(n,"%s") or 2)-2)
-		if format(ERR_CHAT_PLAYER_NOT_FOUND_S,name) == msg then
-			return false, name
+	else
+		place = strfind(ERR_CHAT_PLAYER_NOT_FOUND_S,"%s",1,true)
+		if (place) then
+			n = strsub(msg,place)
+			name = strsub(n,1,(strfind(n,"%s") or 2)-2)
+			if format(ERR_CHAT_PLAYER_NOT_FOUND_S,name) == msg then
+				return false, name
+			end
 		end
 	end
 	
@@ -122,7 +122,9 @@ frame:SetScript("OnEvent", function(_,_,msg)
 	local inv, name = playerHaveInvite(msg)
 	if not inv then
 		DB.alredySended[name] = nil
-		print(format(ERR_GUILD_PLAYER_NOT_FOUND_S, name).." "..L["Игрок не добавлен в список исключений."]))
+		if not DB.sendMSG then
+			print(format(ERR_GUILD_PLAYER_NOT_FOUND_S, name).." "..L.interface["Игрок не добавлен в список исключений."])
+		end
 	end
 end)
 
