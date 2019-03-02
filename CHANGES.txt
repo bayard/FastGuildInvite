@@ -1,2 +1,1 @@
-Added delay (5sec) sending messages in invitation mode 2
-"Disable sent messages" now work
+Removed invitation delay in invitation mode 2. This caused an interface error.
