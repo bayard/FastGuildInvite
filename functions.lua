@@ -226,7 +226,7 @@ end
 function fn:msgMod(msg)
 	if msg:find("NAME") then
 		local guildName, guildRankName, guildRankIndex, realm = GetGuildInfo("player")
-		msg = msg:gsub("NAME", guildName or 'GUILD_NAME')
+		msg = msg:gsub("NAME", format("<%s>",guildName or 'GUILD_NAME'))
 	end
 	return msg
 end
@@ -238,6 +238,9 @@ end
 
 local function sendWhisper(msg, name)
 	msg = fn:msgMod(msg)
+	if msg:len()>255 then
+		return print(format(L.FAQ.error["Превышен лимит символов. Максимальная длина сообщения 255 символов. Длина сообщения превышена на %d"], msg:len()-255))
+	end
 	if DB.sendMSG then ChatFrame_AddMessageEventFilter("CHAT_MSG_WHISPER_INFORM", hideWhisper) end
 	if msg ~= nil then
 		SendChatMessage(msg, 'WHISPER', GetDefaultLanguage("player"), name)

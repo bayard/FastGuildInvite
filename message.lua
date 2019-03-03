@@ -25,6 +25,17 @@ local function defaultValues()
 	messageFrame.curMessage:SetText(format(L.interface["Текущее сообщение: %s"], msg or L.interface["Нет"]))
 end
 
+local function overLen(msg)
+	local guildName, guildRankName, guildRankIndex, realm = GetGuildInfo("player")
+	msg = msg:gsub("NAME", format("<%s>",guildName or 'GUILD_NAME'))
+	if msg:len()>255 then
+		BasicMessageDialog:SetFrameStrata("TOOLTIP")
+		message(format(L.FAQ.error["Превышен лимит символов. Максимальная длина сообщения 255 символов. Длина сообщения превышена на %d"], msg:len()-255))
+		return true
+	end
+	return false
+end
+
 local function EditBoxChange(frame)
 	frame.editbox:SetScript("OnEnterPressed", function(self)
 		self:ClearFocus()
@@ -115,6 +126,8 @@ frame:SetCallback("OnClick", function()
 		BasicMessageDialog:SetFrameStrata("TOOLTIP")
 		return message(L.FAQ.error["Нельзя сохранить пустое сообщение"])
 	else
+		if overLen(msg) then return end
+		
 		DB.messageList[messageFrame.drop:GetValue()] = msg
 		DB.curMessage = messageFrame.drop:GetValue()
 		defaultValues()
