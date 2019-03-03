@@ -1,1 +1,1 @@
-Removed invitation delay in invitation mode 2. This caused an interface error.
+Fixed bug with exceeding the number of characters in the message.
