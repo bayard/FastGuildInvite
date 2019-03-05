@@ -19,6 +19,7 @@ local L = {
 			["Нельзя добавить пустое сообщение"] = "Cannot add empty message",
 			["Нельзя сохранить пустое сообщение"] = "Cannot save empty message",
 			["Поиск вернул 50 или более результатов, рекомендуется изменить настройки поиска. Запрос: %s"] = "Search returned 50 or more results, it is recommended to change the search settings. Query: %s",
+			["Превышен лимит символов. Максимальная длина сообщения 255 символов. Длина сообщения превышена на %d"] = "Character limit exceeded. The maximum message length is 255 characters. Message length exceeded by %d",
 			["Сочетание клавиш уже занято"] = "Keyboard shortcut busy",
 		}
 	},
@@ -38,6 +39,7 @@ local L = {
 		["Добавить фильтр"] = "Add filter",
 		["Запускать в фоновом режиме"] = "Run in the background",
 		["Игнорировать"] = "Ignore",
+		["Игрок не добавлен в список исключений."] = "The player is not added to the exceptions list.",
 		["Имя фильтра"] = "Filter name",
 		["Имя фильтра занято"] = "Filter name is busy",
 		["Имя фильтра не может быть пустым"] = "Filter name cannot be empty",
