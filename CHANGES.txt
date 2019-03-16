@@ -1,1 +1,1 @@
-locale update
+test invitation rule
