@@ -16,12 +16,21 @@ local function fontSize(self, font, size)
 end
 
 local function playerHaveInvite(msg)
-	local place = strfind(ERR_GUILD_PLAYER_NOT_FOUND_S,"%s",1,true)
+	local place = strfind(ERR_GUILD_INVITE_S,"%s",1,true)
+	if (place) then
+		local n = strsub(msg,place)
+		local name = strsub(n,1,(strfind(n,"%s") or 2)-1)
+		if format(ERR_GUILD_INVITE_S,name) == msg then
+			return "invite",name
+		end
+	end
+	
+	place = strfind(ERR_GUILD_PLAYER_NOT_FOUND_S,"%s",1,true)
 	if (place) then
 		n = strsub(msg,place)
 		name = strsub(n,1,(strfind(n,"%s") or 2)-2)
 		if format(ERR_GUILD_PLAYER_NOT_FOUND_S,name) == msg then
-			return false, name
+			return "not_found", name
 		end
 	else
 		place = strfind(ERR_CHAT_PLAYER_NOT_FOUND_S,"%s",1,true)
@@ -29,12 +38,21 @@ local function playerHaveInvite(msg)
 			n = strsub(msg,place)
 			name = strsub(n,1,(strfind(n,"%s") or 2)-2)
 			if format(ERR_CHAT_PLAYER_NOT_FOUND_S,name) == msg then
-				return false, name
+				return "not_found", name
 			end
 		end
 	end
 	
-	return true
+	place = strfind(ERR_GUILD_DECLINE_AUTO_S,"%s",1,true)
+	if (place) then
+		n = strsub(msg,place)
+		name = strsub(n,1,(strfind(n,"%s") or 2)-1)
+		if format(ERR_GUILD_DECLINE_AUTO_S,name) == msg then
+			return "auto_decline", name
+		end
+	end
+	
+	return "unregistered_event", name
 end
 
 
@@ -119,11 +137,19 @@ scanFrame:AddChild(frame)
 scanFrame.pausePlayFilter = CreateFrame("Frame")
 local frame = scanFrame.pausePlayFilter
 frame:SetScript("OnEvent", function(_,_,msg)
-	local inv, name = playerHaveInvite(msg)
-	if not inv then
+	local type, name = playerHaveInvite(msg)
+	if type == "not_found" then
 		DB.alredySended[name] = nil
 		if not DB.sendMSG then
 			print(format(ERR_GUILD_PLAYER_NOT_FOUND_S, name).." "..L.interface["Игрок не добавлен в список исключений."])
+		end
+	elseif type == "auto_decline" then
+		print(format(ERR_CHAT_PLAYER_NOT_FOUND_S,name), "don't send MSG!!!")
+	elseif type == "invite" then
+		local list = DB.SearchType == 3 and addon.smartSearch.inviteList or addon.search.inviteList
+		if (DB.inviteType == 2 or DB.inviteType == 3) then
+			local msg = DB.messageList[DB.curMessage]
+			fn:sendWhisper(msg, name)
 		end
 	end
 end)

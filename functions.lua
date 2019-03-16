@@ -236,7 +236,8 @@ local function hideWhisper(...)
 	return true
 end
 
-local function sendWhisper(msg, name)
+function fn:sendWhisper(msg, name)
+	if not msg or not name then return end
 	msg = fn:msgMod(msg)
 	if msg:len()>255 then
 		return print(format(L.FAQ.error["Превышен лимит символов. Максимальная длина сообщения 255 символов. Длина сообщения превышена на %d"], msg:len()-255))
@@ -259,10 +260,10 @@ function fn:invitePlayer(noInv)
 	if (DB.inviteType == 1 or DB.inviteType == 2) and not noInv then
 		GuildInvite(list[1].name)
 	end
-	if (DB.inviteType == 2 or DB.inviteType == 3) and not noInv then
+	--[[if (DB.inviteType == 2 or DB.inviteType == 3) and not noInv then
 		local msg = DB.messageList[DB.curMessage]
-		sendWhisper(msg, list[1].name)
-	end
+		fn:sendWhisper(msg, list[1].name)
+	end]]
 	if not noInv then
 		DB.alredySended[list[1].name] = time({year = date("%Y"), month = date("%m"), day = date("%d")})
 	end
