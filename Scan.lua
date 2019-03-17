@@ -9,6 +9,8 @@ local GUI = LibStub("AceKGUI-3.0")
 local FastGuildInvite = addon.lib
 local DB
 
+local auto_decline = {}
+
 local function fontSize(self, font, size)
 	font = font or settings.Font
 	size = size or settings.FontSize
@@ -144,12 +146,14 @@ frame:SetScript("OnEvent", function(_,_,msg)
 			print(format(ERR_GUILD_PLAYER_NOT_FOUND_S, name).." "..L.interface["Игрок не добавлен в список исключений."])
 		end
 	elseif type == "auto_decline" then
-		print(format(ERR_CHAT_PLAYER_NOT_FOUND_S,name), "don't send MSG!!!")
+		print("!debug!", format(ERR_CHAT_PLAYER_NOT_FOUND_S,name), "don't send MSG!!!")
+		auto_decline[name] = true
 	elseif type == "invite" then
 		local list = DB.SearchType == 3 and addon.smartSearch.inviteList or addon.search.inviteList
 		if (DB.inviteType == 2 or DB.inviteType == 3) then
 			local msg = DB.messageList[DB.curMessage]
-			fn:sendWhisper(msg, name)
+			-- fn:sendWhisper(msg, name)
+			C_Timer.After(2, function() if not auto_decline[name] then fn:sendWhisper(msg, name) end end)
 		end
 	end
 end)
