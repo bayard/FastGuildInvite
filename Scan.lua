@@ -153,7 +153,7 @@ frame:SetScript("OnEvent", function(_,_,msg)
 		if (DB.inviteType == 2 or DB.inviteType == 3) then
 			local msg = DB.messageList[DB.curMessage]
 			-- fn:sendWhisper(msg, name)
-			C_Timer.After(2, function() if not auto_decline[name] then fn:sendWhisper(msg, name) end end)
+			C_Timer.After(1, function() if not auto_decline[name] then fn:sendWhisper(msg, name) end end)
 		end
 	end
 end)
