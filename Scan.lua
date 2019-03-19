@@ -10,6 +10,7 @@ local FastGuildInvite = addon.lib
 local DB
 
 local auto_decline = {}
+addon.msgQueue = {}
 
 local function fontSize(self, font, size)
 	font = font or settings.Font
@@ -138,8 +139,10 @@ scanFrame:AddChild(frame)
 
 scanFrame.pausePlayFilter = CreateFrame("Frame")
 local frame = scanFrame.pausePlayFilter
+frame:RegisterEvent("CHAT_MSG_SYSTEM")
 frame:SetScript("OnEvent", function(_,_,msg)
 	local type, name = playerHaveInvite(msg)
+	if not name then return end
 	if type == "not_found" then
 		DB.alredySended[name] = nil
 		if not DB.sendMSG then
@@ -153,9 +156,10 @@ frame:SetScript("OnEvent", function(_,_,msg)
 		if (DB.inviteType == 2 or DB.inviteType == 3) then
 			local msg = DB.messageList[DB.curMessage]
 			-- fn:sendWhisper(msg, name)
-			C_Timer.After(1, function() if not auto_decline[name] then fn:sendWhisper(msg, name) end end)
+			C_Timer.After(1, function() if not auto_decline[name] and addon.msgQueue[name] then fn:sendWhisper(msg, name) end end)
 		end
 	end
+	addon.msgQueue[name] = nil
 end)
 
 scanFrame.pausePlay = GUI:Create("Button")
@@ -172,13 +176,13 @@ frame:SetCallback("OnClick", function(self)
 		LibDBIcon10_FGI.icon:SetTexture("Interface\\AddOns\\FastGuildInvite\\img\\minimap\\MiniMapButton-Search")
 		self.pause = false
 		fn:StartSearch()
-		scanFrame.pausePlayFilter:RegisterEvent("CHAT_MSG_SYSTEM")
+		-- scanFrame.pausePlayFilter:RegisterEvent("CHAT_MSG_SYSTEM")
 	else
 		self:SetNormalTexture("Interface\\Buttons\\UI-SpellbookIcon-NextPage-Up")
 		LibDBIcon10_FGI.icon:SetTexture("Interface\\AddOns\\FastGuildInvite\\img\\minimap\\MiniMapButton")
 		self.pause = true
 		fn:PauseSearch()
-		scanFrame.pausePlayFilter:UnregisterEvent("CHAT_MSG_SYSTEM")
+		-- scanFrame.pausePlayFilter:UnregisterEvent("CHAT_MSG_SYSTEM")
 	end
 end)
 scanFrame:AddChild(frame)
