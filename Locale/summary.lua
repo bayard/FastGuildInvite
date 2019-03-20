@@ -34,5 +34,5 @@ size.filterNameShift = {}
 for k,v in pairs(FGI.L.SYSTEM.race) do 
 table.insert(size.filterNameShift, size[k]) 
 end 
-size.filterNameShift = math.max(unpack(size.filterNameShift)) - size.raceLabel + 20
+size.filterNameShift = math.max(unpack(size.filterNameShift) or size.raceShift) - size.raceLabel + 20
 size.filtersEdit = math.max(size.filterNameLabel, size.excludeNameLabel, size.lvlRangeLabel, size.excludeRepeatLabel)
