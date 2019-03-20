@@ -153,13 +153,11 @@ frame:SetScript("OnEvent", function(_,_,msg)
 		auto_decline[name] = true
 	elseif type == "invite" then
 		local list = DB.SearchType == 3 and addon.smartSearch.inviteList or addon.search.inviteList
-		if (DB.inviteType == 2 or DB.inviteType == 3) then
-			local msg = DB.messageList[DB.curMessage]
-			-- fn:sendWhisper(msg, name)
-			C_Timer.After(1, function() if not auto_decline[name] and addon.msgQueue[name] then fn:sendWhisper(msg, name) end end)
+		local msg = DB.messageList[DB.curMessage]
+		if DB.inviteType == 2 then
+			C_Timer.After(1, function() if not auto_decline[name] and addon.msgQueue[name] then fn:sendWhisper(msg, name); addon.msgQueue[name] = nil end end)
 		end
 	end
-	addon.msgQueue[name] = nil
 end)
 
 scanFrame.pausePlay = GUI:Create("Button")

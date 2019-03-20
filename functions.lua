@@ -257,14 +257,15 @@ end
 function fn:invitePlayer(noInv)
 	local list = DB.SearchType == 3 and addon.smartSearch.inviteList or addon.search.inviteList
 	if #list==0 then return end
-	if (DB.inviteType == 1 or DB.inviteType == 2) and not noInv then
-		GuildInvite(list[1].name)
+	if DB.inviteType == 2 and not noInv then
 		addon.msgQueue[list[1].name] = true
-	end
-	--[[if (DB.inviteType == 2 or DB.inviteType == 3) and not noInv then
+	elseif DB.inviteType == 3 and not noInv then
 		local msg = DB.messageList[DB.curMessage]
 		fn:sendWhisper(msg, list[1].name)
-	end]]
+	end
+	if (DB.inviteType == 1 or DB.inviteType == 2) and not noInv then
+		GuildInvite(list[1].name)
+	end
 	if not noInv then
 		DB.alredySended[list[1].name] = time({year = date("%Y"), month = date("%m"), day = date("%d")})
 	end
