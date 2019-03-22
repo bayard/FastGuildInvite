@@ -440,7 +440,7 @@ end
 local function addNewPlayer(t, p)
 	local f,r = filtered(p)
 	--if f then print('filtered by',r); dump(p)end]]
-	if p.Guild == "" and not t.tempSendedInvites[p.Name] and not DB.alredySended[p.Name] and (DB.enableFilters and not f or true) then
+	if p.Guild == "" and not t.tempSendedInvites[p.Name] and not DB.alredySended[p.Name] and (DB.enableFilters and not f) then
 		table.insert(t.inviteList, {name = p.Name, lvl = p.Level, race = p.Race, class = p.Class,  NoLocaleClass = p.NoLocaleClass})
 		t.tempSendedInvites[p.Name] = true
 	end
