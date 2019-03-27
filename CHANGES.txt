@@ -1,1 +1,2 @@
-test invitation rule
+search bug fix
+nil msg bug fix
