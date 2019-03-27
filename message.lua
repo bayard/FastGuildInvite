@@ -21,7 +21,7 @@ local function defaultValues()
 	messageFrame.drop:SetValue(DB.curMessage)
 	messageFrame.message:SetText(DB.messageList[DB.curMessage] or "")
 	local msg = DB.messageList[DB.curMessage]
-	msg = fn:msgMod(msg)
+	if msg then msg = fn:msgMod(msg) end
 	messageFrame.curMessage:SetText(format(L.interface["Текущее сообщение: %s"], msg or L.interface["Нет"]))
 end
 
