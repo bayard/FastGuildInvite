@@ -224,6 +224,7 @@ local function getWhoList(interval)
 end
 
 function fn:msgMod(msg)
+	if not msg then return end
 	if msg:find("NAME") then
 		local guildName, guildRankName, guildRankIndex, realm = GetGuildInfo("player")
 		msg = msg:gsub("NAME", format("<%s>",guildName or 'GUILD_NAME'))
@@ -438,9 +439,9 @@ local function filtered(player)
 end
 
 local function addNewPlayer(t, p)
-	local f,r = filtered(p)
+	-- local f,r = filtered(p)
 	--if f then print('filtered by',r); dump(p)end]]
-	if p.Guild == "" and not t.tempSendedInvites[p.Name] and not DB.alredySended[p.Name] and (DB.enableFilters and not f) then
+	if p.Guild == "" and not t.tempSendedInvites[p.Name] and not DB.alredySended[p.Name] and ((DB.enableFilters and not filtered(p)) or not DB.enableFilters) then
 		table.insert(t.inviteList, {name = p.Name, lvl = p.Level, race = p.Race, class = p.Class,  NoLocaleClass = p.NoLocaleClass})
 		t.tempSendedInvites[p.Name] = true
 	end
