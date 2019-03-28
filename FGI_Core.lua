@@ -77,7 +77,7 @@ end
 
 function FastGuildInvite:OnInitialize()
 	self.db = LibStub("AceDB-3.0"):New("FGI_DB")
-	self.db.RegisterCallback(self, "OnDatabaseReset", function() UIReload() end)
+	self.db.RegisterCallback(self, "OnDatabaseReset", function() C_UI.Reload() end)
 	
 	DB = self.db.global
 	addon.DB = DB
