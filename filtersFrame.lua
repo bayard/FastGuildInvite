@@ -403,6 +403,11 @@ local frame = addfilterFrame.rasesCheckBoxRace[10]
 fontSize(frame.text)
 addfilterFrame:AddChild(frame)
 
+addfilterFrame.rasesCheckBoxRace[11] = GUI:Create("CheckBox")
+local frame = addfilterFrame.rasesCheckBoxRace[11]
+fontSize(frame.text)
+addfilterFrame:AddChild(frame)
+
 
 
 
@@ -657,7 +662,8 @@ frame:SetScript('OnEvent', function()
 	addfilterFrame.raceLabel:SetPoint("LEFT", addfilterFrame.classLabel.frame, "RIGHT", size.raceShift, 0)
 	
 	addfilterFrame.filterNameLabel:ClearAllPoints()
-	addfilterFrame.filterNameLabel:SetPoint("LEFT", addfilterFrame.raceLabel.frame, "RIGHT", size.filterNameShift, 0)
+	-- addfilterFrame.filterNameLabel:SetPoint("LEFT", addfilterFrame.raceLabel.frame, "RIGHT", size.filterNameShift, 0)
+	addfilterFrame.filterNameLabel:SetPoint("RIGHT", addfilterFrame.frame, "RIGHT", -15, 150)
 	
 	addfilterFrame.saveButton:ClearAllPoints()
 	addfilterFrame.saveButton:SetPoint("BOTTOM", addfilterFrame.frame, "BOTTOM", 0, 20)
