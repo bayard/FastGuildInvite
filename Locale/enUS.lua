@@ -128,6 +128,7 @@ local L = {
 				["Tauren"] = "Tauren",
 				["Troll"] = "Troll",
 				["Undead"] = "Undead",
+				["ZandalariTroll"] = "Zandalari Troll",
 			},
 			["Alliance"] = {
 				["DarkIronDwarf"] = "Dark Iron Dwarf",
@@ -140,6 +141,7 @@ local L = {
 				["Pandaren"] = "Pandaren",
 				["VoidElf"] = "Void Elf",
 				["Worgen"] = "Worgen",
+				["KulTiran"] = "Kul Tiran",
 			}
 		}
 	}
