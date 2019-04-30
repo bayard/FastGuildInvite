@@ -220,6 +220,9 @@ L.settings = {
 		VoidElf = 130,
 		LightforgedDraenei = 150,
 		DarkIronDwarf = 160,
+		ZandalariTroll = 120,
+		KulTiran = 120,
+		
 		
 		filterNameLabel = 200,
 		excludeNameLabel = 200,
