@@ -196,4 +196,5 @@ frame:SetScript('OnEvent', function()
 	settingsButtonsGRP.setMSG:SetPoint("LEFT", settingsButtonsGRP.keyBind.frame, "RIGHT", 2, 0)
 	
 	settingsFrame:Hide()
+	frame:UnregisterEvent('PLAYER_ENTERING_WORLD')
 end)

@@ -495,4 +495,5 @@ frame:SetScript('OnEvent', function()
 	mainButtonsGRP.settingsBtn:SetPoint("LEFT", mainButtonsGRP.chooseInvites.frame, "RIGHT", 2, 0)
 	
 	mainFrame:Hide()
+	frame:UnregisterEvent('PLAYER_ENTERING_WORLD')
 end)

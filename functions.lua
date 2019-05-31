@@ -311,6 +311,7 @@ frame:SetScript('OnEvent', function()
 			end
 		end
 	end
+	frame:UnregisterEvent('PLAYER_ENTERING_WORLD')
 end)
 
 local function getSearchDeepLvl(query)

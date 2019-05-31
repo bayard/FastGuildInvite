@@ -107,4 +107,5 @@ frame:SetScript('OnEvent', function()
 	chooseInvites.reject:SetPoint("LEFT", chooseInvites.invite.frame, "RIGHT", 5, 0)
 	
 	chooseInvites:Hide()
+	frame:UnregisterEvent('PLAYER_ENTERING_WORLD')
 end)

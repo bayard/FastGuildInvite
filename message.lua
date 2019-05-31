@@ -220,4 +220,5 @@ frame:SetScript('OnEvent', function()
 	messageFrame.curMessage:SetPoint("BOTTOM", messageFrame.frame, "BOTTOM", 0, 20)
 	
 	messageFrame:Hide()
+	frame:UnregisterEvent('PLAYER_ENTERING_WORLD')
 end)

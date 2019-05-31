@@ -673,4 +673,5 @@ frame:SetScript('OnEvent', function()
 	
 	filtersFrame:Hide()
 	addfilterFrame:Hide()
+	frame:UnregisterEvent('PLAYER_ENTERING_WORLD')
 end)

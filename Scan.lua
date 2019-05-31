@@ -249,4 +249,5 @@ frame:SetScript('OnEvent', function()
 	
 	
 	scanFrame:Hide()
+	frame:UnregisterEvent('PLAYER_ENTERING_WORLD')
 end)

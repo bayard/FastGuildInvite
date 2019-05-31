@@ -1,1 +1,1 @@
-new race added
+"disappears scan window" fixed
