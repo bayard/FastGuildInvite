@@ -1,7 +1,7 @@
 ## Interface: 80100
 ## Author: Призер - Галакронд RU
 ## Title: |cffffff00<|r|cff16ABB5FGI|r|cffffff00>|r |cff16ABB5FastGuildInvite|r
-## Version: 1.12.*
+## Version: 1.13.*
 ## SavedVariables: FGI_DB
 ## DefaultState: enabled
 
