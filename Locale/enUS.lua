@@ -78,6 +78,7 @@ local L = {
 		["Числа должны быть больше 0"] = "Numbers must be greater than 0",
 		["Числа не могут быть меньше или равны 0. Минимальный уровень не может быть больше максимального"] = "Numbers cannot be less than or equal to 0. The minimum level cannot be greater than the maximum",
 		["Чтобы быть отфильтрованным, игрок должен соответствовать критериям ВСЕХ фильтров"] = "To be filtered, the player must meet the criteria of all filters",
+		["Запоминать всех игроков"] = "Remember all players",
 		["tooltip"] = {
 			["Автоматическое увеличение детализации поиска"] = "Automatically increase search details.",
 			["Введите диапазон уровней для фильтра.\nНапример: %s55%s:%s58%s\nбудут подходить только те игроки, уровень\nкоторых варьируется от %s55%s до %s58%s (включительно)"] = "Enter a range of levels for the filter.\nfor Example:%s55%s:%s58%s\nwill be approached only by those players, the level\nwhich varies from%s55%s to %s58%s (inclusive)",
@@ -92,11 +93,20 @@ local L = {
 			["Не отображать в чате сообщения аддона"] = "Do not display addon messages in Chat",
 			["Уровень, с которого начинается фильтр по классам"] = "The level at which the filter starts by class",
 			["Уровень, с которого начинается фильтр по расам"] = "The level at which the race filter starts",
+			["Записывать игрока в базу данных сразу после нахождения"] = "Write the player to the database immediately after finding",
 		},
 		["invType"] = {
 			["Отправить сообщение и пригласить"] = "Send a message and invite",
 			["Только пригласить"] = "Only invite",
 			["Только сообщение"] = "Message only",
+		},
+		["clearDBtimes"] = {
+			["Отключить"] = "Disable",
+			["1 день"] = "1 day",
+			["1 неделя"] = "1 week",
+			["1 месяц"] = "1 month",
+			["6 месяцев"] = "6 months",
+			["Время запоминания игрока"] = "Player memorization time",
 		}
 	},
 	["SYSTEM"] = {

@@ -267,7 +267,7 @@ function fn:invitePlayer(noInv)
 	if (DB.inviteType == 1 or DB.inviteType == 2) and not noInv then
 		GuildInvite(list[1].name)
 	end
-	if not noInv then
+	if not noInv or DB.rememberAll then
 		DB.alredySended[list[1].name] = time({year = date("%Y"), month = date("%m"), day = date("%d")})
 	end
 	table.remove(list, 1)

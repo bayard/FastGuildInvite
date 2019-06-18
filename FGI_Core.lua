@@ -98,6 +98,8 @@ function FastGuildInvite:OnInitialize()
 	DB.systemMSG = DB.systemMSG or false
 	DB.sendMSG = DB.sendMSG or false
 	DB.keyBind = DB.keyBind or false
+	DB.rememberAll = DB.rememberAll or false
+	DB.clearDBtimes = DB.clearDBtimes or 3
 	
 	DB.messageList = type(DB.messageList) == "table" and DB.messageList or {}
 	DB.curMessage = DB.curMessage or 0
@@ -105,12 +107,13 @@ function FastGuildInvite:OnInitialize()
 	DB.alredySended = type(DB.alredySended)=="table" and DB.alredySended or {}
 	DB.filtersList = type(DB.filtersList)=="table" and DB.filtersList or {}
 	
-	for k,v in pairs(DB.alredySended) do	-- delete player from sended DB after "FGI_RESETSENDDBTIME"
-		if difftime(time({year = date("%Y"), month = date("%m"), day = date("%d")}), v) >= FGI_RESETSENDDBTIME then
-			DB.alredySended[k] = nil
+	if DB.clearDBtimes>1 then
+		for k,v in pairs(DB.alredySended) do	-- delete player from sended DB after "FGI_RESETSENDDBTIME"
+			if difftime(time({year = date("%Y"), month = date("%m"), day = date("%d")}), v) >= FGI_RESETSENDDBTIME[DB.clearDBtimes] then
+				DB.alredySended[k] = nil
+			end
 		end
 	end
-	
 
 	DB.minimap = type(DB.minimap) == "table" and DB.minimap or {}
 	DB.minimap.hide = DB.minimap.hide or false

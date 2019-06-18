@@ -1,1 +1,2 @@
-"disappears scan window" fixed
+selection of the storage time of the stored players
+remember all the players found checkbox

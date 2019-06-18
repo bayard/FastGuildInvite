@@ -59,7 +59,7 @@ settingsFrame.settingsCheckBoxGRP = GUI:Create("Frame")
 local settingsCheckBoxGRP = settingsFrame.settingsCheckBoxGRP
 --settingsCheckBoxGRP:SetLayout("List")
 settingsCheckBoxGRP:isGroupFrame(true)
-settingsCheckBoxGRP:SetHeight(100)
+settingsCheckBoxGRP:SetHeight(120)
 settingsCheckBoxGRP:SetWidth(size.settingsCheckBoxGRP)
 settingsFrame:AddChild(settingsCheckBoxGRP)
 
@@ -113,6 +113,27 @@ frame.frame:HookScript("OnClick", function()
 	end
 end)
 settingsCheckBoxGRP:AddChild(frame)
+
+settingsCheckBoxGRP.rememberAll = GUI:Create("CheckBox")
+local frame = settingsCheckBoxGRP.rememberAll
+frame:SetWidth(size.rememberAll)
+frame:SetLabel(L.interface["Запоминать всех игроков"])
+frame:SetTooltip(L.interface.tooltip["Записывать игрока в базу данных сразу после нахождения"])
+fontSize(frame.text)
+frame.frame:HookScript("OnClick", function()
+	DB.rememberAll = settingsCheckBoxGRP.rememberAll:GetValue()
+end)
+settingsCheckBoxGRP:AddChild(frame)
+
+settingsFrame.clearDBtimes = GUI:Create("Dropdown")
+local frame = settingsFrame.clearDBtimes
+frame:SetWidth(size.clearDBtimes)
+frame:SetLabel(L.interface.clearDBtimes["Время запоминания игрока"])
+frame:SetList({L.interface.clearDBtimes["Отключить"], L.interface.clearDBtimes["1 день"], L.interface.clearDBtimes["1 неделя"], L.interface.clearDBtimes["1 месяц"], L.interface.clearDBtimes["6 месяцев"],})
+frame:SetCallback("OnValueChanged", function(key)
+	DB.inviteType = settingsFrame.clearDBtimes:GetValue()
+end)
+settingsFrame:AddChild(frame)
 
 
 
@@ -173,6 +194,7 @@ frame:SetScript('OnEvent', function()
 	settingsCheckBoxGRP.systemMSG:SetValue(DB.systemMSG or false)
 	settingsCheckBoxGRP.sendMSG:SetValue(DB.sendMSG or false)
 	settingsCheckBoxGRP.minimapButton:SetValue(DB.minimap.hide or false)
+	settingsFrame.clearDBtimes:SetValue(DB.clearDBtimes)
 	
 	settingsFrame.closeButton:ClearAllPoints()
 	settingsFrame.closeButton:SetPoint("CENTER", settingsFrame.frame, "TOPRIGHT", -8, -8)
@@ -183,8 +205,11 @@ frame:SetScript('OnEvent', function()
 	settingsCheckBoxGRP.addonMSG:ClearAllPoints()
 	settingsCheckBoxGRP.addonMSG:SetPoint("TOPLEFT", settingsCheckBoxGRP.frame, "TOPLEFT", 0, 0)
 	
+	settingsFrame.clearDBtimes:ClearAllPoints()
+	settingsFrame.clearDBtimes:SetPoint("TOPLEFT", settingsCheckBoxGRP.frame, "BOTTOMLEFT", 2, 0)
+	
 	settingsButtonsGRP:ClearAllPoints()
-	settingsButtonsGRP:SetPoint("TOPLEFT", settingsCheckBoxGRP.frame, "BOTTOMLEFT", 0, -10)
+	settingsButtonsGRP:SetPoint("TOPLEFT", settingsFrame.clearDBtimes.frame, "BOTTOMLEFT", 0, -10)
 	
 	settingsButtonsGRP.filters:ClearAllPoints()
 	settingsButtonsGRP.filters:SetPoint("TOPLEFT", settingsButtonsGRP.frame, "TOPLEFT", 0, 0)
