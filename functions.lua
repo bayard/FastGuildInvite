@@ -8,6 +8,7 @@ local color = addon.color
 local FastGuildInvite = addon.lib
 addon.search = {progress=1, inviteList={}, state='stop', timeShift=0, tempSendedInvites={}, whoQueryList = {}}
 addon.smartSearch = {progress=1, intervalTime = 3, whoQueryList = {}, inviteList={}, tempSendedInvites={}}
+addon.removeMsgList = {}
 addon.libWho = {}
 local DB
 local nextSearch
@@ -233,8 +234,13 @@ function fn:msgMod(msg)
 end
 
 local function hideWhisper(...)
-	ChatFrame_RemoveMessageEventFilter("CHAT_MSG_WHISPER_INFORM", hideWhisper)
-	return true
+	local name = select(4,...):match("([^-]*)")
+	if addon.removeMsgList[name] then
+		addon.removeMsgList[name] = nil
+		return true
+	else
+		return false, select(3,...)
+	end
 end
 
 function fn:sendWhisper(msg, name)
@@ -243,8 +249,11 @@ function fn:sendWhisper(msg, name)
 	if msg:len()>255 then
 		return print(format(L.FAQ.error["Превышен лимит символов. Максимальная длина сообщения 255 символов. Длина сообщения превышена на %d"], msg:len()-255))
 	end
-	if DB.sendMSG then ChatFrame_AddMessageEventFilter("CHAT_MSG_WHISPER_INFORM", hideWhisper) end
+	
 	if msg ~= nil then
+		if DB.sendMSG then
+			addon.removeMsgList[name:match("([^-]*)")] = true
+		end
 		SendChatMessage(msg, 'WHISPER', GetDefaultLanguage("player"), name)
 	else
 		print(L.FAQ.error["Выберите сообщение"])
@@ -573,7 +582,13 @@ function fn:inGuildCanInvite()
 	return true	
 end
 
+local function hideSysMsg()
+	return true
+end
+
 function fn:StartSearch(timer)
+	ChatFrame_AddMessageEventFilter("CHAT_MSG_WHISPER_INFORM", hideWhisper)
+	if DB.systemMSG then ChatFrame_AddMessageEventFilter("CHAT_MSG_SYSTEM", hideSysMsg) end
 	if addon.search.state == "pause" then
 		local min,max = interface.scanFrame.progressBar:GetMinMax()
 		local shift = addon.search.timeShift>0 and GetTime()-addon.search.timeShift or 0
@@ -587,6 +602,8 @@ function fn:StartSearch(timer)
 end
 
 function fn:PauseSearch()
+	ChatFrame_RemoveMessageEventFilter("CHAT_MSG_WHISPER_INFORM", hideWhisper)
+	ChatFrame_RemoveMessageEventFilter("CHAT_MSG_SYSTEM", hideSysMsg)
 	if addon.search.state == 'start' then
 		addon.search.timeShift = GetTime()
 	end

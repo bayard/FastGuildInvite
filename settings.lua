@@ -80,7 +80,7 @@ local frame = settingsCheckBoxGRP.systemMSG
 frame:SetWidth(size.systemMSG)
 frame:SetLabel(L.interface["Выключить системные сообщения"])
 frame:SetTooltip(L.interface.tooltip["Не отображать в чате системные сообщения"])
-frame:SetDisabled(true)
+-- frame:SetDisabled(true)
 fontSize(frame.text)
 frame.frame:HookScript("OnClick", function()
 	DB.systemMSG = settingsCheckBoxGRP.systemMSG:GetValue()
