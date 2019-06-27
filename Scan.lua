@@ -171,13 +171,13 @@ frame:SetCallback("OnClick", function(self)
 	self = self.frame
 	if self.pause then
 		self:SetNormalTexture("Interface\\TimeManager\\PauseButton")
-		LibDBIcon10_FGI.icon:SetTexture("Interface\\AddOns\\FastGuildInvite\\img\\minimap\\MiniMapButton-Search")
+		if LibDBIcon10_FGI then LibDBIcon10_FGI.icon:SetTexture("Interface\\AddOns\\FastGuildInvite\\img\\minimap\\MiniMapButton-Search") end
 		self.pause = false
 		fn:StartSearch()
 		-- scanFrame.pausePlayFilter:RegisterEvent("CHAT_MSG_SYSTEM")
 	else
 		self:SetNormalTexture("Interface\\Buttons\\UI-SpellbookIcon-NextPage-Up")
-		LibDBIcon10_FGI.icon:SetTexture("Interface\\AddOns\\FastGuildInvite\\img\\minimap\\MiniMapButton")
+		if LibDBIcon10_FGI then LibDBIcon10_FGI.icon:SetTexture("Interface\\AddOns\\FastGuildInvite\\img\\minimap\\MiniMapButton") end
 		self.pause = true
 		fn:PauseSearch()
 		-- scanFrame.pausePlayFilter:UnregisterEvent("CHAT_MSG_SYSTEM")
