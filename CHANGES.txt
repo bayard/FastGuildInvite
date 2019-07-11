@@ -1,5 +1,1 @@
-selection of the storage time of the stored players
-remember all the players found checkbox
-"Disable sent messages" fixed.
-"Turn off system messages" enabled
-LibDBIcon10_FGI error fixed
+wrong invite mod fixed
