@@ -131,7 +131,7 @@ frame:SetWidth(size.clearDBtimes)
 frame:SetLabel(L.interface.clearDBtimes["Время запоминания игрока"])
 frame:SetList({L.interface.clearDBtimes["Отключить"], L.interface.clearDBtimes["1 день"], L.interface.clearDBtimes["1 неделя"], L.interface.clearDBtimes["1 месяц"], L.interface.clearDBtimes["6 месяцев"],})
 frame:SetCallback("OnValueChanged", function(key)
-	DB.inviteType = settingsFrame.clearDBtimes:GetValue()
+	DB.clearDBtimes = settingsFrame.clearDBtimes:GetValue()
 end)
 settingsFrame:AddChild(frame)
 
