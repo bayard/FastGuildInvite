@@ -194,6 +194,7 @@ frame:SetScript('OnEvent', function()
 	settingsCheckBoxGRP.systemMSG:SetValue(DB.systemMSG or false)
 	settingsCheckBoxGRP.sendMSG:SetValue(DB.sendMSG or false)
 	settingsCheckBoxGRP.minimapButton:SetValue(DB.minimap.hide or false)
+	settingsCheckBoxGRP.rememberAll:SetValue(DB.rememberAll or false)
 	settingsFrame.clearDBtimes:SetValue(DB.clearDBtimes)
 	
 	settingsFrame.closeButton:ClearAllPoints()
