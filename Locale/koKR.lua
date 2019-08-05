@@ -102,48 +102,6 @@ local L = {
 	["SYSTEM"] = {
 		["c-"] = "c-",
 		["r-"] = "r-",
-		["class"] = {
-			["DeathKnight"] = "죽음의 기사",
-			["DemonHunter"] = "악마 사냥꾼",
-			["Druid"] = "드루이드",
-			["Hunter"] = "사냥꾼",
-			["Mage"] = "마법사",
-			["Monk"] = "수도사",
-			["Paladin"] = "성기사",
-			["Priest"] = "사제",
-			["Rogue"] = "도적",
-			["Shaman"] = "주술사",
-			["Warlock"] = "흑마법사",
-			["Warrior"] = "전사",
-		},
-		["race"] = {
-			["Horde"] = {
-				["BloodElf"] = "블러드 엘프",
-				["Goblin"] = "고블린",
-				["HightmountainTauren"] = "높은산 타우렌",
-				["MagharOrc"] = "마그하르 오크",
-				["Nightborne"] = "나이트본",
-				["Orc"] = "오크",
-				["Pandaren"] = " 판다렌",
-				["Tauren"] = "타우렌",
-				["Troll"] = "트롤",
-				["Undead"] = "언데드",
-				["ZandalariTroll"] = "잔달라 트롤",
-			},
-			["Alliance"] = {
-				["DarkIronDwarf"] = "검은무쇠 드워프",
-				["Draenei"] = "드레나이",
-				["Dwarf"] = "드워프",
-				["Gnome"] = "노움",
-				["Human"] = "인간",
-				["KulTiran"] = "쿨티란 인간",
-				["LightforgedDraenei"] = "빛벼림 드레나이",
-				["NightElf"] = "나이트 엘프",
-				["Pandaren"] = "판다렌",
-				["VoidElf"] = "공허 엘프",
-				["Worgen"] = "늑대인간",
-			}
-		}
 	}
 }
 

@@ -112,48 +112,6 @@ local L = {
 	["SYSTEM"] = {
 		["c-"] = "c-",
 		["r-"] = "r-",
-		["class"] = {
-			["DeathKnight"] = "Death Knight",
-			["DemonHunter"] = "Demon Hunter",
-			["Druid"] = "Druid",
-			["Hunter"] = "Hunter",
-			["Mage"] = "Mage",
-			["Monk"] = "Monk",
-			["Paladin"] = "Paladin",
-			["Priest"] = "Priest",
-			["Rogue"] = "Rogue",
-			["Shaman"] = "Shaman",
-			["Warlock"] = "Warlock",
-			["Warrior"] = "Warrior",
-		},
-		["race"] = {
-			["Horde"] = {
-				["BloodElf"] = "Blood Elf",
-				["Goblin"] = "Goblin",
-				["HightmountainTauren"] = "Highmountain Tauren",
-				["MagharOrc"] = "Mag'har Orc",
-				["Nightborne"] = "Nightborne",
-				["Orc"] = "Orc",
-				["Pandaren"] = "Pandaren",
-				["Tauren"] = "Tauren",
-				["Troll"] = "Troll",
-				["Undead"] = "Undead",
-				["ZandalariTroll"] = "Zandalari Troll",
-			},
-			["Alliance"] = {
-				["DarkIronDwarf"] = "Dark Iron Dwarf",
-				["Draenei"] = "Draenei",
-				["Dwarf"] = "Dwarf",
-				["Gnome"] = "Gnome",
-				["Human"] = "Human",
-				["LightforgedDraenei"] = "Lightforged Draenei",
-				["NightElf"] = "Night Elf",
-				["Pandaren"] = "Pandaren",
-				["VoidElf"] = "Void Elf",
-				["Worgen"] = "Worgen",
-				["KulTiran"] = "Kul Tiran",
-			}
-		}
 	}
 }
 

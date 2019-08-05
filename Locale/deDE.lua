@@ -20,22 +20,6 @@ local L = {
 	["SYSTEM"] = {
 		["c-"] = "c-",
 		["r-"] = "r-",
-		["class"] = {
-			["DeathKnight"] = "Todesritter",
-			["DemonHunter"] = "Dämonenjäger",
-			["Druid"] = "Druide",
-		},
-		["race"] = {
-			["Horde"] = {
-				["BloodElf"] = "Blutelf",
-			},
-			["Alliance"] = {
-				["DarkIronDwarf"] = "Dunkeleisenzwerg",
-				["Draenei"] = "Draenei",
-				["Dwarf"] = "Zwerg",
-				["Gnome"] = "Gnom",
-			}
-		}
 	}
 }
 
