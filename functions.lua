@@ -344,9 +344,11 @@ frame:SetScript('OnEvent', function()
 end)
 
 local function getSearchDeepLvl(query)
-	if query:find(("%%d+%%-%%d+ %s%%\"%s+%%\" %s"):format(L.SYSTEM["r-"],addon.ruReg,L.SYSTEM["c-"]):gsub("-","%%-")) then
+	local l2 = (("%%d+-%%d+ %s\"%s+"):format(L.SYSTEM["r-"],addon.ruReg)):gsub("-","%%-")
+	local l3 = (("%%d+-%%d+ %s\"%s+%%\" %s"):format(L.SYSTEM["r-"],addon.ruReg,L.SYSTEM["c-"])):gsub("-","%%-")
+	if query:find(l3) then
 		return 3
-	elseif query:find(("%%d+%%-%%d+ %s%%\"%s+"):format(L.SYSTEM["r-"],addon.ruReg):gsub("-","%%-")) then
+	elseif query:find(l2) then
 		return 2
 	elseif query:find("%d+%-%d+") then
 		return 1
@@ -401,13 +403,18 @@ local function smartSearchAddWhoList(query, lvl)
 	local function CLASSsplit(query, race)
 		local new = 0
 		table.remove(addon.smartSearch.whoQueryList, progress)
-		for k,v in pairs(L.SYSTEM.race) do
-			if v==race then
-				race = k
-				break
+		if race then
+			for k,v in pairs(L.SYSTEM.race) do
+				if v==race then
+					race = k
+					break
+				end
 			end
+			
+			if not RaceClassCombo[race] then return print("Error race -",race) end
+		else
+			return table.insert(addon.smartSearch.whoQueryList, progress, query)
 		end
-		if not RaceClassCombo[race] then return print("Error race -",race) end
 		for k,v in pairs(RaceClassCombo[race]) do
 			table.insert(addon.smartSearch.whoQueryList, progress+k-1,format("%s %s\"%s\"",query,L.SYSTEM["c-"],v))
 		end
