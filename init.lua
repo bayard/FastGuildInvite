@@ -12,6 +12,7 @@ addon.functions = {}
 addon.interface = {}
 addon.version = GetAddOnMetadata('FastGuildInvite', 'Version')
 addon.whoQueryList = {}
+addon.isClassic = select(4,GetBuildInfo())<20000
 addon.color = {
 	WARRIOR='|cffc79c6e',
 	PALADIN='|cfff58cba',

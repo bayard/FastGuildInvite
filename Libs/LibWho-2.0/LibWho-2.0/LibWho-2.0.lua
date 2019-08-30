@@ -25,6 +25,14 @@ if not lib then
 	return	-- already loaded and no upgrade necessary
 end
 
+
+GetNumWhoResults = GetNumWhoResults or C_FriendList.GetNumWhoResults
+GetWhoInfo = GetWhoInfo or C_FriendList.GetWhoInfo
+SendWho = SendWho or C_FriendList.SendWho
+SetWhoToUi = SetWhoToUi or C_FriendList.SetWhoToUi
+SortWho = SortWho or C_FriendList.SortWho
+
+
 lib.callbacks = lib.callbacks or LibStub("CallbackHandler-1.0"):New(lib)
 local callbacks = lib.callbacks
 
@@ -467,12 +475,12 @@ function lib:AskWhoNext()
 			self.Quiet = false
 	
 			if args.whotoui then
-    			self.hooked.SetWhoToUI(args.whotoui)
+    			self.hooked.SetWhoToUi(args.whotoui)
     		else
-    			self.hooked.SetWhoToUI(args.gui and true or false)
+    			self.hooked.SetWhoToUi(args.gui and true or false)
 			end
 		else
-			self.hooked.SetWhoToUI(true)
+			self.hooked.SetWhoToUi(true)
 			self.Quiet = true		
 		end
 
@@ -788,7 +796,7 @@ local hooks = {
 	'SendWho',
 	'WhoFrameEditBox_OnEnterPressed',
 --	'FriendsFrame_OnEvent',
-	'SetWhoToUI',
+	'SetWhoToUi',
 }
 
 -- hook all functions (which are not yet hooked)
