@@ -1,1 +1,1 @@
-checkbox does not turn on remember all (if the setting was enabled)
+update for Classic WoW
