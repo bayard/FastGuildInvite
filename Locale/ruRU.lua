@@ -147,7 +147,7 @@ local L = {
 				["NightElf"] = C_CreatureInfo.GetRaceInfo(4) and C_CreatureInfo.GetRaceInfo(4).raceName or nil,	--	"Ночной эльф"
 				["Pandaren"] = C_CreatureInfo.GetRaceInfo(25) and C_CreatureInfo.GetRaceInfo(25).raceName or nil,	--	"Пандарен"
 				["VoidElf"] = C_CreatureInfo.GetRaceInfo(29) and C_CreatureInfo.GetRaceInfo(29).raceName or nil,	--	"Эльф Бездны"
-				["Worgen"] = C_CreatureInfo.GetRaceInfo(12) and C_CreatureInfo.GetRaceInfo(12).raceName or nil,	--	"Ворген"
+				["Worgen"] = C_CreatureInfo.GetRaceInfo(22) and C_CreatureInfo.GetRaceInfo(22).raceName or nil,	--	"Ворген"
 				["KulTiran"] = C_CreatureInfo.GetRaceInfo(32) and C_CreatureInfo.GetRaceInfo(32).raceName or nil,	--	"Култирасец"
 			}
 		}
