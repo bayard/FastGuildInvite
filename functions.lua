@@ -169,6 +169,8 @@ RaceClassCombo = {
 	VoidElf = {L.SYSTEM.class.Warrior,L.SYSTEM.class.Hunter,L.SYSTEM.class.Rogue,L.SYSTEM.class.Priest,L.SYSTEM.class.Mage,L.SYSTEM.class.Warlock,L.SYSTEM.class.Monk},
 	LightforgedDraenei = {L.SYSTEM.class.Warrior,L.SYSTEM.class.Paladin,L.SYSTEM.class.Hunter,L.SYSTEM.class.Priest,L.SYSTEM.class.Mage},
 	DarkIronDwarf = {L.SYSTEM.class.Warrior,L.SYSTEM.class.Paladin,L.SYSTEM.class.Hunter,L.SYSTEM.class.Rogue,L.SYSTEM.class.Priest,L.SYSTEM.class.Shaman,L.SYSTEM.class.Mage,L.SYSTEM.class.Warlock,L.SYSTEM.class.Monk},
+	KulTiran = {L.SYSTEM.class.Warrior,L.SYSTEM.class.Hunter,L.SYSTEM.class.Rogue,L.SYSTEM.class.Priest,L.SYSTEM.class.Shaman,L.SYSTEM.class.Mage,L.SYSTEM.class.Monk,L.SYSTEM.class.Druid,},
+	ZandalariTroll = {L.SYSTEM.class.Warrior,L.SYSTEM.class.Paladin,L.SYSTEM.class.Hunter,L.SYSTEM.class.Rogue,L.SYSTEM.class.Priest,L.SYSTEM.class.Shaman,L.SYSTEM.class.Mage,L.SYSTEM.class.Monk,L.SYSTEM.class.Druid,},
 	
 }
 else
@@ -411,7 +413,7 @@ local function smartSearchAddWhoList(query, lvl)
 				end
 			end
 			
-			if not RaceClassCombo[race] then return print("Error race -",race) end
+			if not RaceClassCombo[race] then return print("FGI Error race -",race) end
 		else
 			return table.insert(addon.smartSearch.whoQueryList, progress, query)
 		end
@@ -540,8 +542,9 @@ nextSearch = function()
 	elseif DB.SearchType == 3 then
 		if #addon.smartSearch.whoQueryList == 0 then
 			addon.smartSearch.whoQueryList = {DB.lowLimit.."-"..DB.highLimit}
+			interface.scanFrame.progressBar:SetMinMax(GetTime(), GetTime()+#addon.smartSearch.whoQueryList*FGI_SCANINTERVALTIME)
 		end
-		if addon.smartSearch.progress <= 2 then
+		if addon.smartSearch.progress <= 1 or addon.smartSearch.progress > #addon.smartSearch.whoQueryList then
 			interface.scanFrame.progressBar:SetMinMax(GetTime(), GetTime()+#addon.smartSearch.whoQueryList*FGI_SCANINTERVALTIME)
 		end
 	end
