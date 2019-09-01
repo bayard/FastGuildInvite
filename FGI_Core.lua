@@ -9,6 +9,7 @@ local FastGuildInvite = addon.lib
 local DB = addon.DB
 addon.icon = LibStub("LibDBIcon-1.0")
 local icon = addon.icon
+local color = addon.color
 
 addon.dataBroker = LibStub("LibDataBroker-1.1"):NewDataObject("FGI",
 	{type = "launcher", label = "FGI", icon = "Interface\\AddOns\\FastGuildInvite\\img\\minimap\\MiniMapButton"}
@@ -40,8 +41,40 @@ end
 
 
 function FastGuildInvite:OnEnable()
+	addon.debug = DB.debug
 	fn:FiltersInit()
 	fn:FiltersUpdate()
+	
+	interface.debugFrame = GUI:Create("Frame")
+	local debugFrame = interface.debugFrame
+	debugFrame:SetTitle("FGI Debug")
+	debugFrame:clearFrame(true)
+	debugFrame:SetWidth(700)
+	debugFrame:SetHeight(480)
+	
+	debugFrame.title:SetScript('OnMouseUp', function(mover)
+		local frame = mover:GetParent()
+		frame:StopMovingOrSizing()
+		local self = frame.obj
+		local status = self.status or self.localstatus
+		status.width = frame:GetWidth()
+		status.height = frame:GetHeight()
+		status.top = frame:GetTop()
+		status.left = frame:GetLeft()
+	end)
+	
+	debugFrame.debugList = GUI:Create("MultiLineEditBox")
+	local frame = debugFrame.debugList
+	-- frame:SetNumLines(50)
+	frame:SetLabel("")
+	frame:SetWidth(660)
+	frame.txt = ''
+	frame:DisableButton(true)
+	frame:SetHeight(440)
+	debugFrame:AddChild(frame)
+	
+	if not addon.debug then debugFrame:Hide() end
+	
 	if DB.keyBind then
 		-- SetBindingClick(DB.keyBind, interface.scanFrame.invite.frame:GetName())
 	end
@@ -107,6 +140,8 @@ function FastGuildInvite:OnInitialize()
 	DB.alredySended = type(DB.alredySended)=="table" and DB.alredySended or {}
 	DB.filtersList = type(DB.filtersList)=="table" and DB.filtersList or {}
 	
+	DB.debug = DB.debug or false
+	
 	if DB.clearDBtimes>1 then
 		for k,v in pairs(DB.alredySended) do	-- delete player from sended DB after "FGI_RESETSENDDBTIME"
 			if difftime(time({year = date("%Y"), month = date("%m"), day = date("%d")}), v) >= FGI_RESETSENDDBTIME[DB.clearDBtimes] then
@@ -121,9 +156,21 @@ function FastGuildInvite:OnInitialize()
 	icon:Register("FGI", addon.dataBroker, DB.minimap)
 end
 
+local function toggleDebug()
+	DB.debug = not DB.debug
+	addon.debug = DB.debug
+	if addon.debug then
+		interface.debugFrame:Show()
+	else
+		interface.debugFrame:Hide()
+	end
+	print("FGI Debug "..(DB.debug and color.green.."on" or color.red.."off").."|r")
+end
 function Console:FGIInput(str)
 	if str == '' then return Console:FGIHelp()
 	elseif str == 'show' then return interface.mainFrame:Show()
+	elseif str == 'debug' then 
+		toggleDebug()
 	elseif str == 'resetDB' then DB.alredySended = {}
 	elseif str == 'resetWindowsPos' then
 		
