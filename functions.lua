@@ -23,6 +23,16 @@ local time, next = time, next
 --	CanGuildInvite()
 -- LOCALIZED_CLASS_NAMES_MALE
 
+local function debug(msg)
+	if not addon.debug then return end
+	if msg == nil or type(msg) == "table" then
+		interface.debugFrame.debugList:SetText(interface.debugFrame.debugList:GetText()..color.red.."wrong debug input - msg = nil or table".."|r\n")
+		return
+	end
+	-- interface.debugFrame.debugList.txt = interface.debugFrame.debugList.txt..msg.."\n"
+	interface.debugFrame.debugList:SetText(interface.debugFrame.debugList:GetText()..msg.."\n")
+end
+
 function fn:SetKeybind(key)
 	if key then
 		if GetBindingAction(key) == "" or addon.DB.keyBind == key then
@@ -293,13 +303,16 @@ function fn:invitePlayer(noInv)
 		addon.msgQueue[list[1].name] = true
 	elseif DB.inviteType == 3 and not noInv then
 		local msg = DB.messageList[DB.curMessage]
+		debug(format("Send whisper: %s %s",list[1].name, msg))
 		fn:sendWhisper(msg, list[1].name)
 	end
 	if (DB.inviteType == 1 or DB.inviteType == 2) and not noInv then
+		debug(format("Invite: %s",list[1].name))
 		GuildInvite(list[1].name)
 	end
 	if not noInv or DB.rememberAll then
 		DB.alredySended[list[1].name] = time({year = date("%Y"), month = date("%m"), day = date("%d")})
+		debug(format("Remember: %s",list[1].name))
 	end
 	table.remove(list, 1)
 	inviteBtnText(format(L.interface["Пригласить: %d"], #list))
@@ -383,6 +396,7 @@ local function smartSearchAddWhoList(query, lvl)
 			a = a + math.ceil(dif/2)
 			return a.."-"..b
 		end)
+		debug(format("Add new lvl queries: (%s) and (%s); Query: %s", v1, v2, query))
 		table.remove(addon.smartSearch.whoQueryList, progress)
 		table.insert(addon.smartSearch.whoQueryList, progress, v1)
 		table.insert(addon.smartSearch.whoQueryList, progress+1, v2)
@@ -398,6 +412,7 @@ local function smartSearchAddWhoList(query, lvl)
 			new = new + 1
 		end
 		if new==0 then return table.insert(addon.smartSearch.whoQueryList, progress, query) end
+		debug(format("Add new race queries: %d; Query: %s", new, query))
 		local min, max = interface.scanFrame.progressBar:GetMinMax()
 		interface.scanFrame.progressBar:SetMinMax(min, max+(new)*FGI_SCANINTERVALTIME)
 		addon.smartSearch.progress = addon.smartSearch.progress - 1
@@ -421,6 +436,7 @@ local function smartSearchAddWhoList(query, lvl)
 			table.insert(addon.smartSearch.whoQueryList, progress+k-1,format("%s %s\"%s\"",query,L.SYSTEM["c-"],v))
 		end
 		if #RaceClassCombo[race]==0 then return table.insert(addon.smartSearch.whoQueryList, progress, query) end
+		debug(format("Add new class queries: %d; Query: %s", #RaceClassCombo[race], query))
 		local min, max = interface.scanFrame.progressBar:GetMinMax()
 		interface.scanFrame.progressBar:SetMinMax(min, max+(#RaceClassCombo[race])*FGI_SCANINTERVALTIME)
 		addon.smartSearch.progress = addon.smartSearch.progress - 1
@@ -448,10 +464,12 @@ local function filtered(player)
 				end
 			end
 			if v.filterByName then
-				if player.Name:find(v.filterByName) then
-					v.filteredCount = v.filteredCount + 1
-					fn:FiltersUpdate()
-					return true--,"name"
+				for k in v.filterByName:gmatch("([^;]+)") do
+					if player.Name:find(k) then
+						v.filteredCount = v.filteredCount + 1
+						fn:FiltersUpdate()
+						return true--,"name"
+					end
 				end
 			end
 			--[[if v.letterFilter then
@@ -505,8 +523,10 @@ local function SmartSearchWhoResultCallback(query, results, complete)
 	local searchLvl = getSearchDeepLvl(query)
 	if searchLvl == 1 and #results>=FGI_MAXWHORETURN then
 		smartSearchAddWhoList(query,1)
+		debug(format("Query (%s) return 50 or more results; SearchLevel-%d", query, searchLvl))
 	elseif searchLvl == 2 and #results>=FGI_MAXWHORETURN then
 		smartSearchAddWhoList(query,2)
+		debug(format("Query (%s) return 50 or more results; SearchLevel-%d", query, searchLvl))
 	-- 3lvl can't modified
 	end
 	
