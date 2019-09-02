@@ -495,9 +495,9 @@ local function filtered(player)
 	return false
 end
 
-local addNewPlayer
-if not classicWoW then
-addNewPlayer = function(t, p)
+--addNewPlayer
+-- if not classicWoW then
+local addNewPlayer = function(t, p)
 	if p.Guild == "" and not t.tempSendedInvites[p.Name] and not DB.alredySended[p.Name] and ((DB.enableFilters and not filtered(p)) or not DB.enableFilters) then
 		table.insert(t.inviteList, {name = p.Name, lvl = p.Level, race = p.Race, class = p.Class,  NoLocaleClass = p.NoLocaleClass})
 		t.tempSendedInvites[p.Name] = true
@@ -505,17 +505,17 @@ addNewPlayer = function(t, p)
 	local list = t.inviteList
 	interface.chooseInvites.player:SetText(#list > 0 and format("%s%s %d %s %s|r", color[list[1].NoLocaleClass:upper()], list[1].name, list[1].lvl, list[1].class, list[1].race) or "")
 end
-else
+--[[else
 addNewPlayer = function(t, p)
 	p = p.Name
 	if p.fullGuildName == "" and not t.tempSendedInvites[p.fullName] and not DB.alredySended[p.fullName] and ((DB.enableFilters and not filtered(p)) or not DB.enableFilters) then
-		table.insert(t.inviteList, {name = p.fullName, lvl = p.level, race = p.raceStr, class = p.classStr,  filename = p.filename})
+		table.insert(t.inviteList, {name = p.fullName, lvl = p.level, race = p.raceStr, class = p.classStr,  NoLocaleClass = p.filename})
 		t.tempSendedInvites[p.fullName] = true
 	end
 	local list = t.inviteList
-	interface.chooseInvites.player:SetText(#list > 0 and format("%s%s %d %s %s|r", color[list[1].filename:upper()], list[1].name, list[1].lvl, list[1].class, list[1].race) or "")
+	interface.chooseInvites.player:SetText(#list > 0 and format("%s%s %d %s %s|r", color[list[1].NoLocaleClass:upper()], list[1].name, list[1].lvl, list[1].class, list[1].race) or "")
 end
-end
+end]]
 
 
 
