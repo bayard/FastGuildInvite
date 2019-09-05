@@ -5,7 +5,8 @@ local settings = L.settings
 local size = settings.size
 local color = addon.color
 local interface = addon.interface
-local GUI = LibStub("AceKGUI-3.0")
+-- local GUI = LibStub("AceKGUI-3.0")
+local GUI = LibStub("AceGUI-3.0")
 local FastGuildInvite = addon.lib
 local DB
 
@@ -15,13 +16,58 @@ local function fontSize(self, font, size)
 	self:SetFont(font, size)
 end
 
-interface.mainFrame = GUI:Create("Frame")
+interface.gratitudeFrame = GUI:Create("ClearFrame")
+local gratitudeFrame = interface.gratitudeFrame
+gratitudeFrame:Hide()
+gratitudeFrame:SetTitle("Fast Guild Invite Gratitude")
+gratitudeFrame:SetWidth(700)
+gratitudeFrame:SetHeight(500)
+gratitudeFrame:SetLayout("Flow")
+
+gratitudeFrame.closeButton = GUI:Create('Button')
+local frame = gratitudeFrame.closeButton
+frame:SetText('X')
+frame:SetWidth(frame.frame:GetHeight())
+fn:closeBtn(frame.text)
+frame:SetCallback('OnClick', function()
+	interface.gratitudeFrame:Hide()
+end)
+gratitudeFrame:AddChild(frame)
+
+local labelWidth = (interface.gratitudeFrame.frame:GetWidth()-60)/3
+gratitudeFrame.testing = GUI:Create("TLabel")
+local frame = gratitudeFrame.testing
+frame:SetText(table.concat(L.Gratitude.testing, "\n"))
+fontSize(frame.label)
+frame:SetWidth(labelWidth)
+gratitudeFrame:AddChild(frame)
+
+gratitudeFrame.coding = GUI:Create("TLabel")
+local frame = gratitudeFrame.coding
+frame:SetText(table.concat(L.Gratitude.coding, "\n"))
+fontSize(frame.label)
+frame:SetWidth(labelWidth)
+gratitudeFrame:AddChild(frame)
+
+gratitudeFrame.donations = GUI:Create("TLabel")
+local frame = gratitudeFrame.donations
+frame:SetText(table.concat(L.Gratitude.donations, "\n"))
+fontSize(frame.label)
+frame:SetWidth(labelWidth)
+gratitudeFrame:AddChild(frame)
+
+
+
+
+
+
+interface.mainFrame = GUI:Create("ClearFrame")
 local mainFrame = interface.mainFrame
 mainFrame:Hide()
 mainFrame:SetTitle("Fast Guild Invite")
-mainFrame:clearFrame(true)
 mainFrame:SetWidth(size.mainFrameW)
 mainFrame:SetHeight(size.mainFrameH)
+mainFrame:SetLayout("Flow")
 
 mainFrame.title:SetScript('OnMouseUp', function(mover)
 	local frame = mover:GetParent()
@@ -46,6 +92,7 @@ mainFrame.closeButton = GUI:Create('Button')
 local frame = mainFrame.closeButton
 frame:SetText('X')
 frame:SetWidth(frame.frame:GetHeight())
+fn:closeBtn(frame.text)
 frame:SetCallback('OnClick', function()
 	interface.mainFrame:Hide()
 end)
@@ -54,15 +101,14 @@ mainFrame:AddChild(frame)
 
 
 
-mainFrame.inviteTypeGRP = GUI:Create("Frame")
+mainFrame.inviteTypeGRP = GUI:Create("GroupFrame")
 local inviteTypeGRP = mainFrame.inviteTypeGRP
 inviteTypeGRP:SetLayout("List")
-inviteTypeGRP:isGroupFrame(true)
 inviteTypeGRP:SetHeight(50)
 inviteTypeGRP:SetWidth(size.inviteTypeGRP)
 mainFrame:AddChild(inviteTypeGRP)
 
-inviteTypeGRP.inviteType = GUI:Create("Label")
+inviteTypeGRP.inviteType = GUI:Create("TLabel")
 local frame = inviteTypeGRP.inviteType
 frame:SetText(L.interface["Режим приглашения"])
 fontSize(frame.label)
@@ -84,10 +130,9 @@ inviteTypeGRP:AddChild(frame)
 
 
 
-mainFrame.mainCheckBoxGRP = GUI:Create("Frame")
+mainFrame.mainCheckBoxGRP = GUI:Create("GroupFrame")
 local mainCheckBoxGRP = mainFrame.mainCheckBoxGRP
 mainCheckBoxGRP:SetLayout("List")
-mainCheckBoxGRP:isGroupFrame(true)
 mainCheckBoxGRP:SetHeight(120)
 mainCheckBoxGRP:SetWidth(size.mainCheckBoxGRP)
 mainFrame:AddChild(mainCheckBoxGRP)
@@ -123,7 +168,7 @@ local function radioToggle(type)
 	DB.SearchType = type
 end
 
-mainCheckBoxGRP.normalSearch = GUI:Create("CheckBox")
+mainCheckBoxGRP.normalSearch = GUI:Create("TCheckBox")
 local frame = mainCheckBoxGRP.normalSearch
 frame:SetWidth(size.normalSearch)
 frame:SetLabel(L.interface["Обычный поиск"])
@@ -134,7 +179,7 @@ frame.frame:SetScript("OnClick", function()
 end)
 mainCheckBoxGRP:AddChild(frame)
 
-mainCheckBoxGRP.deepSearch = GUI:Create("CheckBox")
+mainCheckBoxGRP.deepSearch = GUI:Create("TCheckBox")
 local frame = mainCheckBoxGRP.deepSearch
 frame:SetWidth(size.deepSearch)
 frame:SetLabel(L.interface["Расширенное сканирование"])
@@ -146,7 +191,7 @@ frame.frame:SetScript("OnClick", function()
 end)
 mainCheckBoxGRP:AddChild(frame)
 
-mainCheckBoxGRP.smartSearch = GUI:Create("CheckBox")
+mainCheckBoxGRP.smartSearch = GUI:Create("TCheckBox")
 local frame = mainCheckBoxGRP.smartSearch
 frame:SetWidth(size.smartSearch)
 frame:SetLabel(L.interface["Умный поиск"])
@@ -158,7 +203,7 @@ frame.frame:SetScript("OnClick", function()
 end)
 mainCheckBoxGRP:AddChild(frame)
 
-mainCheckBoxGRP.backgroundRun = GUI:Create("CheckBox")
+mainCheckBoxGRP.backgroundRun = GUI:Create("TCheckBox")
 local frame = mainCheckBoxGRP.backgroundRun
 frame:SetWidth(size.backgroundRun)
 frame:SetLabel(L.interface["Запускать в фоновом режиме"])
@@ -169,7 +214,7 @@ frame.frame:HookScript("OnClick", function()
 end)
 mainCheckBoxGRP:AddChild(frame)
 
-mainCheckBoxGRP.enableFilters = GUI:Create("CheckBox")
+mainCheckBoxGRP.enableFilters = GUI:Create("TCheckBox")
 local frame = mainCheckBoxGRP.enableFilters
 frame:SetWidth(size.enableFilters)
 frame:SetLabel(L.interface["Включить фильтры"])
@@ -183,10 +228,9 @@ mainCheckBoxGRP:AddChild(frame)
 
 
 
-mainFrame.mainButtonsGRP = GUI:Create("Frame")
+mainFrame.mainButtonsGRP = GUI:Create("GroupFrame")
 local mainButtonsGRP = mainFrame.mainButtonsGRP
 mainButtonsGRP:SetLayout("List")
-mainButtonsGRP:isGroupFrame(true)
 mainButtonsGRP:SetHeight(80)
 mainButtonsGRP:SetWidth(size.mainButtonsGRP)
 mainFrame:AddChild(mainButtonsGRP)
@@ -229,18 +273,26 @@ frame.frame:SetScript("OnClick", function()
 end)
 mainButtonsGRP:AddChild(frame)
 
+mainButtonsGRP.Gratitude = GUI:Create("Button")
+local frame = mainButtonsGRP.Gratitude
+frame:SetText("Gratitude")
+fontSize(frame.text)
+frame:SetWidth(size.gratitude)
+frame:SetHeight(mainButtonsGRP.startScan.frame:GetHeight())
+frame:SetCallback("OnClick", function() interface.gratitudeFrame:Show() end)
+mainButtonsGRP:AddChild(frame)
 
 
 
-mainFrame.searchRangeGRP = GUI:Create("Frame")
+
+mainFrame.searchRangeGRP = GUI:Create("GroupFrame")
 local searchRangeGRP = mainFrame.searchRangeGRP
 searchRangeGRP:SetLayout("List")
-searchRangeGRP:isGroupFrame(true)
 searchRangeGRP:SetHeight(100)
 searchRangeGRP:SetWidth(size.searchRangeGRP)
 mainFrame:AddChild(searchRangeGRP)
 
-searchRangeGRP.lvlRange = GUI:Create("Label")
+searchRangeGRP.lvlRange = GUI:Create("TLabel")
 local frame = searchRangeGRP.lvlRange
 frame:SetText(L.interface["Диапазон уровней"])
 fontSize(frame.label)
@@ -248,7 +300,7 @@ frame:SetWidth(size.lvlRange)
 frame.label:SetJustifyH("CENTER")
 searchRangeGRP:AddChild(frame)
 
-searchRangeGRP.lvlRangeMin = GUI:Create("Label")
+searchRangeGRP.lvlRangeMin = GUI:Create("TLabel")
 local frame = searchRangeGRP.lvlRangeMin
 frame:SetText(FGI_MINLVL)
 fontSize(frame.label)
@@ -264,7 +316,7 @@ frame.frame:SetScript("OnMouseWheel",function(self,mod)
 end)
 searchRangeGRP:AddChild(frame)
 
-searchRangeGRP.lvlRangeLine = GUI:Create("Label")
+searchRangeGRP.lvlRangeLine = GUI:Create("TLabel")
 local frame = searchRangeGRP.lvlRangeLine
 frame:SetText('-')
 frame.label:SetJustifyH("CENTER")
@@ -272,7 +324,7 @@ fontSize(frame.label)
 frame:SetWidth(15)
 searchRangeGRP:AddChild(frame)
 
-searchRangeGRP.lvlRangeMax = GUI:Create("Label")
+searchRangeGRP.lvlRangeMax = GUI:Create("TLabel")
 local frame = searchRangeGRP.lvlRangeMax
 frame:SetText(FGI_MAXLVL)
 frame.label:SetJustifyH("LEFT")
@@ -288,7 +340,7 @@ frame.frame:SetScript("OnMouseWheel",function(self,mod)
 end)
 searchRangeGRP:AddChild(frame)
 
-searchRangeGRP.searchInterval = GUI:Create("Label")
+searchRangeGRP.searchInterval = GUI:Create("TLabel")
 local frame = searchRangeGRP.searchInterval
 frame:SetText(L.interface["Интервал"])
 frame:SetTooltip(L.interface.tooltip["Количество уровней сканируемых за один раз"])
@@ -303,7 +355,7 @@ frame.frame:HookScript("OnShow", function()
 end)
 searchRangeGRP:AddChild(frame)
 
-searchRangeGRP.searchIntervalVal = GUI:Create("Label")
+searchRangeGRP.searchIntervalVal = GUI:Create("TLabel")
 local frame = searchRangeGRP.searchIntervalVal
 frame:SetText(FGI_DEFAULT_SEARCHINTERVAL)
 fontSize(frame.label)
@@ -319,7 +371,7 @@ frame.frame:SetScript("OnMouseWheel",function(self,mod)
 end)
 searchRangeGRP:AddChild(frame)
 
-searchRangeGRP.raceFilterStart = GUI:Create("Label")
+searchRangeGRP.raceFilterStart = GUI:Create("TLabel")
 local frame = searchRangeGRP.raceFilterStart
 frame:SetText(L.interface["Фильтр рас начало:"])
 frame:SetTooltip(L.interface.tooltip["Уровень, с которого начинается фильтр по расам"])
@@ -334,7 +386,7 @@ frame.frame:HookScript("OnShow", function()
 end)
 searchRangeGRP:AddChild(frame)
 
-searchRangeGRP.raceFilterStartVal = GUI:Create("Label")
+searchRangeGRP.raceFilterStartVal = GUI:Create("TLabel")
 local frame = searchRangeGRP.raceFilterStartVal
 frame:SetText(FGI_DEFAULT_RACEFILTERSTART == FGI_MAXLVL+1 and L.interface["Откл."] or FGI_DEFAULT_RACEFILTERSTART)
 fontSize(frame.label)
@@ -354,7 +406,7 @@ frame.frame:SetScript("OnMouseWheel",function(self,mod)
 end)
 searchRangeGRP:AddChild(frame)
 
-searchRangeGRP.classFilterStart = GUI:Create("Label")
+searchRangeGRP.classFilterStart = GUI:Create("TLabel")
 local frame = searchRangeGRP.classFilterStart
 frame:SetText(L.interface["Фильтр классов начало:"])
 frame:SetTooltip(L.interface.tooltip["Уровень, с которого начинается фильтр по классам"])
@@ -369,7 +421,7 @@ frame.frame:HookScript("OnShow", function()
 end)
 searchRangeGRP:AddChild(frame)
 
-searchRangeGRP.classFilterStartVal = GUI:Create("Label")
+searchRangeGRP.classFilterStartVal = GUI:Create("TLabel")
 local frame = searchRangeGRP.classFilterStartVal
 frame:SetText(FGI_DEFAULT_CLASSFILTERSTART == FGI_MAXLVL+1 and L.interface["Откл."] or FGI_DEFAULT_CLASSFILTERSTART)
 fontSize(frame.label)
@@ -392,7 +444,7 @@ searchRangeGRP:AddChild(frame)
 
 
 
-mainFrame.wheelHint = GUI:Create("Label")
+mainFrame.wheelHint = GUI:Create("TLabel")
 local frame = mainFrame.wheelHint
 frame:SetText(L.interface["Для изменения значений используйте колесо мыши"])
 fontSize(frame.label)
@@ -409,6 +461,7 @@ local frame = CreateFrame('Frame')
 frame:RegisterEvent('PLAYER_ENTERING_WORLD')
 frame:SetScript('OnEvent', function()
 	mainFrame:Show()
+	gratitudeFrame:Show()
 	DB = addon.DB
 	
 	inviteTypeGRP.drop:SetValue(DB.inviteType)
@@ -430,6 +483,24 @@ frame:SetScript('OnEvent', function()
 		searchRangeGRP.classFilterStart.frame:Hide()
 	end
 	
+	
+	gratitudeFrame:ClearAllPoints()
+	gratitudeFrame:SetPoint("CENTER", UIParent, "CENTER", 0, 0)
+	
+	gratitudeFrame.closeButton:ClearAllPoints()
+	gratitudeFrame.closeButton:SetPoint("CENTER", gratitudeFrame.frame, "TOPRIGHT", -8, -8)
+	
+	gratitudeFrame.testing:ClearAllPoints()
+	gratitudeFrame.testing:SetPoint("TOPLEFT", gratitudeFrame.frame, "TOPLEFT", 20, -80)
+	gratitudeFrame.testing:SetPoint("BOTTOM", gratitudeFrame.frame, "BOTTOM", 0, 10)
+	
+	gratitudeFrame.coding:ClearAllPoints()
+	gratitudeFrame.coding:SetPoint("TOPLEFT", gratitudeFrame.testing.frame, "TOPRIGHT", 0, 0)
+	gratitudeFrame.coding:SetPoint("BOTTOM", gratitudeFrame.frame, "BOTTOM", 0, 10)
+	
+	gratitudeFrame.donations:ClearAllPoints()
+	gratitudeFrame.donations:SetPoint("TOPLEFT", gratitudeFrame.coding.frame, "TOPRIGHT", 0, 0)
+	gratitudeFrame.donations:SetPoint("BOTTOM", gratitudeFrame.frame, "BOTTOM", 0, 10)
 	
 	mainFrame.closeButton:ClearAllPoints()
 	mainFrame.closeButton:SetPoint("CENTER", mainFrame.frame, "TOPRIGHT", -8, -8)
@@ -494,6 +565,10 @@ frame:SetScript('OnEvent', function()
 	mainButtonsGRP.settingsBtn:ClearAllPoints()
 	mainButtonsGRP.settingsBtn:SetPoint("LEFT", mainButtonsGRP.chooseInvites.frame, "RIGHT", 2, 0)
 	
+	mainButtonsGRP.Gratitude:ClearAllPoints()
+	mainButtonsGRP.Gratitude:SetPoint("LEFT", mainButtonsGRP.settingsBtn.frame, "RIGHT", 2, 0)
+	
 	mainFrame:Hide()
+	gratitudeFrame:Hide()
 	frame:UnregisterEvent('PLAYER_ENTERING_WORLD')
 end)

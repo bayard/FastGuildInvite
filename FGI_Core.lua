@@ -4,7 +4,8 @@ local L = addon.L
 local interface = addon.interface
 local settings = L.settings
 local Console = LibStub("AceConsole-3.0")
-local GUI = LibStub("AceKGUI-3.0")
+-- local GUI = LibStub("AceKGUI-3.0")
+local GUI = LibStub("AceGUI-3.0")
 local FastGuildInvite = addon.lib
 local DB = addon.DB
 addon.icon = LibStub("LibDBIcon-1.0")
@@ -34,6 +35,46 @@ function addon.dataBroker.OnClick(self, button)
 	end
 end
 
+local function blackList(self)
+	local button = self.value;
+	if (button == "BLACKLIST") then
+		local dropdownFrame = UIDROPDOWNMENU_INIT_MENU;
+		local unit = dropdownFrame.unit;
+		local name = dropdownFrame.name;
+		local server = dropdownFrame.server;
+		local fullname = name;
+		
+		if ( server and ((not unit and GetNormalizedRealmName() ~= server) or (unit and UnitRealmRelationship(unit) ~= LE_REALM_RELATION_SAME)) ) then
+			fullname = name.."-"..server;
+		end
+		
+		fn:blackList(fullname)
+		interface.blackList:updateList()
+	end
+end
+
+local FGIBlackList = CreateFrame("Frame","FGIBlackListFrame")
+FGIBlackList:SetScript("OnEvent", function() hooksecurefunc("UnitPopup_OnClick", blackList) end)
+FGIBlackList:RegisterEvent("PLAYER_LOGIN")
+
+local PopupUnits = {}
+
+UnitPopupButtons["BLACKLIST"] = { text = "FGI - Black List",}
+
+table.insert( UnitPopupMenus["SELF"] ,1 , "BLACKLIST")
+
+for i,UPMenus in pairs(UnitPopupMenus) do
+	for j=1, #UPMenus do
+		if UPMenus[j] == "WHISPER" then
+		  PopupUnits[#PopupUnits + 1] = i
+		  pos = j + 1
+		  table.insert( UnitPopupMenus[i] ,pos , "BLACKLIST" )
+		  break
+		end
+	end
+end
+
+
 function addon.dataBroker.OnTooltipShow(GameTooltip)
 	local search = DB.SearchType == 3 and addon.smartSearch or addon.search
 	GameTooltip:SetText(format(L.FAQ.help.minimap,#search.inviteList, interface.scanFrame.progressBar:GetProgress()), 1, 1, 1)
@@ -44,11 +85,10 @@ function FastGuildInvite:OnEnable()
 	addon.debug = DB.debug
 	fn:FiltersInit()
 	fn:FiltersUpdate()
-	
-	interface.debugFrame = GUI:Create("Frame")
+		
+	interface.debugFrame = GUI:Create("ClearFrame")
 	local debugFrame = interface.debugFrame
 	debugFrame:SetTitle("FGI Debug")
-	debugFrame:clearFrame(true)
 	debugFrame:SetWidth(700)
 	debugFrame:SetHeight(480)
 	
@@ -100,9 +140,21 @@ function FastGuildInvite:OnEnable()
 		interface.addfilterFrame:SetPoint(DB.addfilterFrame.point, UIParent, DB.addfilterFrame.relativePoint, DB.addfilterFrame.xOfs, DB.addfilterFrame.yOfs)
 	end
 	if DB.messageFrame then
-		interface.addfilterFrame:ClearAllPoints()
-		interface.addfilterFrame:SetPoint(DB.messageFrame.point, UIParent, DB.messageFrame.relativePoint, DB.messageFrame.xOfs, DB.messageFrame.yOfs)
+		interface.messageFrame:ClearAllPoints()
+		interface.messageFrame:SetPoint(DB.messageFrame.point, UIParent, DB.messageFrame.relativePoint, DB.messageFrame.xOfs, DB.messageFrame.yOfs)
 	end
+	if DB.chooseInvites then
+		interface.chooseInvites:ClearAllPoints()
+		interface.chooseInvites:SetPoint(DB.chooseInvites.point, UIParent, DB.chooseInvites.relativePoint, DB.chooseInvites.xOfs, DB.chooseInvites.yOfs)
+	end
+	if DB.blackListPos then
+		interface.blackList:ClearAllPoints()
+		interface.blackList:SetPoint(DB.blackListPos.point, UIParent, DB.blackListPos.relativePoint, DB.blackListPos.xOfs, DB.blackListPos.yOfs)
+	end
+	interface.debugFrame:ClearAllPoints()
+	interface.debugFrame:SetPoint("TOP", UIParent, "TOP", 0, 0)
+	interface.gratitudeFrame:ClearAllPoints()
+	interface.gratitudeFrame:SetPoint("CENTER", UIParent, "CENTER", 0, 0)
 	
 	Console:RegisterChatCommand('fgi', 'FGIInput')
 	Console:RegisterChatCommand('FastGuildInvite', 'FGIInput')
@@ -139,6 +191,7 @@ function FastGuildInvite:OnInitialize()
 	
 	DB.alredySended = type(DB.alredySended)=="table" and DB.alredySended or {}
 	DB.filtersList = type(DB.filtersList)=="table" and DB.filtersList or {}
+	DB.blackList = type(DB.blackList)=="table" and DB.blackList or {}
 	
 	DB.debug = DB.debug or false
 	
@@ -175,22 +228,50 @@ function Console:FGIInput(str)
 	elseif str == 'resetWindowsPos' then
 		
 		interface.mainFrame:ClearAllPoints()
+		interface.gratitudeFrame:ClearAllPoints()
 		interface.scanFrame:ClearAllPoints()
 		interface.settingsFrame:ClearAllPoints()
 		interface.filtersFrame:ClearAllPoints()
 		interface.addfilterFrame:ClearAllPoints()
+		interface.messageFrame:ClearAllPoints()
+		interface.chooseInvites:ClearAllPoints()
+		interface.blackList:ClearAllPoints()
 		
 		interface.mainFrame:SetPoint("CENTER", UIParent)
+		interface.gratitudeFrame:SetPoint("CENTER", UIParent)
 		interface.scanFrame:SetPoint("CENTER", UIParent)
 		interface.settingsFrame:SetPoint("CENTER", UIParent)
 		interface.filtersFrame:SetPoint("CENTER", UIParent)
 		interface.addfilterFrame:SetPoint("CENTER", UIParent)
+		interface.messageFrame:SetPoint("CENTER", UIParent)
+		interface.chooseInvites:SetPoint("CENTER", UIParent)
+		interface.blackList:SetPoint("CENTER", UIParent)
 		
-		DB.mainFrame = nil
-		DB.scanFrame = nil
-		DB.settingsFrame = nil
-		DB.filtersFrame = nil
-		DB.addfilterFrame = nil
+		local point, relativeTo,relativePoint, xOfs, yOfs = interface.mainFrame.frame:GetPoint(1)
+		DB.mainFrame = {point=point, relativeTo=relativeTo, relativePoint=relativePoint, xOfs=xOfs, yOfs=yOfs,}
+		
+		point, relativeTo,relativePoint, xOfs, yOfs = interface.scanFrame.frame:GetPoint(1)
+		DB.scanFrame = {point=point, relativeTo=relativeTo, relativePoint=relativePoint, xOfs=xOfs, yOfs=yOfs,}
+		
+		point, relativeTo,relativePoint, xOfs, yOfs = interface.settingsFrame.frame:GetPoint(1)
+		DB.settingsFrame = {point=point, relativeTo=relativeTo, relativePoint=relativePoint, xOfs=xOfs, yOfs=yOfs,}
+		
+		point, relativeTo,relativePoint, xOfs, yOfs = interface.filtersFrame.frame:GetPoint(1)
+		DB.filtersFrame = {point=point, relativeTo=relativeTo, relativePoint=relativePoint, xOfs=xOfs, yOfs=yOfs,}
+		
+		point, relativeTo,relativePoint, xOfs, yOfs = interface.addfilterFrame.frame:GetPoint(1)
+		DB.addfilterFrame = {point=point, relativeTo=relativeTo, relativePoint=relativePoint, xOfs=xOfs, yOfs=yOfs,}
+		
+		point, relativeTo,relativePoint, xOfs, yOfs = interface.messageFrame.frame:GetPoint(1)
+		DB.messageFrame = {point=point, relativeTo=relativeTo, relativePoint=relativePoint, xOfs=xOfs, yOfs=yOfs,}
+		
+		point, relativeTo,relativePoint, xOfs, yOfs = interface.chooseInvites.frame:GetPoint(1)
+		DB.chooseInvites = {point=point, relativeTo=relativeTo, relativePoint=relativePoint, xOfs=xOfs, yOfs=yOfs,}
+		
+		point, relativeTo,relativePoint, xOfs, yOfs = interface.blackList.frame:GetPoint(1)
+		DB.blackList = {point=point, relativeTo=relativeTo, relativePoint=relativePoint, xOfs=xOfs, yOfs=yOfs,}
+		
+		C_UI.Reload()
 	elseif str == "factorySettings" then
 		FastGuildInvite.db:ResetDB()
 	end

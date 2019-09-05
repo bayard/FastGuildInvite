@@ -5,7 +5,8 @@ local settings = L.settings
 local size = settings.size
 local color = addon.color
 local interface = addon.interface
-local GUI = LibStub("AceKGUI-3.0")
+-- local GUI = LibStub("AceKGUI-3.0")
+local GUI = LibStub("AceGUI-3.0")
 local FastGuildInvite = addon.lib
 local DB
 
@@ -59,11 +60,10 @@ local function playerHaveInvite(msg)
 end
 
 
-interface.scanFrame = GUI:Create("Frame")
+interface.scanFrame = GUI:Create("ClearFrame")
 local scanFrame = interface.scanFrame
 scanFrame:Hide()
 scanFrame:SetTitle("FGI Scan")
-scanFrame:clearFrame(true)
 scanFrame:SetWidth(size.scanFrameW)
 scanFrame:SetHeight(size.scanFrameH)
 scanFrame.title:SetScript('OnMouseUp', function(mover)
@@ -89,6 +89,7 @@ scanFrame.closeButton = GUI:Create('Button')
 local frame = scanFrame.closeButton
 frame:SetText('X')
 frame:SetWidth(frame.frame:GetHeight())
+fn:closeBtn(frame.text)
 frame:SetCallback('OnClick', function()
 	interface.scanFrame:Hide()
 end)
@@ -198,6 +199,10 @@ frame:SetCallback("OnClick", function()
 	local resume = addon.search.state == "start"
 	if resume then
 		scanFrame.pausePlay.frame:Click()
+	else
+		interface.mainFrame.mainCheckBoxGRP.normalSearch:SetDisabled(false)
+		interface.mainFrame.mainCheckBoxGRP.deepSearch:SetDisabled(false)
+		interface.mainFrame.mainCheckBoxGRP.smartSearch:SetDisabled(false)
 	end
 	addon.search.inviteList = {}
 	addon.search.state = "stop"
@@ -216,7 +221,7 @@ frame:SetCallback("OnClick", function()
 	
 	
 	if resume then
-		C_Timer.After(FGI_SCANINTERVALTIME, function() scanFrame.pausePlay.frame:Click() end)
+		C_Timer.After(FGI_SCANINTERVALTIME+1, function() scanFrame.pausePlay.frame:Click() end)
 	else
 		addon.search.state = "stop"
 	end

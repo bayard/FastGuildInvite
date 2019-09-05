@@ -5,7 +5,8 @@ local settings = L.settings
 local size = settings.size
 local color = addon.color
 local interface = addon.interface
-local GUI = LibStub("AceKGUI-3.0")
+-- local GUI = LibStub("AceKGUI-3.0")
+local GUI = LibStub("AceGUI-3.0")
 local FastGuildInvite = addon.lib
 local DB
 
@@ -15,10 +16,10 @@ local function fontSize(self, font, size)
 	self:SetFont(font, size)
 end
 
-interface.chooseInvites = GUI:Create("Frame")
+interface.chooseInvites = GUI:Create("ClearFrame")
 local chooseInvites = interface.chooseInvites
+chooseInvites:Hide()
 chooseInvites:SetTitle("FGI Choose Invites")
-chooseInvites:clearFrame(true)
 chooseInvites:SetWidth(size.chooseInvitesW)
 chooseInvites:SetHeight(size.chooseInvitesH)
 
@@ -46,6 +47,7 @@ chooseInvites.closeButton = GUI:Create('Button')
 local frame = chooseInvites.closeButton
 frame:SetText('X')
 frame:SetWidth(frame.frame:GetHeight())
+fn:closeBtn(frame.text)
 frame:SetCallback('OnClick', function()
 	interface.chooseInvites:Hide()
 end)
@@ -92,6 +94,7 @@ chooseInvites:AddChild(frame)
 local frame = CreateFrame('Frame')
 frame:RegisterEvent('PLAYER_ENTERING_WORLD')
 frame:SetScript('OnEvent', function()
+	chooseInvites:Show()
 	DB = addon.DB
 	
 	chooseInvites.closeButton:ClearAllPoints()

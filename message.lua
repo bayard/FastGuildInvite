@@ -5,7 +5,8 @@ local settings = L.settings
 local size = settings.size
 local color = addon.color
 local interface = addon.interface
-local GUI = LibStub("AceKGUI-3.0")
+-- local GUI = LibStub("AceKGUI-3.0")
+local GUI = LibStub("AceGUI-3.0")
 local FastGuildInvite = addon.lib
 local DB
 
@@ -50,10 +51,10 @@ local function EditBoxChange(frame)
 	end)
 end
 
-interface.messageFrame = GUI:Create("Frame")
+interface.messageFrame = GUI:Create("ClearFrame")
 local messageFrame = interface.messageFrame
+messageFrame:Hide()
 messageFrame:SetTitle("FGI Message")
-messageFrame:clearFrame(true)
 messageFrame:SetWidth(size.messageFrameW)
 messageFrame:SetHeight(size.messageFrameH)
 
@@ -81,6 +82,7 @@ messageFrame.closeButton = GUI:Create('Button')
 local frame = messageFrame.closeButton
 frame:SetText('X')
 frame:SetWidth(frame.frame:GetHeight())
+fn:closeBtn(frame.text)
 frame:SetCallback('OnClick', function()
 	interface.messageFrame:Hide()
 	interface.settingsFrame:Show()
@@ -91,7 +93,7 @@ messageFrame:AddChild(frame)
 
 
 
-messageFrame.intro = GUI:Create("Label")
+messageFrame.intro = GUI:Create("TLabel")
 local frame = messageFrame.intro
 frame:SetText(L.interface["Слово NAME заглавными буквами будет заменено на название вашей гильдии."])
 fontSize(frame.label)
@@ -177,7 +179,7 @@ frame:SetCallback("OnClick", function()
 end)
 messageFrame:AddChild(frame)
 
-messageFrame.curMessage = GUI:Create("Label")
+messageFrame.curMessage = GUI:Create("TLabel")
 local frame = messageFrame.curMessage
 --frame:SetText(format(L.interface["Текущее сообщение: %s"], L.interface["Нет"]))
 fontSize(frame.label)
@@ -198,6 +200,7 @@ local frame = CreateFrame('Frame')
 frame:RegisterEvent('PLAYER_ENTERING_WORLD')
 frame:SetScript('OnEvent', function()
 	DB = addon.DB
+	messageFrame:Show()
 	
 	defaultValues()
 	

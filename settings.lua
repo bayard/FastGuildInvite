@@ -5,7 +5,8 @@ local settings = L.settings
 local size = settings.size
 local color = addon.color
 local interface = addon.interface
-local GUI = LibStub("AceKGUI-3.0")
+-- local GUI = LibStub("AceKGUI-3.0")
+local GUI = LibStub("AceGUI-3.0")
 local FastGuildInvite = addon.lib
 local DB
 
@@ -15,12 +16,13 @@ local function fontSize(self, font, size)
 	self:SetFont(font, size)
 end
 
-interface.settingsFrame = GUI:Create("Frame")
+interface.settingsFrame = GUI:Create("ClearFrame")
 local settingsFrame = interface.settingsFrame
+settingsFrame:Hide()
 settingsFrame:SetTitle("FGI Settings")
-settingsFrame:clearFrame(true)
 settingsFrame:SetWidth(size.settingsFrameW)
 settingsFrame:SetHeight(size.settingsFrameH)
+settingsFrame:SetLayout("Flow")
 
 settingsFrame.title:SetScript('OnMouseUp', function(mover)
 	local DB = addon.DB
@@ -46,6 +48,7 @@ settingsFrame.closeButton = GUI:Create('Button')
 local frame = settingsFrame.closeButton
 frame:SetText('X')
 frame:SetWidth(frame.frame:GetHeight())
+fn:closeBtn(frame.text)
 frame:SetCallback('OnClick', function()
 	interface.settingsFrame:Hide()
 	interface.mainFrame:Show()
@@ -55,15 +58,14 @@ settingsFrame:AddChild(frame)
 
 
 
-settingsFrame.settingsCheckBoxGRP = GUI:Create("Frame")
+settingsFrame.settingsCheckBoxGRP = GUI:Create("GroupFrame")
 local settingsCheckBoxGRP = settingsFrame.settingsCheckBoxGRP
 --settingsCheckBoxGRP:SetLayout("List")
-settingsCheckBoxGRP:isGroupFrame(true)
 settingsCheckBoxGRP:SetHeight(120)
 settingsCheckBoxGRP:SetWidth(size.settingsCheckBoxGRP)
 settingsFrame:AddChild(settingsCheckBoxGRP)
 
-settingsCheckBoxGRP.addonMSG = GUI:Create("CheckBox")
+settingsCheckBoxGRP.addonMSG = GUI:Create("TCheckBox")
 local frame = settingsCheckBoxGRP.addonMSG
 frame:SetWidth(size.addonMSG)
 frame:SetLabel(L.interface["Выключить сообщения аддона"])
@@ -75,7 +77,7 @@ frame.frame:HookScript("OnClick", function()
 end)
 settingsCheckBoxGRP:AddChild(frame)
 
-settingsCheckBoxGRP.systemMSG = GUI:Create("CheckBox")
+settingsCheckBoxGRP.systemMSG = GUI:Create("TCheckBox")
 local frame = settingsCheckBoxGRP.systemMSG
 frame:SetWidth(size.systemMSG)
 frame:SetLabel(L.interface["Выключить системные сообщения"])
@@ -87,7 +89,7 @@ frame.frame:HookScript("OnClick", function()
 end)
 settingsCheckBoxGRP:AddChild(frame)
 
-settingsCheckBoxGRP.sendMSG = GUI:Create("CheckBox")
+settingsCheckBoxGRP.sendMSG = GUI:Create("TCheckBox")
 local frame = settingsCheckBoxGRP.sendMSG
 frame:SetWidth(size.sendMSG)
 frame:SetLabel(L.interface["Выключить отправляемые сообщения"])
@@ -98,7 +100,7 @@ frame.frame:HookScript("OnClick", function()
 end)
 settingsCheckBoxGRP:AddChild(frame)
 
-settingsCheckBoxGRP.minimapButton = GUI:Create("CheckBox")
+settingsCheckBoxGRP.minimapButton = GUI:Create("TCheckBox")
 local frame = settingsCheckBoxGRP.minimapButton
 frame:SetWidth(size.minimapButton)
 frame:SetLabel(L.interface["Не отображать значок у миникарты"])
@@ -114,7 +116,7 @@ frame.frame:HookScript("OnClick", function()
 end)
 settingsCheckBoxGRP:AddChild(frame)
 
-settingsCheckBoxGRP.rememberAll = GUI:Create("CheckBox")
+settingsCheckBoxGRP.rememberAll = GUI:Create("TCheckBox")
 local frame = settingsCheckBoxGRP.rememberAll
 frame:SetWidth(size.rememberAll)
 frame:SetLabel(L.interface["Запоминать всех игроков"])
@@ -138,9 +140,8 @@ settingsFrame:AddChild(frame)
 
 
 
-settingsFrame.settingsButtonsGRP = GUI:Create("Frame")
+settingsFrame.settingsButtonsGRP = GUI:Create("GroupFrame")
 local settingsButtonsGRP = settingsFrame.settingsButtonsGRP
-settingsButtonsGRP:isGroupFrame(true)
 settingsButtonsGRP:SetHeight(45)
 settingsButtonsGRP:SetWidth(size.settingsButtonsGRP)
 settingsFrame:AddChild(settingsButtonsGRP)
@@ -158,7 +159,7 @@ frame:SetCallback("OnClick", function()
 end)
 settingsButtonsGRP:AddChild(frame)
 
-settingsButtonsGRP.keyBind = GUI:Create("Keybinding")
+settingsButtonsGRP.keyBind = GUI:Create("TKeybinding")
 local frame = settingsButtonsGRP.keyBind
 -- frame:SetLabel(format(L.interface["Назначить кнопку (%s)"], "none"))
 frame:SetTooltip(L.interface.tooltip["Назначить клавишу для приглашения"])
@@ -180,6 +181,17 @@ frame:SetCallback("OnClick", function()
 end)
 settingsButtonsGRP:AddChild(frame)
 
+settingsButtonsGRP.blackList = GUI:Create("Button")
+local frame = settingsButtonsGRP.blackList
+frame:SetText(L.interface["Черный список"])
+fontSize(frame.text)
+frame:SetWidth(size.blackList)
+frame:SetHeight(40)
+frame:SetCallback("OnClick", function()
+	interface.blackList:Show()
+end)
+settingsButtonsGRP:AddChild(frame)
+
 
 
 
@@ -188,6 +200,7 @@ settingsButtonsGRP:AddChild(frame)
 local frame = CreateFrame('Frame')
 frame:RegisterEvent('PLAYER_ENTERING_WORLD')
 frame:SetScript('OnEvent', function()
+	settingsFrame:Show()
 	DB = addon.DB
 	
 	settingsCheckBoxGRP.addonMSG:SetValue(DB.addonMSG or false)
@@ -220,6 +233,9 @@ frame:SetScript('OnEvent', function()
 	
 	settingsButtonsGRP.setMSG:ClearAllPoints()
 	settingsButtonsGRP.setMSG:SetPoint("LEFT", settingsButtonsGRP.keyBind.frame, "RIGHT", 2, 0)
+	
+	settingsButtonsGRP.blackList:ClearAllPoints()
+	settingsButtonsGRP.blackList:SetPoint("TOPRIGHT", settingsFrame.frame, "TOPRIGHT", -20, -30)
 	
 	settingsFrame:Hide()
 	frame:UnregisterEvent('PLAYER_ENTERING_WORLD')

@@ -25,6 +25,7 @@ local L = {
 	},
 	["interface"] = {
 		["Включен"] = "Included",
+		["Черный список"] = "Blacklist",
 		["Включить фильтры"] = "Enable filters",
 		["Выбрать приглашения"] = "Choose invitations",
 		["Выключен"] = "Switched off",

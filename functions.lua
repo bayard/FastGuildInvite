@@ -3,7 +3,8 @@ local fn=addon.functions
 local L = addon.L
 local interface = addon.interface
 local settings = L.settings
-local GUI = LibStub("AceKGUI-3.0")
+-- local GUI = LibStub("AceKGUI-3.0")
+local GUI = LibStub("AceGUI-3.0")
 local color = addon.color
 local FastGuildInvite = addon.lib
 addon.search = {progress=1, inviteList={}, state='stop', timeShift=0, tempSendedInvites={}, whoQueryList = {}}
@@ -23,7 +24,18 @@ local time, next = time, next
 --	CanGuildInvite()
 -- LOCALIZED_CLASS_NAMES_MALE
 
-local function debug(msg)
+function fn:closeBtn(obj)
+	obj:SetPoint("TOPLEFT", 2, -1)
+	obj:SetPoint("BOTTOMRIGHT", -2, 1)
+end
+
+function fn:blackList(name)
+	DB.blackList[name] = true
+	print(format("%sPlayer %s has been blacklisted|r", color.red, name))
+end
+
+local function debug(msg, colored)
+	if colored then msg = format("%s%s|r", colored, msg) end
 	if not addon.debug then return end
 	if msg == nil or type(msg) == "table" then
 		interface.debugFrame.debugList:SetText(interface.debugFrame.debugList:GetText()..color.red.."wrong debug input - msg = nil or table".."|r\n")
@@ -296,6 +308,11 @@ local function inviteBtnText(text)
 	interface.scanFrame.invite:SetText(text)
 end
 
+local function rememberPlayer(name)
+	DB.alredySended[name] = time({year = date("%Y"), month = date("%m"), day = date("%d")})
+	debug(format("Remember: %s",name))
+end
+
 function fn:invitePlayer(noInv)
 	local list = DB.SearchType == 3 and addon.smartSearch.inviteList or addon.search.inviteList
 	if #list==0 then return end
@@ -311,8 +328,7 @@ function fn:invitePlayer(noInv)
 		GuildInvite(list[1].name)
 	end
 	if not noInv or DB.rememberAll then
-		DB.alredySended[list[1].name] = time({year = date("%Y"), month = date("%m"), day = date("%d")})
-		debug(format("Remember: %s",list[1].name))
+		rememberPlayer(list[1].name)
 	end
 	table.remove(list, 1)
 	inviteBtnText(format(L.interface["Пригласить: %d"], #list))
@@ -495,27 +511,34 @@ local function filtered(player)
 	return false
 end
 
---addNewPlayer
--- if not classicWoW then
-local addNewPlayer = function(t, p)
-	if p.Guild == "" and not t.tempSendedInvites[p.Name] and not DB.alredySended[p.Name] and ((DB.enableFilters and not filtered(p)) or not DB.enableFilters) then
-		table.insert(t.inviteList, {name = p.Name, lvl = p.Level, race = p.Race, class = p.Class,  NoLocaleClass = p.NoLocaleClass})
-		t.tempSendedInvites[p.Name] = true
+
+local function addNewPlayer(t, p)
+	if not DB.blackList[p.Name] then
+		if p.Guild == "" then
+			if not t.tempSendedInvites[p.Name] then
+				if not DB.alredySended[p.Name] then
+					if ((DB.enableFilters and not filtered(p)) or not DB.enableFilters) then
+						table.insert(t.inviteList, {name = p.Name, lvl = p.Level, race = p.Race, class = p.Class,  NoLocaleClass = p.NoLocaleClass})
+						t.tempSendedInvites[p.Name] = true
+						debug(format("Add player %s",p.Name), color.green)
+					else
+						debug(format("Player %s has been fitlered",p.Name), color.blue)
+					end
+				else
+					debug(format("Invitation has already been sent to the player %s",p.Name), color.blue)
+				end
+			else
+				debug(format("Player %s alrady added",p.Name), color.yellow)
+			end
+		else
+			debug(format("Player %s already have guild.",p.Name), color.blue)
+		end
+	else
+		debug(format("Player %s find in black list.",p.Name), color.red)
 	end
 	local list = t.inviteList
 	interface.chooseInvites.player:SetText(#list > 0 and format("%s%s %d %s %s|r", color[list[1].NoLocaleClass:upper()], list[1].name, list[1].lvl, list[1].class, list[1].race) or "")
 end
---[[else
-addNewPlayer = function(t, p)
-	p = p.Name
-	if p.fullGuildName == "" and not t.tempSendedInvites[p.fullName] and not DB.alredySended[p.fullName] and ((DB.enableFilters and not filtered(p)) or not DB.enableFilters) then
-		table.insert(t.inviteList, {name = p.fullName, lvl = p.level, race = p.raceStr, class = p.classStr,  NoLocaleClass = p.filename})
-		t.tempSendedInvites[p.fullName] = true
-	end
-	local list = t.inviteList
-	interface.chooseInvites.player:SetText(#list > 0 and format("%s%s %d %s %s|r", color[list[1].NoLocaleClass:upper()], list[1].name, list[1].lvl, list[1].class, list[1].race) or "")
-end
-end]]
 
 
 
@@ -661,6 +684,9 @@ function fn:StartSearch(timer)
 	addon.search.state = "start"
 	searchIntervalTimer(true, timer)
 	nextSearch()
+	interface.mainFrame.mainCheckBoxGRP.normalSearch:SetDisabled(true)
+	interface.mainFrame.mainCheckBoxGRP.deepSearch:SetDisabled(true)
+	interface.mainFrame.mainCheckBoxGRP.smartSearch:SetDisabled(true)
 	Searchframe:SetScript("OnUpdate", SearchOnUpdate)
 end
 

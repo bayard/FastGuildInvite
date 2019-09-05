@@ -22,6 +22,7 @@ local L = {
 	},
 	["interface"] = {
 		["Игрок не добавлен в список исключений."] = "Игрок не добавлен в список исключений.",
+		["Черный список"] = "Черный список",
 		["Для изменения значений используйте колесо мыши"] = "Для изменения значений используйте колесо мыши",
 		["Включен"] = "Включен",
 		["Включить фильтры"] = "Включить фильтры",
@@ -155,7 +156,7 @@ local L = {
 }
 L.settings = {
 	size = {
-		mainFrameW = 600,
+		mainFrameW = 620,
 		mainFrameH = 320,
 		wheelHint = 350,
 		inviteTypeGRP = 200,
@@ -167,6 +168,7 @@ L.settings = {
 		startScan = 160,
 		chooseInvites = 180,
 		settingsBtn = 120,
+		gratitude = 120,
 		lvlRange = 150,
 		searchInterval = 120,
 		raceFilterStart = 160,
@@ -196,6 +198,9 @@ L.settings = {
 		chooseInvitesH = 100,
 		reject = 100,
 		invite = 100,
+		blackListW = 200,
+		blackListH = 360,
+		blackList = 150,
 		
 		classLabel = 60,
 		Ignore = 120,
@@ -249,6 +254,11 @@ L.settings = {
 	},
 	Font = 'Interface\\AddOns\\FastGuildInvite\\fonts\\PT_Sans_Narrow.ttf',
 	FontSize = 16,
+}
+L.Gratitude = {
+	testing = {"Testing:",},
+	coding = {"Coding:", "Knoot",},
+	donations = {"Donations:",}
 }
 
 
