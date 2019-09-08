@@ -119,42 +119,60 @@ function FastGuildInvite:OnEnable()
 		-- SetBindingClick(DB.keyBind, interface.scanFrame.invite.frame:GetName())
 	end
 	fn:SetKeybind(DB.keyBind)
+	
+	
 	if DB.mainFrame then
 		interface.mainFrame:ClearAllPoints()
 		interface.mainFrame:SetPoint(DB.mainFrame.point, UIParent, DB.mainFrame.relativePoint, DB.mainFrame.xOfs, DB.mainFrame.yOfs)
+	else
+		interface.mainFrame:SetPoint("CENTER", UIParent)
 	end
 	if DB.scanFrame then
 		interface.scanFrame:ClearAllPoints()
 		interface.scanFrame:SetPoint(DB.scanFrame.point, UIParent, DB.scanFrame.relativePoint, DB.scanFrame.xOfs, DB.scanFrame.yOfs)
+	else
+		interface.scanFrame:SetPoint("CENTER", UIParent)
 	end
 	if DB.settingsFrame then
 		interface.settingsFrame:ClearAllPoints()
 		interface.settingsFrame:SetPoint(DB.settingsFrame.point, UIParent, DB.settingsFrame.relativePoint, DB.settingsFrame.xOfs, DB.settingsFrame.yOfs)
+	else
+		interface.settingsFrame:SetPoint("CENTER", UIParent)
 	end
 	if DB.filtersFrame then
 		interface.filtersFrame:ClearAllPoints()
 		interface.filtersFrame:SetPoint(DB.filtersFrame.point, UIParent, DB.filtersFrame.relativePoint, DB.filtersFrame.xOfs, DB.filtersFrame.yOfs)
+	else
+		interface.filtersFrame:SetPoint("CENTER", UIParent)
 	end
 	if DB.addfilterFrame then
 		interface.addfilterFrame:ClearAllPoints()
 		interface.addfilterFrame:SetPoint(DB.addfilterFrame.point, UIParent, DB.addfilterFrame.relativePoint, DB.addfilterFrame.xOfs, DB.addfilterFrame.yOfs)
+	else
+		interface.addfilterFrame:SetPoint("CENTER", UIParent)
 	end
 	if DB.messageFrame then
 		interface.messageFrame:ClearAllPoints()
 		interface.messageFrame:SetPoint(DB.messageFrame.point, UIParent, DB.messageFrame.relativePoint, DB.messageFrame.xOfs, DB.messageFrame.yOfs)
+	else
+		interface.messageFrame:SetPoint("CENTER", UIParent)
 	end
 	if DB.chooseInvites then
 		interface.chooseInvites:ClearAllPoints()
 		interface.chooseInvites:SetPoint(DB.chooseInvites.point, UIParent, DB.chooseInvites.relativePoint, DB.chooseInvites.xOfs, DB.chooseInvites.yOfs)
+	else
+		interface.chooseInvites:SetPoint("CENTER", UIParent)
 	end
 	if DB.blackListPos then
 		interface.blackList:ClearAllPoints()
 		interface.blackList:SetPoint(DB.blackListPos.point, UIParent, DB.blackListPos.relativePoint, DB.blackListPos.xOfs, DB.blackListPos.yOfs)
+	else
+		interface.blackList:SetPoint("CENTER", UIParent)
 	end
 	interface.debugFrame:ClearAllPoints()
 	interface.debugFrame:SetPoint("TOP", UIParent, "TOP", 0, 0)
 	interface.gratitudeFrame:ClearAllPoints()
-	interface.gratitudeFrame:SetPoint("CENTER", UIParent, "CENTER", 0, 0)
+	interface.gratitudeFrame:SetPoint("CENTER", UIParent)
 	
 	Console:RegisterChatCommand('fgi', 'FGIInput')
 	Console:RegisterChatCommand('FastGuildInvite', 'FGIInput')

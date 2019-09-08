@@ -57,6 +57,13 @@ frame:SetWidth(labelWidth)
 gratitudeFrame:AddChild(frame)
 
 
+gratitudeFrame.frame:HookScript("OnShow", function()
+	gratitudeFrame.testing:SetWidth(labelWidth)
+	gratitudeFrame.coding:SetWidth(labelWidth)
+	gratitudeFrame.donations:SetWidth(labelWidth)
+end)
+
+
 
 
 
@@ -455,7 +462,6 @@ mainFrame:AddChild(frame)
 
 
 
-
 -- set points
 local frame = CreateFrame('Frame')
 frame:RegisterEvent('PLAYER_ENTERING_WORLD')
@@ -463,6 +469,7 @@ frame:SetScript('OnEvent', function()
 	mainFrame:Show()
 	gratitudeFrame:Show()
 	DB = addon.DB
+	
 	
 	inviteTypeGRP.drop:SetValue(DB.inviteType)
 	

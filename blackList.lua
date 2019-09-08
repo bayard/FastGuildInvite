@@ -21,6 +21,7 @@ blackList:Hide()
 blackList:SetTitle("FGI Black List")
 blackList:SetWidth(size.blackListW)
 blackList:SetHeight(size.blackListH)
+blackList:SetLayout("Flow")
 
 blackList.title:SetScript('OnMouseUp', function(mover)
 	local DB = addon.DB

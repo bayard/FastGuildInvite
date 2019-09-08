@@ -60,7 +60,7 @@ settingsFrame:AddChild(frame)
 
 settingsFrame.settingsCheckBoxGRP = GUI:Create("GroupFrame")
 local settingsCheckBoxGRP = settingsFrame.settingsCheckBoxGRP
---settingsCheckBoxGRP:SetLayout("List")
+settingsCheckBoxGRP:SetLayout("List")
 settingsCheckBoxGRP:SetHeight(120)
 settingsCheckBoxGRP:SetWidth(size.settingsCheckBoxGRP)
 settingsFrame:AddChild(settingsCheckBoxGRP)
@@ -200,15 +200,10 @@ settingsButtonsGRP:AddChild(frame)
 local frame = CreateFrame('Frame')
 frame:RegisterEvent('PLAYER_ENTERING_WORLD')
 frame:SetScript('OnEvent', function()
-	settingsFrame:Show()
 	DB = addon.DB
+	settingsFrame:Show()
 	
-	settingsCheckBoxGRP.addonMSG:SetValue(DB.addonMSG or false)
-	settingsCheckBoxGRP.systemMSG:SetValue(DB.systemMSG or false)
-	settingsCheckBoxGRP.sendMSG:SetValue(DB.sendMSG or false)
-	settingsCheckBoxGRP.minimapButton:SetValue(DB.minimap.hide or false)
-	settingsCheckBoxGRP.rememberAll:SetValue(DB.rememberAll or false)
-	settingsFrame.clearDBtimes:SetValue(DB.clearDBtimes)
+	settingsCheckBoxGRP.addonMSG:SetValue(true)
 	
 	settingsFrame.closeButton:ClearAllPoints()
 	settingsFrame.closeButton:SetPoint("CENTER", settingsFrame.frame, "TOPRIGHT", -8, -8)
@@ -236,6 +231,13 @@ frame:SetScript('OnEvent', function()
 	
 	settingsButtonsGRP.blackList:ClearAllPoints()
 	settingsButtonsGRP.blackList:SetPoint("TOPRIGHT", settingsFrame.frame, "TOPRIGHT", -20, -30)
+	
+	settingsCheckBoxGRP.addonMSG:SetValue(DB.addonMSG or false)
+	settingsCheckBoxGRP.systemMSG:SetValue(DB.systemMSG or false)
+	settingsCheckBoxGRP.sendMSG:SetValue(DB.sendMSG or false)
+	settingsCheckBoxGRP.minimapButton:SetValue(DB.minimap.hide or false)
+	settingsCheckBoxGRP.rememberAll:SetValue(DB.rememberAll or false)
+	settingsFrame.clearDBtimes:SetValue(DB.clearDBtimes)
 	
 	settingsFrame:Hide()
 	frame:UnregisterEvent('PLAYER_ENTERING_WORLD')
