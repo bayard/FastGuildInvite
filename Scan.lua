@@ -9,9 +9,11 @@ local interface = addon.interface
 local GUI = LibStub("AceGUI-3.0")
 local FastGuildInvite = addon.lib
 local DB
+local debug = fn.debug
 
 local auto_decline = {}
 addon.msgQueue = {}
+
 
 local function fontSize(self, font, size)
 	font = font or settings.Font
@@ -146,11 +148,9 @@ frame:SetScript("OnEvent", function(_,_,msg)
 	if not name then return end
 	if type == "not_found" then
 		DB.alredySended[name] = nil
-		if not DB.sendMSG then
-			print(format(ERR_GUILD_PLAYER_NOT_FOUND_S, name).." "..L.interface["Игрок не добавлен в список исключений."])
-		end
+		debug(format(ERR_GUILD_PLAYER_NOT_FOUND_S, name).." "..L.interface["Игрок не добавлен в список исключений."])
 	elseif type == "auto_decline" then
-		print("!debug!", format(ERR_CHAT_PLAYER_NOT_FOUND_S,name), "don't send MSG!!!")
+		debug(format(ERR_CHAT_PLAYER_NOT_FOUND_S, name))
 		auto_decline[name] = true
 	elseif type == "invite" then
 		local list = DB.SearchType == 3 and addon.smartSearch.inviteList or addon.search.inviteList

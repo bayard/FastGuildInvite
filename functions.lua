@@ -34,7 +34,7 @@ function fn:blackList(name)
 	print(format("%sPlayer %s has been blacklisted|r", color.red, name))
 end
 
-local function debug(msg, colored)
+function fn:debug(msg, colored)
 	if colored then msg = format("%s%s|r", colored, msg) end
 	if not addon.debug then return end
 	if msg == nil or type(msg) == "table" then
@@ -44,6 +44,7 @@ local function debug(msg, colored)
 	-- interface.debugFrame.debugList.txt = interface.debugFrame.debugList.txt..msg.."\n"
 	interface.debugFrame.debugList:SetText(interface.debugFrame.debugList:GetText()..msg.."\n")
 end
+local debug = fn.debug
 
 function fn:SetKeybind(key)
 	if key then
@@ -515,23 +516,27 @@ end
 local function addNewPlayer(t, p)
 	if not DB.blackList[p.Name] then
 		if p.Guild == "" then
-			if not t.tempSendedInvites[p.Name] then
-				if not DB.alredySended[p.Name] then
-					if ((DB.enableFilters and not filtered(p)) or not DB.enableFilters) then
-						table.insert(t.inviteList, {name = p.Name, lvl = p.Level, race = p.Race, class = p.Class,  NoLocaleClass = p.NoLocaleClass})
-						t.tempSendedInvites[p.Name] = true
-						debug(format("Add player %s",p.Name), color.green)
+			if DB.leave[p.Name] then
+				if not t.tempSendedInvites[p.Name] then
+					if not DB.alredySended[p.Name] then
+						if ((DB.enableFilters and not filtered(p)) or not DB.enableFilters) then
+							table.insert(t.inviteList, {name = p.Name, lvl = p.Level, race = p.Race, class = p.Class,  NoLocaleClass = p.NoLocaleClass})
+							t.tempSendedInvites[p.Name] = true
+							debug(format("Add player %s",p.Name), color.green)
+						else
+							debug(format("Player %s has been fitlered",p.Name), color.yellow)
+						end
 					else
-						debug(format("Player %s has been fitlered",p.Name), color.blue)
+						debug(format("Invitation has already been sent to the player %s",p.Name), color.yellow)
 					end
 				else
-					debug(format("Invitation has already been sent to the player %s",p.Name), color.blue)
+					debug(format("Player %s alrady added",p.Name), color.yellow)
 				end
 			else
-				debug(format("Player %s alrady added",p.Name), color.yellow)
+				debug(format("Player %s previously exited (or was expelled) from the guild.", p.Name), color.yellow)
 			end
 		else
-			debug(format("Player %s already have guild.",p.Name), color.blue)
+			debug(format("Player %s already have guild.",p.Name), color.yellow)
 		end
 	else
 		debug(format("Player %s was found in the blacklist.",p.Name), color.red)
