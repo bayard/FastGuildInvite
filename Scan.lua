@@ -91,7 +91,7 @@ scanFrame.closeButton = GUI:Create('Button')
 local frame = scanFrame.closeButton
 frame:SetText('X')
 frame:SetWidth(frame.frame:GetHeight())
-fn:closeBtn(frame.text)
+fn:closeBtn(frame)
 frame:SetCallback('OnClick', function()
 	interface.scanFrame:Hide()
 end)
@@ -148,9 +148,9 @@ frame:SetScript("OnEvent", function(_,_,msg)
 	if not name then return end
 	if type == "not_found" then
 		DB.alredySended[name] = nil
-		debug(format(ERR_GUILD_PLAYER_NOT_FOUND_S, name).." "..L.interface["Игрок не добавлен в список исключений."])
+		debug(format(ERR_GUILD_PLAYER_NOT_FOUND_S, name).." "..L.interface["Игрок не добавлен в список исключений."], color.yellow)
 	elseif type == "auto_decline" then
-		debug(format(ERR_CHAT_PLAYER_NOT_FOUND_S, name))
+		debug(format(ERR_CHAT_PLAYER_NOT_FOUND_S, name), color.yellow)
 		auto_decline[name] = true
 	elseif type == "invite" then
 		local list = DB.SearchType == 3 and addon.smartSearch.inviteList or addon.search.inviteList

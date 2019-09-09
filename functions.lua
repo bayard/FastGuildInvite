@@ -25,8 +25,8 @@ local time, next = time, next
 -- LOCALIZED_CLASS_NAMES_MALE
 
 function fn:closeBtn(obj)
-	obj:SetPoint("TOPLEFT", 2, -1)
-	obj:SetPoint("BOTTOMRIGHT", -2, 1)
+	obj.text:SetPoint("TOPLEFT", 2, -1)
+	obj.text:SetPoint("BOTTOMRIGHT", -2, 1)
 end
 
 function fn:blackList(name)
@@ -34,15 +34,17 @@ function fn:blackList(name)
 	print(format("%sPlayer %s has been blacklisted|r", color.red, name))
 end
 
-function fn:debug(msg, colored)
-	if colored then msg = format("%s%s|r", colored, msg) end
-	if not addon.debug then return end
+function fn.debug(...)
+	local msg, colored = ...
+	local text = interface.debugFrame.debugList:GetText() or ''
 	if msg == nil or type(msg) == "table" then
-		interface.debugFrame.debugList:SetText(interface.debugFrame.debugList:GetText()..color.red.."wrong debug input - msg = nil or table".."|r\n")
+		interface.debugFrame.debugList:SetText(format("%swrong debug input - msg = %s\n%s",color.red,type(msg),text))
 		return
 	end
+	if colored then msg = format("%s%s|r", colored, msg) end
+	if not addon.debug then return end
 	-- interface.debugFrame.debugList.txt = interface.debugFrame.debugList.txt..msg.."\n"
-	interface.debugFrame.debugList:SetText(interface.debugFrame.debugList:GetText()..msg.."\n")
+	interface.debugFrame.debugList:SetText(format("%s\n%s",msg,text))
 end
 local debug = fn.debug
 
@@ -516,7 +518,7 @@ end
 local function addNewPlayer(t, p)
 	if not DB.blackList[p.Name] then
 		if p.Guild == "" then
-			if DB.leave[p.Name] then
+			if not DB.leave[p.Name] then
 				if not t.tempSendedInvites[p.Name] then
 					if not DB.alredySended[p.Name] then
 						if ((DB.enableFilters and not filtered(p)) or not DB.enableFilters) then
@@ -533,7 +535,7 @@ local function addNewPlayer(t, p)
 					debug(format("Player %s alrady added",p.Name), color.yellow)
 				end
 			else
-				debug(format("Player %s previously exited (or was expelled) from the guild.", p.Name), color.yellow)
+				debug(format("Player %s previously exited (or was expelled) from the guild.", p.Name), color.red)
 			end
 		else
 			debug(format("Player %s already have guild.",p.Name), color.yellow)
@@ -548,6 +550,7 @@ end
 
 
 local function SmartSearchWhoResultCallback(query, results, complete)
+	debug(format("Query %s", query))
 	local searchLvl = getSearchDeepLvl(query)
 	if searchLvl == 1 and #results>=FGI_MAXWHORETURN then
 		smartSearchAddWhoList(query,1)

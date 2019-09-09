@@ -4,7 +4,6 @@ local L = addon.L
 local interface = addon.interface
 local settings = L.settings
 local Console = LibStub("AceConsole-3.0")
--- local GUI = LibStub("AceKGUI-3.0")
 local GUI = LibStub("AceGUI-3.0")
 local FastGuildInvite = addon.lib
 local DB = addon.DB
@@ -84,9 +83,10 @@ frame:SetScript("OnEvent", function(...)
 		name = strsub(n,1,(strfind(n,"%s") or 2)-1)
 		if format(ERR_GUILD_LEAVE_S ,name) == msg then
 			DB.leave[name] = true
-			debug(format("Player %s left the guild or was expelled.", name))
+			debug(format("Player %s left the guild or was expelled.", name), color.yellow)
 		end
 	end
+	--ERR_GUILD_REMOVE_SS
 end)
 
 function addon.dataBroker.OnTooltipShow(GameTooltip)
@@ -103,8 +103,9 @@ function FastGuildInvite:OnEnable()
 	interface.debugFrame = GUI:Create("ClearFrame")
 	local debugFrame = interface.debugFrame
 	debugFrame:SetTitle("FGI Debug")
-	debugFrame:SetWidth(700)
-	debugFrame:SetHeight(480)
+	debugFrame:SetWidth(400)
+	debugFrame:SetHeight(720)
+	debugFrame:SetLayout("Fill")
 	
 	debugFrame.title:SetScript('OnMouseUp', function(mover)
 		local frame = mover:GetParent()
@@ -121,13 +122,25 @@ function FastGuildInvite:OnEnable()
 	local frame = debugFrame.debugList
 	-- frame:SetNumLines(50)
 	frame:SetLabel("")
-	frame:SetWidth(660)
+	frame:SetWidth(interface.debugFrame.frame:GetWidth()-40)
 	frame.txt = ''
 	frame:DisableButton(true)
-	frame:SetHeight(440)
+	frame:SetHeight(interface.debugFrame.frame:GetHeight()-40)
 	debugFrame:AddChild(frame)
 	
-	if not addon.debug then debugFrame:Hide() end
+	debugFrame.closeButton = GUI:Create('Button')
+	local frame = debugFrame.closeButton
+	frame:SetText('X')
+	frame:SetWidth(frame.frame:GetHeight())
+	fn:closeBtn(frame)
+	frame:SetCallback('OnClick', function()
+		interface.debugFrame:Hide()
+	end)
+	debugFrame:AddChild(frame)
+	-- debugFrame.closeButton:ClearAllPoints()
+	debugFrame.closeButton:SetPoint("CENTER", debugFrame.frame, "TOPRIGHT", -8, -8)
+	
+	if not addon.debug then debugFrame:Hide() else debugFrame:Show() end
 	
 	if DB.keyBind then
 		-- SetBindingClick(DB.keyBind, interface.scanFrame.invite.frame:GetName())
@@ -184,7 +197,8 @@ function FastGuildInvite:OnEnable()
 		interface.blackList:SetPoint("CENTER", UIParent)
 	end
 	interface.debugFrame:ClearAllPoints()
-	interface.debugFrame:SetPoint("TOP", UIParent, "TOP", 0, 0)
+	interface.debugFrame:SetPoint("TOPLEFT", UIParent, "TOPLEFT", 0, 0)
+	
 	interface.gratitudeFrame:ClearAllPoints()
 	interface.gratitudeFrame:SetPoint("CENTER", UIParent)
 	

@@ -47,7 +47,7 @@ blackList.closeButton = GUI:Create('Button')
 local frame = blackList.closeButton
 frame:SetText('X')
 frame:SetWidth(frame.frame:GetHeight())
-fn:closeBtn(frame.text)
+fn:closeBtn(frame)
 frame:SetCallback('OnClick', function()
 	interface.blackList:Hide()
 end)

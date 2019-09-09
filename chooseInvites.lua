@@ -47,7 +47,7 @@ chooseInvites.closeButton = GUI:Create('Button')
 local frame = chooseInvites.closeButton
 frame:SetText('X')
 frame:SetWidth(frame.frame:GetHeight())
-fn:closeBtn(frame.text)
+fn:closeBtn(frame)
 frame:SetCallback('OnClick', function()
 	interface.chooseInvites:Hide()
 end)
