@@ -11,6 +11,7 @@ local DB = addon.DB
 addon.icon = LibStub("LibDBIcon-1.0")
 local icon = addon.icon
 local color = addon.color
+local debug = fn.debug
 
 addon.dataBroker = LibStub("LibDataBroker-1.1"):NewDataObject("FGI",
 	{type = "launcher", label = "FGI", icon = "Interface\\AddOns\\FastGuildInvite\\img\\minimap\\MiniMapButton"}
@@ -73,7 +74,20 @@ for i,UPMenus in pairs(UnitPopupMenus) do
 		end
 	end
 end
-
+local frame = CreateFrame("Frame")
+frame:RegisterEvent("CHAT_MSG_SYSTEM")
+frame:SetScript("OnEvent", function(...)
+	local _,_, msg = ...
+	place = strfind(ERR_GUILD_LEAVE_S ,"%s",1,true)
+	if (place) then
+		n = strsub(msg,place)
+		name = strsub(n,1,(strfind(n,"%s") or 2)-1)
+		if format(ERR_GUILD_LEAVE_S ,name) == msg then
+			DB.leave[name] = true
+			debug(format("Player %s left the guild or was expelled.", name))
+		end
+	end
+end)
 
 function addon.dataBroker.OnTooltipShow(GameTooltip)
 	local search = DB.SearchType == 3 and addon.smartSearch or addon.search
@@ -210,6 +224,7 @@ function FastGuildInvite:OnInitialize()
 	DB.alredySended = type(DB.alredySended)=="table" and DB.alredySended or {}
 	DB.filtersList = type(DB.filtersList)=="table" and DB.filtersList or {}
 	DB.blackList = type(DB.blackList)=="table" and DB.blackList or {}
+	DB.leave = type(DB.leave)=="table" and DB.leave or {}
 	
 	DB.debug = DB.debug or false
 	
