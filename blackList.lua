@@ -56,7 +56,7 @@ blackList:AddChild(frame)
 function blackList:updateList()
 	local str = ''
 	for k,v in pairs(DB.blackList) do
-		str = format("%s%s\n", str, k)
+		str = format("%s%s\n", str, v)
 	end
 	blackList.list:SetText(str)
 end
