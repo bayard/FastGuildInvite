@@ -72,10 +72,12 @@ function fn:FiltersInit()
 		interface.filtersFrame:AddChild(frame)
 		
 		table.insert(list, frame)
-	end
-	for i=1, FGI_FILTERSLIMIT do
+		
 		interface.filtersFrame.filterList[i]:Hide()
 	end
+	--[[for i=1, FGI_FILTERSLIMIT do
+		interface.filtersFrame.filterList[i]:Hide()
+	end]]
 end
 
 function fn:FilterChange(id)
@@ -392,7 +394,7 @@ local function getSearchDeepLvl(query)
 end
 
 local function smartSearchGetParams(query)
-	local class = query:match(("%s%%\"(%s)+%%\""):format(L.SYSTEM["c-"],addon.ruReg):gsub("-","%%-"))
+	local class = query:match(("%s%%\"(%s+)%%\""):format(L.SYSTEM["c-"],addon.ruReg):gsub("-","%%-"))
 	local race = query:match(("%s%%\"(%s+)%%\""):format(L.SYSTEM["r-"],addon.ruReg):gsub("-","%%-"))
 	local lvl = {}
 	for s in query:gmatch("%d+") do
@@ -516,7 +518,11 @@ end
 
 
 local function addNewPlayer(t, p)
-	if not DB.blackList[p.Name] then
+	local blackList = false
+	for i=1,#DB.blackList do
+		if DB.blackList[i] == p.Name then blackList = true;break; end
+	end
+	if not blackList then
 		if p.Guild == "" then
 			if not DB.leave[p.Name] then
 				if not t.tempSendedInvites[p.Name] then
