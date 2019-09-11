@@ -9,6 +9,7 @@ local GUI = LibStub("AceGUI-3.0")
 local FastGuildInvite = addon.lib
 local DB
 
+
 local function fontSize(self, font, size)
 	font = font or settings.Font
 	size = size or settings.FontSize
