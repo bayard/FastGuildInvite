@@ -1,1 +1,3 @@
-blacklist fix
+hidden windows fixed
+added an automatic filter for players who left the guild
+blacklist add
