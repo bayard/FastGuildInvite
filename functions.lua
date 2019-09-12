@@ -285,7 +285,7 @@ end
 local function hideWhisper(...)
 	local name = select(4,...):match("([^-]*)")
 	if addon.removeMsgList[name] then
-		addon.removeMsgList[name] = nil
+		--addon.removeMsgList[name] = nil
 		return true
 	else
 		return false, select(3,...)
@@ -404,33 +404,91 @@ local function smartSearchGetParams(query)
 	return {class = class,race = race, min = lvl[1], max = lvl[2]}
 end
 
+local function isQueryFiltered(query)
+	if DB.filtersList == {} or not DB.enableFilters then return false end
+	local filter = {}
+	local q = smartSearchGetParams(query)
+	q.min = tonumber(q.min)
+	q.max = tonumber(q.max)
+	for fName,v in pairs(DB.filtersList) do
+		local lvl = {}
+		if v.filterOn then
+			filter[fName] = {min = false, max = false, --[[race = false,class = false,]]}
+			if v.lvlRange then
+				for s in v.lvlRange:gmatch("%d+") do
+					table.insert(lvl, tonumber(s))
+				end
+				filter[fName].min, filter[fName].max = lvl[1], lvl[2] or lvl[1]
+			end
+			if v.raceFilter then filter[fName].race = v.raceFilter[q.race] and q.race or false end
+			if v.classFilter then filter[fName].class = v.classFilter[q.class] and q.class or false end
+		end
+	end
+	for fName,f in pairs(filter) do
+		local sLevel = getSearchDeepLvl(query)
+		local lvlFiltered, raceFiltered, classFiltered = (f.min and (f.min <= q.min and f.max >= q.max)), (f.race and (f.race==q.race)), (f.class and (f.class==q.class))
+		local queryFiltered = false
+		if sLevel == 1 then
+			queryFiltered = lvlFiltered and f.race==nil and f.class==nil
+		elseif sLevel == 2 then
+			queryFiltered = f.class==nil and ((lvlFiltered and raceFiltered) or (not f.min and raceFiltered)) or (lvlFiltered and f.race==nil and f.class==nil)
+		elseif sLevel == 3 then
+			queryFiltered = (lvlFiltered and (f.race==nil and f.class==nil) or (raceFiltered and f.class==nil) or (f.race==nil and classFiltered) or (raceFiltered and classFiltered)) or (not f.min and (raceFiltered and f.class==nil) or (f.race==nil and classFiltered))
+		else
+			debug('wrong search Level', color.red)
+		end
+		if queryFiltered then debug(string.format('query (%s) filtered by filter (%s)', query, fName), color.blue);return true end
+	end
+	return false
+end
+
 local function smartSearchAddWhoList(query, lvl)
 	local progress = addon.smartSearch.progress-1
+	local tAddN =0
 	local function LVLsplit(query)
 		local v1 = query:gsub("(%d+)%-(%d+)", function(a,b)
 			local dif = b-a
 			b = b - math.floor(dif/2)-1
+			tAddN = tAddN+1
 			return a.."-"..b
 		end)
 		local v2 = query:gsub("(%d+)%-(%d+)", function(a,b)
 			local dif = b-a
 			a = a + math.ceil(dif/2)
+			tAddN = tAddN+1
 			return a.."-"..b
 		end)
-		debug(format("Add new lvl queries: (%s) and (%s); Query: %s", v1, v2, query))
 		table.remove(addon.smartSearch.whoQueryList, progress)
-		table.insert(addon.smartSearch.whoQueryList, progress, v1)
-		table.insert(addon.smartSearch.whoQueryList, progress+1, v2)
+		
+		
+		if isQueryFiltered(v1) then
+			tAddN = tAddN-1
+		else
+			debug(format("Add new lvl query: (%s); Query: %s", v1, query))
+			table.insert(addon.smartSearch.whoQueryList, progress, v1)
+		end
+		if isQueryFiltered(v2) then
+			tAddN = tAddN-1
+		else
+			debug(format("Add new lvl query: (%s); Query: %s", v2, query))
+			table.insert(addon.smartSearch.whoQueryList, progress+1-(2-tAddN), v2)
+		end
+		
+		
+		
 		local min, max = interface.scanFrame.progressBar:GetMinMax()
-		interface.scanFrame.progressBar:SetMinMax(min, max+2*FGI_SCANINTERVALTIME)
+		interface.scanFrame.progressBar:SetMinMax(min, max+tAddN*FGI_SCANINTERVALTIME)
 		addon.smartSearch.progress = addon.smartSearch.progress - 1
 	end
 	local function RACEsplit(query)
 		local new = 0
 		table.remove(addon.smartSearch.whoQueryList, progress)
 		for _,v in pairs(L.SYSTEM.race) do
-			table.insert(addon.smartSearch.whoQueryList, progress+new,format("%s %s\"%s\"",query,L.SYSTEM["r-"],v))
-			new = new + 1
+			local newQuery = format("%s %s\"%s\"",query,L.SYSTEM["r-"],v)
+			if not isQueryFiltered(newQuery) then
+				table.insert(addon.smartSearch.whoQueryList, progress+new, newQuery)
+				new = new + 1
+			end
 		end
 		if new==0 then return table.insert(addon.smartSearch.whoQueryList, progress, query) end
 		debug(format("Add new race queries: %d; Query: %s", new, query))
@@ -454,12 +512,16 @@ local function smartSearchAddWhoList(query, lvl)
 			return table.insert(addon.smartSearch.whoQueryList, progress, query)
 		end
 		for k,v in pairs(RaceClassCombo[race]) do
-			table.insert(addon.smartSearch.whoQueryList, progress+k-1,format("%s %s\"%s\"",query,L.SYSTEM["c-"],v))
+			local newQuery = format("%s %s\"%s\"",query,L.SYSTEM["c-"],v)
+			if not isQueryFiltered(newQuery) then
+				table.insert(addon.smartSearch.whoQueryList, progress+new, newQuery)
+				new = new + 1
+			end
 		end
 		if #RaceClassCombo[race]==0 then return table.insert(addon.smartSearch.whoQueryList, progress, query) end
 		debug(format("Add new class queries: %d; Query: %s", #RaceClassCombo[race], query))
 		local min, max = interface.scanFrame.progressBar:GetMinMax()
-		interface.scanFrame.progressBar:SetMinMax(min, max+(#RaceClassCombo[race])*FGI_SCANINTERVALTIME)
+		interface.scanFrame.progressBar:SetMinMax(min, max+(new)*FGI_SCANINTERVALTIME)
 		addon.smartSearch.progress = addon.smartSearch.progress - 1
 	end
 	local queryParams = smartSearchGetParams(query, lvl)
