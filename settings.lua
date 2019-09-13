@@ -120,7 +120,7 @@ settingsCheckBoxGRP.rememberAll = GUI:Create("TCheckBox")
 local frame = settingsCheckBoxGRP.rememberAll
 frame:SetWidth(size.rememberAll)
 frame:SetLabel(L.interface["Запоминать всех игроков"])
-frame:SetTooltip(L.interface.tooltip["Записывать игрока в базу данных сразу после нахождения"])
+frame:SetTooltip(L.interface.tooltip["Записывать игрока в базу данных даже если приглашение не было отправлено"])
 fontSize(frame.text)
 frame.frame:HookScript("OnClick", function()
 	DB.rememberAll = settingsCheckBoxGRP.rememberAll:GetValue()
