@@ -94,7 +94,7 @@ local L = {
 			["Не отображать в чате сообщения аддона"] = "Do not display addon messages in Chat",
 			["Уровень, с которого начинается фильтр по классам"] = "The level at which the filter starts by class",
 			["Уровень, с которого начинается фильтр по расам"] = "The level at which the race filter starts",
-			["Записывать игрока в базу данных сразу после нахождения"] = "Write the player to the database immediately after finding",
+			["Записывать игрока в базу данных даже если приглашение не было отправлено"] = "Write a player to the database even if the invitation has not been sent",
 		},
 		["invType"] = {
 			["Отправить сообщение и пригласить"] = "Send a message and invite",
