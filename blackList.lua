@@ -56,7 +56,7 @@ blackList:AddChild(frame)
 function blackList:updateList()
 	local str = ''
 	for k,v in pairs(DB.blackList) do
-		str = format("%s%s\n", str, v)
+		str = format("%s%s\n", str, k)
 	end
 	blackList.list:SetText(str)
 end
@@ -81,7 +81,7 @@ frame:SetCallback("OnClick", function()
 	DB.blackList = {}
 	for k,v in pairs(table.pack(fn:split(blackList.list:GetText(),"\n"))) do
 		if v~="" then
-			table.insert(DB.blackList,v)
+			DB.blackList[v] = true
 		end
 	end
 end)
