@@ -1,3 +1,6 @@
+local function GetRaceName(id)
+	return C_CreatureInfo.GetRaceInfo(id) and C_CreatureInfo.GetRaceInfo(id).raceName or nil
+end
 local L = {
 	["FAQ"] = {
 		["help"] = {
@@ -126,30 +129,30 @@ local L = {
 		},
 		["race"] = {
 			["Horde"] = {
-				["BloodElf"] = C_CreatureInfo.GetRaceInfo(10) and C_CreatureInfo.GetRaceInfo(10).raceName or nil,	--	"Эльф крови"
-				["Goblin"] = C_CreatureInfo.GetRaceInfo(9) and C_CreatureInfo.GetRaceInfo(9).raceName or nil,	--	"Гоблин"
-				["HightmountainTauren"] = C_CreatureInfo.GetRaceInfo(28) and C_CreatureInfo.GetRaceInfo(28).raceName or nil,	--	"Таурен Крутогорья"
-				["MagharOrc"] = C_CreatureInfo.GetRaceInfo(36) and C_CreatureInfo.GetRaceInfo(36).raceName or nil,	--	"Маг'хар"
-				["Nightborne"] = C_CreatureInfo.GetRaceInfo(27) and C_CreatureInfo.GetRaceInfo(27).raceName or nil,	--	"Ночнорожденный"
-				["Orc"] = C_CreatureInfo.GetRaceInfo(2) and C_CreatureInfo.GetRaceInfo(2).raceName or nil,	--	"Орк"
-				["Pandaren"] = C_CreatureInfo.GetRaceInfo(26) and C_CreatureInfo.GetRaceInfo(26).raceName or nil,	--	"Пандарен"
-				["Tauren"] = C_CreatureInfo.GetRaceInfo(6) and C_CreatureInfo.GetRaceInfo(6).raceName or nil,	--	"Таурен"
-				["Troll"] = C_CreatureInfo.GetRaceInfo(8) and C_CreatureInfo.GetRaceInfo(8).raceName or nil,	--	"Тролль"
-				["Undead"] = C_CreatureInfo.GetRaceInfo(5) and C_CreatureInfo.GetRaceInfo(5).raceName or nil,	--	"Нежить"
-				["ZandalariTroll"] = C_CreatureInfo.GetRaceInfo(31) and C_CreatureInfo.GetRaceInfo(31).raceName or nil,	--	"Зандалар"
+				["BloodElf"] = GetRaceName(10),	--	"Эльф крови"
+				["Goblin"] = GetRaceName(9),	--	"Гоблин"
+				["HightmountainTauren"] = GetRaceName(28),	--	"Таурен Крутогорья"
+				["MagharOrc"] = GetRaceName(36),	--	"Маг'хар"
+				["Nightborne"] = GetRaceName(27),	--	"Ночнорожденный"
+				["Orc"] = GetRaceName(2),	--	"Орк"
+				["Pandaren"] = GetRaceName(26),	--	"Пандарен"
+				["Tauren"] = GetRaceName(6),	--	"Таурен"
+				["Troll"] = GetRaceName(8),	--	"Тролль"
+				["Undead"] = GetRaceName(5),	--	"Нежить"
+				["ZandalariTroll"] = GetRaceName(31),	--	"Зандалар"
 			},
 			["Alliance"] = {
-				["DarkIronDwarf"] = C_CreatureInfo.GetRaceInfo(34) and C_CreatureInfo.GetRaceInfo(34).raceName or nil,	--	"Дворф из клана Черного Железа"
-				["Draenei"] = C_CreatureInfo.GetRaceInfo(11) and C_CreatureInfo.GetRaceInfo(11).raceName or nil,	--	"Дреней"
-				["Dwarf"] = C_CreatureInfo.GetRaceInfo(3) and C_CreatureInfo.GetRaceInfo(3).raceName or nil,	--	"Дворф"
-				["Gnome"] = C_CreatureInfo.GetRaceInfo(7) and C_CreatureInfo.GetRaceInfo(7).raceName or nil,	--	"Гном"
-				["Human"] = C_CreatureInfo.GetRaceInfo(1) and C_CreatureInfo.GetRaceInfo(1).raceName or nil,	--	"Человек"
-				["LightforgedDraenei"] = C_CreatureInfo.GetRaceInfo(30) and C_CreatureInfo.GetRaceInfo(30).raceName or nil,	--	"Озаренный дреней"
-				["NightElf"] = C_CreatureInfo.GetRaceInfo(4) and C_CreatureInfo.GetRaceInfo(4).raceName or nil,	--	"Ночной эльф"
-				["Pandaren"] = C_CreatureInfo.GetRaceInfo(25) and C_CreatureInfo.GetRaceInfo(25).raceName or nil,	--	"Пандарен"
-				["VoidElf"] = C_CreatureInfo.GetRaceInfo(29) and C_CreatureInfo.GetRaceInfo(29).raceName or nil,	--	"Эльф Бездны"
-				["Worgen"] = C_CreatureInfo.GetRaceInfo(22) and C_CreatureInfo.GetRaceInfo(22).raceName or nil,	--	"Ворген"
-				["KulTiran"] = C_CreatureInfo.GetRaceInfo(32) and C_CreatureInfo.GetRaceInfo(32).raceName or nil,	--	"Култирасец"
+				["DarkIronDwarf"] = GetRaceName(34),	--	"Дворф из клана Черного Железа"
+				["Draenei"] = GetRaceName(11),	--	"Дреней"
+				["Dwarf"] = GetRaceName(3),	--	"Дворф"
+				["Gnome"] = GetRaceName(7),	--	"Гном"
+				["Human"] = GetRaceName(1),	--	"Человек"
+				["LightforgedDraenei"] = GetRaceName(30),	--	"Озаренный дреней"
+				["NightElf"] = GetRaceName(4),	--	"Ночной эльф"
+				["Pandaren"] = GetRaceName(25),	--	"Пандарен"
+				["VoidElf"] = GetRaceName(29),	--	"Эльф Бездны"
+				["Worgen"] = GetRaceName(22),	--	"Ворген"
+				["KulTiran"] = GetRaceName(32),	--	"Култирасец"
 			}
 		}
 	}
