@@ -718,6 +718,10 @@ local methods = {
 		self.text:SetText(label)
 	end,
 
+	["GetLabel"] = function(self)
+		return self.text:GetText()
+	end,
+
 	["SetDescription"] = function(self, desc)
 		if desc then
 			if not self.desc then
