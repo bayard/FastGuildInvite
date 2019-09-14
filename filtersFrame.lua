@@ -71,6 +71,11 @@ filtersFrame:Hide()
 filtersFrame:SetTitle("FGI Filters")
 filtersFrame:SetWidth(size.filtersFrameW)
 filtersFrame:SetHeight(size.filtersFrameH)
+filtersFrame:SetLayout("Fill")
+
+local frame = GUI:Create("GroupFrame")
+filtersFrame:AddChild(frame)
+frame:Release()
 
 filtersFrame.title:SetScript('OnMouseUp', function(mover)
 	local frame = mover:GetParent()
