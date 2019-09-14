@@ -381,64 +381,6 @@ for k,v in pairs(L.SYSTEM.race) do
 	fontSize(frame.text)
 	addfilterFrame:AddChild(frame)
 end
---[[
-addfilterFrame.rasesCheckBoxRace[1] = GUI:Create("TCheckBox")
-local frame = addfilterFrame.rasesCheckBoxRace[1]
-fontSize(frame.text)
-addfilterFrame:AddChild(frame)
-
-addfilterFrame.rasesCheckBoxRace[2] = GUI:Create("TCheckBox")
-local frame = addfilterFrame.rasesCheckBoxRace[2]
-fontSize(frame.text)
-addfilterFrame:AddChild(frame)
-
-addfilterFrame.rasesCheckBoxRace[3] = GUI:Create("TCheckBox")
-local frame = addfilterFrame.rasesCheckBoxRace[3]
-fontSize(frame.text)
-addfilterFrame:AddChild(frame)
-
-addfilterFrame.rasesCheckBoxRace[4] = GUI:Create("TCheckBox")
-local frame = addfilterFrame.rasesCheckBoxRace[4]
-fontSize(frame.text)
-addfilterFrame:AddChild(frame)
-
-addfilterFrame.rasesCheckBoxRace[5] = GUI:Create("TCheckBox")
-local frame = addfilterFrame.rasesCheckBoxRace[5]
-fontSize(frame.text)
-addfilterFrame:AddChild(frame)
-
-addfilterFrame.rasesCheckBoxRace[6] = GUI:Create("TCheckBox")
-local frame = addfilterFrame.rasesCheckBoxRace[6]
-fontSize(frame.text)
-addfilterFrame:AddChild(frame)
-
-addfilterFrame.rasesCheckBoxRace[7] = GUI:Create("TCheckBox")
-local frame = addfilterFrame.rasesCheckBoxRace[7]
-fontSize(frame.text)
-addfilterFrame:AddChild(frame)
-
-addfilterFrame.rasesCheckBoxRace[8] = GUI:Create("TCheckBox")
-local frame = addfilterFrame.rasesCheckBoxRace[8]
-fontSize(frame.text)
-addfilterFrame:AddChild(frame)
-
-addfilterFrame.rasesCheckBoxRace[9] = GUI:Create("TCheckBox")
-local frame = addfilterFrame.rasesCheckBoxRace[9]
-fontSize(frame.text)
-addfilterFrame:AddChild(frame)
-
-addfilterFrame.rasesCheckBoxRace[10] = GUI:Create("TCheckBox")
-local frame = addfilterFrame.rasesCheckBoxRace[10]
-fontSize(frame.text)
-addfilterFrame:AddChild(frame)
-
-addfilterFrame.rasesCheckBoxRace[11] = GUI:Create("TCheckBox")
-local frame = addfilterFrame.rasesCheckBoxRace[11]
-fontSize(frame.text)
-addfilterFrame:AddChild(frame)
-]]
-
-
 
 local function EditBoxChange(frame)
 	frame.editbox:SetScript("OnEnterPressed", function(self)
