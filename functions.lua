@@ -1,6 +1,7 @@
 local addon=FGI
 local fn=addon.functions
 local L = addon.L
+local CLASS = L.SYSTEM.class
 local interface = addon.interface
 local settings = L.settings
 -- local GUI = LibStub("AceKGUI-3.0")
@@ -94,19 +95,19 @@ function fn:FilterChange(id)
 		addfilterFrame.classesCheckBoxIgnore:SetValue(true)
 	else
 		addfilterFrame.classesCheckBoxIgnore:SetValue(false)
-		addfilterFrame.classesCheckBoxDruid:SetValue(class[L.SYSTEM.class.Druid] or false)
-		addfilterFrame.classesCheckBoxHunter:SetValue(class[L.SYSTEM.class.Hunter] or false)
-		addfilterFrame.classesCheckBoxMage:SetValue(class[L.SYSTEM.class.Mage] or false)
-		addfilterFrame.classesCheckBoxPaladin:SetValue(class[L.SYSTEM.class.Paladin] or false)
-		addfilterFrame.classesCheckBoxPriest:SetValue(class[L.SYSTEM.class.Priest] or false)
-		addfilterFrame.classesCheckBoxRogue:SetValue(class[L.SYSTEM.class.Rogue] or false)
-		addfilterFrame.classesCheckBoxShaman:SetValue(class[L.SYSTEM.class.Shaman] or false)
-		addfilterFrame.classesCheckBoxWarlock:SetValue(class[L.SYSTEM.class.Warlock] or false)
-		addfilterFrame.classesCheckBoxWarrior:SetValue(class[L.SYSTEM.class.Warrior] or false)
+		addfilterFrame.classesCheckBoxDruid:SetValue(class[CLASS.Druid] or false)
+		addfilterFrame.classesCheckBoxHunter:SetValue(class[CLASS.Hunter] or false)
+		addfilterFrame.classesCheckBoxMage:SetValue(class[CLASS.Mage] or false)
+		addfilterFrame.classesCheckBoxPaladin:SetValue(class[CLASS.Paladin] or false)
+		addfilterFrame.classesCheckBoxPriest:SetValue(class[CLASS.Priest] or false)
+		addfilterFrame.classesCheckBoxRogue:SetValue(class[CLASS.Rogue] or false)
+		addfilterFrame.classesCheckBoxShaman:SetValue(class[CLASS.Shaman] or false)
+		addfilterFrame.classesCheckBoxWarlock:SetValue(class[CLASS.Warlock] or false)
+		addfilterFrame.classesCheckBoxWarrior:SetValue(class[CLASS.Warrior] or false)
 		if not classicWoW then
-		addfilterFrame.classesCheckBoxDeathKnight:SetValue(class[L.SYSTEM.class.DeathKnight] or false)
-		addfilterFrame.classesCheckBoxDemonHunter:SetValue(class[L.SYSTEM.class.DemonHunter] or false)
-		addfilterFrame.classesCheckBoxMonk:SetValue(class[L.SYSTEM.class.Monk] or false)
+		addfilterFrame.classesCheckBoxDeathKnight:SetValue(class[CLASS.DeathKnight] or false)
+		addfilterFrame.classesCheckBoxDemonHunter:SetValue(class[CLASS.DemonHunter] or false)
+		addfilterFrame.classesCheckBoxMonk:SetValue(class[CLASS.Monk] or false)
 		end
 	end
 	
@@ -175,41 +176,41 @@ end
 local RaceClassCombo 
 if not classicWoW then
 RaceClassCombo = {
-	Orc = {L.SYSTEM.class.Warrior,L.SYSTEM.class.Hunter,L.SYSTEM.class.Rogue,L.SYSTEM.class.Shaman,L.SYSTEM.class.Mage,L.SYSTEM.class.Warlock,L.SYSTEM.class.Monk,L.SYSTEM.class.DeathKnight},
-	Undead = {L.SYSTEM.class.Warrior,L.SYSTEM.class.Hunter,L.SYSTEM.class.Rogue,L.SYSTEM.class.Priest,L.SYSTEM.class.Mage,L.SYSTEM.class.Warlock,L.SYSTEM.class.Monk,L.SYSTEM.class.DeathKnight},
-	Tauren = {L.SYSTEM.class.Warrior,L.SYSTEM.class.Paladin,L.SYSTEM.class.Hunter,L.SYSTEM.class.Priest,L.SYSTEM.class.Shaman,L.SYSTEM.class.Monk,L.SYSTEM.class.Druid,L.SYSTEM.class.DeathKnight},
-	Troll = {L.SYSTEM.class.Warrior,L.SYSTEM.class.Hunter,L.SYSTEM.class.Rogue,L.SYSTEM.class.Priest,L.SYSTEM.class.Shaman,L.SYSTEM.class.Mage,L.SYSTEM.class.Warlock,L.SYSTEM.class.Monk,L.SYSTEM.class.Druid,L.SYSTEM.class.DeathKnight},
-	Human = {L.SYSTEM.class.Warrior,L.SYSTEM.class.Paladin,L.SYSTEM.class.Hunter,L.SYSTEM.class.Rogue,L.SYSTEM.class.Priest,L.SYSTEM.class.Mage,L.SYSTEM.class.Warlock,L.SYSTEM.class.Monk,L.SYSTEM.class.DeathKnight},
-	Dwarf = {L.SYSTEM.class.Warrior,L.SYSTEM.class.Paladin,L.SYSTEM.class.Hunter,L.SYSTEM.class.Rogue,L.SYSTEM.class.Priest,L.SYSTEM.class.Shaman,L.SYSTEM.class.Mage,L.SYSTEM.class.Warlock,L.SYSTEM.class.Monk,L.SYSTEM.class.DeathKnight},
-	NightElf = {L.SYSTEM.class.Warrior,L.SYSTEM.class.Hunter,L.SYSTEM.class.Rogue,L.SYSTEM.class.Priest,L.SYSTEM.class.Mage,L.SYSTEM.class.Monk,L.SYSTEM.class.Druid,L.SYSTEM.class.DemonHunter,L.SYSTEM.class.DeathKnight},
-	Gnome = {L.SYSTEM.class.Warrior,L.SYSTEM.class.Hunter,L.SYSTEM.class.Rogue,L.SYSTEM.class.Priest,L.SYSTEM.class.Mage,L.SYSTEM.class.Warlock,L.SYSTEM.class.Monk,L.SYSTEM.class.DeathKnight},
+	Orc = {CLASS.Warrior,CLASS.Hunter,CLASS.Rogue,CLASS.Shaman,CLASS.Mage,CLASS.Warlock,CLASS.Monk,CLASS.DeathKnight},
+	Undead = {CLASS.Warrior,CLASS.Hunter,CLASS.Rogue,CLASS.Priest,CLASS.Mage,CLASS.Warlock,CLASS.Monk,CLASS.DeathKnight},
+	Tauren = {CLASS.Warrior,CLASS.Paladin,CLASS.Hunter,CLASS.Priest,CLASS.Shaman,CLASS.Monk,CLASS.Druid,CLASS.DeathKnight},
+	Troll = {CLASS.Warrior,CLASS.Hunter,CLASS.Rogue,CLASS.Priest,CLASS.Shaman,CLASS.Mage,CLASS.Warlock,CLASS.Monk,CLASS.Druid,CLASS.DeathKnight},
+	Human = {CLASS.Warrior,CLASS.Paladin,CLASS.Hunter,CLASS.Rogue,CLASS.Priest,CLASS.Mage,CLASS.Warlock,CLASS.Monk,CLASS.DeathKnight},
+	Dwarf = {CLASS.Warrior,CLASS.Paladin,CLASS.Hunter,CLASS.Rogue,CLASS.Priest,CLASS.Shaman,CLASS.Mage,CLASS.Warlock,CLASS.Monk,CLASS.DeathKnight},
+	NightElf = {CLASS.Warrior,CLASS.Hunter,CLASS.Rogue,CLASS.Priest,CLASS.Mage,CLASS.Monk,CLASS.Druid,CLASS.DemonHunter,CLASS.DeathKnight},
+	Gnome = {CLASS.Warrior,CLASS.Hunter,CLASS.Rogue,CLASS.Priest,CLASS.Mage,CLASS.Warlock,CLASS.Monk,CLASS.DeathKnight},
 	
 	
-	BloodElf = {L.SYSTEM.class.Warrior,L.SYSTEM.class.Paladin,L.SYSTEM.class.Hunter,L.SYSTEM.class.Priest,L.SYSTEM.class.Mage,L.SYSTEM.class.Warlock,L.SYSTEM.class.Monk,L.SYSTEM.class.DemonHunter,L.SYSTEM.class.DeathKnight},
-	Goblin = {L.SYSTEM.class.Warrior,L.SYSTEM.class.Hunter,L.SYSTEM.class.Rogue,L.SYSTEM.class.Priest,L.SYSTEM.class.Shaman,L.SYSTEM.class.Mage,L.SYSTEM.class.Warlock,L.SYSTEM.class.DeathKnight},
-	Nightborne = {L.SYSTEM.class.Warrior,L.SYSTEM.class.Hunter,L.SYSTEM.class.Rogue,L.SYSTEM.class.Priest,L.SYSTEM.class.Mage,L.SYSTEM.class.Warlock,L.SYSTEM.class.Monk},
-	HightmountainTauren = {L.SYSTEM.class.Warrior,L.SYSTEM.class.Hunter,L.SYSTEM.class.Shaman,L.SYSTEM.class.Monk,L.SYSTEM.class.Druid},
-	MagharOrc = {L.SYSTEM.class.Warrior,L.SYSTEM.class.Hunter,L.SYSTEM.class.Rogue,L.SYSTEM.class.Priest,L.SYSTEM.class.Shaman,L.SYSTEM.class.Mage,L.SYSTEM.class.Monk},
-	Pandaren = {L.SYSTEM.class.Warrior,L.SYSTEM.class.Hunter,L.SYSTEM.class.Rogue,L.SYSTEM.class.Priest,L.SYSTEM.class.Shaman,L.SYSTEM.class.Mage,L.SYSTEM.class.Monk},
-	Draenei = {L.SYSTEM.class.Warrior,L.SYSTEM.class.Paladin,L.SYSTEM.class.Hunter,L.SYSTEM.class.Priest,L.SYSTEM.class.Shaman,L.SYSTEM.class.Mage,L.SYSTEM.class.Monk,L.SYSTEM.class.DeathKnight},
-	Worgen = {L.SYSTEM.class.Warrior,L.SYSTEM.class.Hunter,L.SYSTEM.class.Rogue,L.SYSTEM.class.Priest,L.SYSTEM.class.Mage,L.SYSTEM.class.Warlock,L.SYSTEM.class.Druid,L.SYSTEM.class.DeathKnight},
-	VoidElf = {L.SYSTEM.class.Warrior,L.SYSTEM.class.Hunter,L.SYSTEM.class.Rogue,L.SYSTEM.class.Priest,L.SYSTEM.class.Mage,L.SYSTEM.class.Warlock,L.SYSTEM.class.Monk},
-	LightforgedDraenei = {L.SYSTEM.class.Warrior,L.SYSTEM.class.Paladin,L.SYSTEM.class.Hunter,L.SYSTEM.class.Priest,L.SYSTEM.class.Mage},
-	DarkIronDwarf = {L.SYSTEM.class.Warrior,L.SYSTEM.class.Paladin,L.SYSTEM.class.Hunter,L.SYSTEM.class.Rogue,L.SYSTEM.class.Priest,L.SYSTEM.class.Shaman,L.SYSTEM.class.Mage,L.SYSTEM.class.Warlock,L.SYSTEM.class.Monk},
-	KulTiran = {L.SYSTEM.class.Warrior,L.SYSTEM.class.Hunter,L.SYSTEM.class.Rogue,L.SYSTEM.class.Priest,L.SYSTEM.class.Shaman,L.SYSTEM.class.Mage,L.SYSTEM.class.Monk,L.SYSTEM.class.Druid,},
-	ZandalariTroll = {L.SYSTEM.class.Warrior,L.SYSTEM.class.Paladin,L.SYSTEM.class.Hunter,L.SYSTEM.class.Rogue,L.SYSTEM.class.Priest,L.SYSTEM.class.Shaman,L.SYSTEM.class.Mage,L.SYSTEM.class.Monk,L.SYSTEM.class.Druid,},
+	BloodElf = {CLASS.Warrior,CLASS.Paladin,CLASS.Hunter,CLASS.Priest,CLASS.Mage,CLASS.Warlock,CLASS.Monk,CLASS.DemonHunter,CLASS.DeathKnight},
+	Goblin = {CLASS.Warrior,CLASS.Hunter,CLASS.Rogue,CLASS.Priest,CLASS.Shaman,CLASS.Mage,CLASS.Warlock,CLASS.DeathKnight},
+	Nightborne = {CLASS.Warrior,CLASS.Hunter,CLASS.Rogue,CLASS.Priest,CLASS.Mage,CLASS.Warlock,CLASS.Monk},
+	HightmountainTauren = {CLASS.Warrior,CLASS.Hunter,CLASS.Shaman,CLASS.Monk,CLASS.Druid},
+	MagharOrc = {CLASS.Warrior,CLASS.Hunter,CLASS.Rogue,CLASS.Priest,CLASS.Shaman,CLASS.Mage,CLASS.Monk},
+	Pandaren = {CLASS.Warrior,CLASS.Hunter,CLASS.Rogue,CLASS.Priest,CLASS.Shaman,CLASS.Mage,CLASS.Monk},
+	Draenei = {CLASS.Warrior,CLASS.Paladin,CLASS.Hunter,CLASS.Priest,CLASS.Shaman,CLASS.Mage,CLASS.Monk,CLASS.DeathKnight},
+	Worgen = {CLASS.Warrior,CLASS.Hunter,CLASS.Rogue,CLASS.Priest,CLASS.Mage,CLASS.Warlock,CLASS.Druid,CLASS.DeathKnight},
+	VoidElf = {CLASS.Warrior,CLASS.Hunter,CLASS.Rogue,CLASS.Priest,CLASS.Mage,CLASS.Warlock,CLASS.Monk},
+	LightforgedDraenei = {CLASS.Warrior,CLASS.Paladin,CLASS.Hunter,CLASS.Priest,CLASS.Mage},
+	DarkIronDwarf = {CLASS.Warrior,CLASS.Paladin,CLASS.Hunter,CLASS.Rogue,CLASS.Priest,CLASS.Shaman,CLASS.Mage,CLASS.Warlock,CLASS.Monk},
+	KulTiran = {CLASS.Warrior,CLASS.Hunter,CLASS.Rogue,CLASS.Priest,CLASS.Shaman,CLASS.Mage,CLASS.Monk,CLASS.Druid,},
+	ZandalariTroll = {CLASS.Warrior,CLASS.Paladin,CLASS.Hunter,CLASS.Rogue,CLASS.Priest,CLASS.Shaman,CLASS.Mage,CLASS.Monk,CLASS.Druid,},
 	
 }
 else
 RaceClassCombo = {
-	Orc = {L.SYSTEM.class.Warrior,L.SYSTEM.class.Hunter,L.SYSTEM.class.Rogue,L.SYSTEM.class.Shaman,L.SYSTEM.class.Mage,L.SYSTEM.class.Warlock,L.SYSTEM.class.Monk,L.SYSTEM.class.DeathKnight},
-	Undead = {L.SYSTEM.class.Warrior,L.SYSTEM.class.Hunter,L.SYSTEM.class.Rogue,L.SYSTEM.class.Priest,L.SYSTEM.class.Mage,L.SYSTEM.class.Warlock,L.SYSTEM.class.Monk,L.SYSTEM.class.DeathKnight},
-	Tauren = {L.SYSTEM.class.Warrior,L.SYSTEM.class.Paladin,L.SYSTEM.class.Hunter,L.SYSTEM.class.Priest,L.SYSTEM.class.Shaman,L.SYSTEM.class.Monk,L.SYSTEM.class.Druid,L.SYSTEM.class.DeathKnight},
-	Troll = {L.SYSTEM.class.Warrior,L.SYSTEM.class.Hunter,L.SYSTEM.class.Rogue,L.SYSTEM.class.Priest,L.SYSTEM.class.Shaman,L.SYSTEM.class.Mage,L.SYSTEM.class.Warlock,L.SYSTEM.class.Monk,L.SYSTEM.class.Druid,L.SYSTEM.class.DeathKnight},
-	Human = {L.SYSTEM.class.Warrior,L.SYSTEM.class.Paladin,L.SYSTEM.class.Hunter,L.SYSTEM.class.Rogue,L.SYSTEM.class.Priest,L.SYSTEM.class.Mage,L.SYSTEM.class.Warlock,L.SYSTEM.class.Monk,L.SYSTEM.class.DeathKnight},
-	Dwarf = {L.SYSTEM.class.Warrior,L.SYSTEM.class.Paladin,L.SYSTEM.class.Hunter,L.SYSTEM.class.Rogue,L.SYSTEM.class.Priest,L.SYSTEM.class.Shaman,L.SYSTEM.class.Mage,L.SYSTEM.class.Warlock,L.SYSTEM.class.Monk,L.SYSTEM.class.DeathKnight},
-	NightElf = {L.SYSTEM.class.Warrior,L.SYSTEM.class.Hunter,L.SYSTEM.class.Rogue,L.SYSTEM.class.Priest,L.SYSTEM.class.Mage,L.SYSTEM.class.Monk,L.SYSTEM.class.Druid,L.SYSTEM.class.DemonHunter,L.SYSTEM.class.DeathKnight},
-	Gnome = {L.SYSTEM.class.Warrior,L.SYSTEM.class.Hunter,L.SYSTEM.class.Rogue,L.SYSTEM.class.Priest,L.SYSTEM.class.Mage,L.SYSTEM.class.Warlock,L.SYSTEM.class.Monk,L.SYSTEM.class.DeathKnight},
+	Orc = {CLASS.Warrior,CLASS.Hunter,CLASS.Rogue,CLASS.Shaman,CLASS.Mage,CLASS.Warlock,CLASS.Monk,CLASS.DeathKnight},
+	Undead = {CLASS.Warrior,CLASS.Hunter,CLASS.Rogue,CLASS.Priest,CLASS.Mage,CLASS.Warlock,CLASS.Monk,CLASS.DeathKnight},
+	Tauren = {CLASS.Warrior,CLASS.Paladin,CLASS.Hunter,CLASS.Priest,CLASS.Shaman,CLASS.Monk,CLASS.Druid,CLASS.DeathKnight},
+	Troll = {CLASS.Warrior,CLASS.Hunter,CLASS.Rogue,CLASS.Priest,CLASS.Shaman,CLASS.Mage,CLASS.Warlock,CLASS.Monk,CLASS.Druid,CLASS.DeathKnight},
+	Human = {CLASS.Warrior,CLASS.Paladin,CLASS.Hunter,CLASS.Rogue,CLASS.Priest,CLASS.Mage,CLASS.Warlock,CLASS.Monk,CLASS.DeathKnight},
+	Dwarf = {CLASS.Warrior,CLASS.Paladin,CLASS.Hunter,CLASS.Rogue,CLASS.Priest,CLASS.Shaman,CLASS.Mage,CLASS.Warlock,CLASS.Monk,CLASS.DeathKnight},
+	NightElf = {CLASS.Warrior,CLASS.Hunter,CLASS.Rogue,CLASS.Priest,CLASS.Mage,CLASS.Monk,CLASS.Druid,CLASS.DemonHunter,CLASS.DeathKnight},
+	Gnome = {CLASS.Warrior,CLASS.Hunter,CLASS.Rogue,CLASS.Priest,CLASS.Mage,CLASS.Warlock,CLASS.Monk,CLASS.DeathKnight},
 }
 end
 
@@ -535,6 +536,20 @@ local function smartSearchAddWhoList(query, lvl)
 	end
 end
 
+local function findClass(className)
+	for k,v in pairs(L.SYSTEM.femaleClass) do
+		if v==className then return L.SYSTEM.class[k]  end
+	end
+	return false
+end
+
+local function findRace(raceName)
+	for k,v in pairs(L.SYSTEM.femaleRace) do
+		if v==raceName then return L.SYSTEM.race[k] end
+	end
+	return false
+end
+
 local function filtered(player)
 	for k,v in pairs(DB.filtersList) do
 		if v.filterOn then
@@ -559,14 +574,14 @@ local function filtered(player)
 				
 			end]]
 			if v.classFilter then
-				if v.classFilter[player.Class] then
+				if v.classFilter[player.Class] or v.classFilter[findClass(player.Class)] then
 					v.filteredCount = v.filteredCount + 1
 					fn:FiltersUpdate()
 					return true--,"class"
 				end
 			end
 			if v.raceFilter then
-				if v.raceFilter[player.Race] then
+				if v.raceFilter[player.Race] or v.raceFilter[findRace(player.Race)] then
 					v.filteredCount = v.filteredCount + 1
 					fn:FiltersUpdate()
 					return true--,"race"
