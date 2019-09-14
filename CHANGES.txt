@@ -1,4 +1,6 @@
 RU female class/race filter
 blacklist fix
+hide blacklist window after saving
 msg disable fix
 checking the created queries for entering the filters
+autoKick add
