@@ -127,6 +127,7 @@ local L = {
 			["Warlock"] = LOCALIZED_CLASS_NAMES_MALE.WARLOCK,
 			["Warrior"] = LOCALIZED_CLASS_NAMES_MALE.WARRIOR,
 		},
+		["femaleClass"] = {},
 		["race"] = {
 			["Horde"] = {
 				["BloodElf"] = GetRaceName(10),	--	"Эльф крови"
@@ -153,10 +154,36 @@ local L = {
 				["VoidElf"] = GetRaceName(29),	--	"Эльф Бездны"
 				["Worgen"] = GetRaceName(22),	--	"Ворген"
 				["KulTiran"] = GetRaceName(32),	--	"Култирасец"
-			}
-		}
+			},
+		},
+		["femaleRace"] = {
+			["BloodElf"] = "Эльфийка крови",
+			["HightmountainTauren"] = "Тауренка Крутогорья",
+			["MagharOrc"] = "Маг'харка",
+			["Nightborne"] = "Ночнорожденная",
+			["Orc"] = "Орчиха",
+			["Pandaren"] = "Пандаренка",
+			["Tauren"] = "Тауренка",
+			["ZandalariTroll"] = "Зандаларка",
+			["DarkIronDwarf"] = "Дворфийка из клана Черного Железа",
+			["Draenei"] = "Дренейка",
+			["Dwarf"] = "Дворфийка",
+			["Gnome"] = "Гномка",
+			["LightforgedDraenei"] = "Озаренная дренейка",
+			["NightElf"] = "Ночная эльфийка",
+			["Pandaren"] = "Пандаренка",
+			["VoidElf"] = "Эльфийка Бездны",
+			["KulTiran"] = "Култираска",
+		},
 	}
 }
+
+for k,v in pairs(L.SYSTEM.class) do
+	local n = LOCALIZED_CLASS_NAMES_FEMALE[k:upper()]
+	if v~=n then
+		L.SYSTEM.femaleClass[k] = n
+	end
+end
 L.settings = {
 	size = {
 		mainFrameW = 620,
