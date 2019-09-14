@@ -1,3 +1,4 @@
-hidden windows fixed
-added an automatic filter for players who left the guild
-blacklist add
+RU female class/race filter
+blacklist fix
+msg disable fix
+checking the created queries for entering the filters
