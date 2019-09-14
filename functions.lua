@@ -24,6 +24,41 @@ local time, next = time, next
 --ERR_GUILD_INVITE_S,ERR_GUILD_DECLINE_S,ERR_ALREADY_IN_GUILD_S,ERR_ALREADY_INVITED_TO_GUILD_S,ERR_GUILD_DECLINE_AUTO_S,ERR_GUILD_JOIN_S,ERR_GUILD_PLAYER_NOT_FOUND_S,ERR_CHAT_PLAYER_NOT_FOUND_S
 --	CanGuildInvite()
 -- LOCALIZED_CLASS_NAMES_MALE
+local function IsInBlacklist(name)
+	return DB.blacklist[name] and true or false
+end
+
+local function guildKick(name)
+	GuildUninvite(name)
+	print(format("FGI autoKick: Player %s has been kicked.", name))
+end
+
+function fn:blacklistKick()
+	for i=1, GetNumGuildMembers() do
+		local name = GetGuildRosterInfo(i)
+		if IsInBlacklist(name) then guildKick(name) end
+	end
+end
+
+function fn:blackListAutoKick()
+	if not IsInGuild() then return end
+	-- autoKick on entering world
+	fn:blacklistKick()
+	
+	--init autoKick on guild entering
+	local frame = CreateFrame("Frame")
+	frame:RegisterEvent("CHAT_MSG_SYSTEM")
+	frame:SetScript("OnEvent", function(_,_,msg)
+		local place = strfind(ERR_GUILD_JOIN_S,"%s",1,true)
+		if (place) then
+			local n = strsub(msg,place)
+			local name = strsub(n,1,(strfind(n,"%s") or 2)-1)
+			if format(ERR_GUILD_JOIN_S,name) == msg then
+				if IsInBlacklist(name) then guildKick(name) end
+			end
+		end
+	end)
+end
 
 function fn:closeBtn(obj)
 	obj.text:SetPoint("TOPLEFT", 2, -1)
@@ -33,6 +68,7 @@ end
 function fn:blackList(name)
 	DB.blackList[name] = true
 	print(format("%sPlayer %s has been blacklisted|r", color.red, name))
+	fn:blacklistKick()
 end
 
 function fn.debug(...)

@@ -103,6 +103,7 @@ function FastGuildInvite:OnEnable()
 	addon.debug = DB.debug
 	fn:FiltersInit()
 	fn:FiltersUpdate()
+	fn:blackListAutoKick()
 		
 	interface.debugFrame = GUI:Create("ClearFrame")
 	local debugFrame = interface.debugFrame
