@@ -24,8 +24,13 @@ local time, next = time, next
 --ERR_GUILD_INVITE_S,ERR_GUILD_DECLINE_S,ERR_ALREADY_IN_GUILD_S,ERR_ALREADY_INVITED_TO_GUILD_S,ERR_GUILD_DECLINE_AUTO_S,ERR_GUILD_JOIN_S,ERR_GUILD_PLAYER_NOT_FOUND_S,ERR_CHAT_PLAYER_NOT_FOUND_S
 --	CanGuildInvite()
 -- LOCALIZED_CLASS_NAMES_MALE
+
+function fn:initDB()
+	DB = addon.DB
+end
+
 local function IsInBlacklist(name)
-	return DB.blacklist[name] and true or false
+	return DB.blackList[name] and true or false
 end
 
 local function guildKick(name)
@@ -397,7 +402,7 @@ end
 local frame = CreateFrame('Frame')
 frame:RegisterEvent('PLAYER_ENTERING_WORLD')
 frame:SetScript('OnEvent', function()
-	DB = addon.DB
+	-- DB = addon.DB
 	local parent = interface.filtersFrame
 	local list = parent.filterList
 	for i=1, #list do
@@ -413,6 +418,7 @@ frame:SetScript('OnEvent', function()
 			end
 		end
 	end
+	-- fn:blackListAutoKick()
 	frame:UnregisterEvent('PLAYER_ENTERING_WORLD')
 end)
 

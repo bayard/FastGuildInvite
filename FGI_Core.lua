@@ -259,6 +259,7 @@ function FastGuildInvite:OnInitialize()
 	DB.minimap.hide = DB.minimap.hide or false
 	
 	icon:Register("FGI", addon.dataBroker, DB.minimap)
+	fn:initDB()
 end
 
 local function toggleDebug()
