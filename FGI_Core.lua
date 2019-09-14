@@ -12,6 +12,10 @@ local icon = addon.icon
 local color = addon.color
 local debug = fn.debug
 
+local function istable(t)
+	return type(t) == "table"
+end
+
 addon.dataBroker = LibStub("LibDataBroker-1.1"):NewDataObject("FGI",
 	{type = "launcher", label = "FGI", icon = "Interface\\AddOns\\FastGuildInvite\\img\\minimap\\MiniMapButton"}
 )
@@ -221,7 +225,7 @@ function FastGuildInvite:OnInitialize()
 	DB.classFilterVal = DB.classFilterVal or FGI_DEFAULT_CLASSFILTERSTART
 	DB.searchInterval = DB.searchInterval or FGI_DEFAULT_SEARCHINTERVAL
 	
-	DB.SearchType = DB.SearchType or 1
+	DB.SearchType = DB.SearchType or 3
 	DB.backgroundRun = DB.backgroundRun or false
 	DB.enableFilters = DB.enableFilters or false
 	
@@ -232,13 +236,13 @@ function FastGuildInvite:OnInitialize()
 	DB.rememberAll = DB.rememberAll or false
 	DB.clearDBtimes = DB.clearDBtimes or 3
 	
-	DB.messageList = type(DB.messageList) == "table" and DB.messageList or {}
+	DB.messageList = istable(DB.messageList) and DB.messageList or {}
 	DB.curMessage = DB.curMessage or 0
 	
-	DB.alredySended = type(DB.alredySended)=="table" and DB.alredySended or {}
-	DB.filtersList = type(DB.filtersList)=="table" and DB.filtersList or {}
-	DB.blackList = type(DB.blackList)=="table" and DB.blackList or {}
-	DB.leave = type(DB.leave)=="table" and DB.leave or {}
+	DB.alredySended = istable(DB.alredySended) and DB.alredySended or {}
+	DB.filtersList = istable(DB.filtersList) and DB.filtersList or {}
+	DB.blackList = istable(DB.blackList) and DB.blackList or {}
+	DB.leave = istable(DB.leave) and DB.leave or {}
 	
 	DB.debug = DB.debug or false
 	
@@ -250,7 +254,7 @@ function FastGuildInvite:OnInitialize()
 		end
 	end
 
-	DB.minimap = type(DB.minimap) == "table" and DB.minimap or {}
+	DB.minimap = istable(DB.minimap) and DB.minimap or {}
 	DB.minimap.hide = DB.minimap.hide or false
 	
 	icon:Register("FGI", addon.dataBroker, DB.minimap)
