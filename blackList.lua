@@ -84,6 +84,7 @@ frame:SetCallback("OnClick", function()
 			DB.blackList[v] = true
 		end
 	end
+	interface.blackList:Hide()
 end)
 blackList:AddChild(frame)
 
