@@ -34,8 +34,8 @@ local function IsInBlacklist(name)
 end
 
 local function guildKick(name)
-	GuildUninvite(name)
-	print(format("FGI autoKick: Player %s has been kicked.", name))
+	-- GuildUninvite(name)
+	StaticPopupDialogs["FGI_BLACKLIST_UNINVITE"].add(name)
 end
 
 function fn:blacklistKick()
@@ -634,8 +634,6 @@ local function filtered(player)
 	end
 	return false
 end
-
-
 local function addNewPlayer(t, p)
 	local blackList = false
 	for i=1,#DB.blackList do
@@ -835,3 +833,36 @@ function fn:PauseSearch()
 	interface.scanFrame.pausePlay:SetDisabled(true)
 	C_Timer.After(FGI_SCANINTERVALTIME, function() interface.scanFrame.pausePlay:SetDisabled(false) end)
 end
+
+
+StaticPopupDialogs["FGI_BLACKLIST_UNINVITE"] = {
+	text = "Player  was found in blacklist. Do you want kick  from guild?",
+	button1 = "Yes",
+	button2 = "No",
+	add = function(name)
+		table.insert(StaticPopupDialogs["FGI_BLACKLIST_UNINVITE"].list, name)
+		if #StaticPopupDialogs["FGI_BLACKLIST_UNINVITE"].list>0 then StaticPopup_Show("FGI_BLACKLIST_UNINVITE") end
+	end,
+	list = {},
+	OnAccept = function()
+		GuildUninvite(StaticPopupDialogs["FGI_BLACKLIST_UNINVITE"].list[1])
+		table.remove(StaticPopupDialogs["FGI_BLACKLIST_UNINVITE"].list, 1)
+		print(format("FGI autoKick: Player %s has been kicked.", name))
+		StaticPopup_Hide("FGI_BLACKLIST_UNINVITE")
+	end,
+	OnCancel = function()
+		table.remove(StaticPopupDialogs["FGI_BLACKLIST_UNINVITE"].list, 1)
+		StaticPopup_Hide("FGI_BLACKLIST_UNINVITE")
+	end,
+	OnShow = function(self)
+		if not StaticPopupDialogs["FGI_BLACKLIST_UNINVITE"].list[1] then return StaticPopup_Hide("FGI_BLACKLIST_UNINVITE") end
+		local name = StaticPopupDialogs["FGI_BLACKLIST_UNINVITE"].list[1]
+		self.text:SetText(format("Player %s was found in blacklist. Do you want kick %s from guild?", name, name))
+	end,
+	OnHide = function(self)
+		if StaticPopupDialogs["FGI_BLACKLIST_UNINVITE"].list[1] then StaticPopup_Show("FGI_BLACKLIST_UNINVITE") end
+	end,
+	timeout = 0,
+	whileDead = true,
+	hideOnEscape = false,
+}
