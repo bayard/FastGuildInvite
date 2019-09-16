@@ -80,6 +80,7 @@ local L = {
 		["Числа не могут быть меньше или равны 0. Минимальный уровень не может быть больше максимального"] = "Numbers cannot be less than or equal to 0. The minimum level cannot be greater than the maximum",
 		["Чтобы быть отфильтрованным, игрок должен соответствовать критериям ВСЕХ фильтров"] = "To be filtered, the player must meet the criteria of all filters",
 		["Запоминать всех игроков"] = "Remember all players",
+		["Игрок %s найденный в черном списке, находится в вашей гильдии!"] = "Blacklisted %s player is in your guild!",
 		["tooltip"] = {
 			["Автоматическое увеличение детализации поиска"] = "Automatically increase search details.",
 			["Введите диапазон уровней для фильтра.\nНапример: %s55%s:%s58%s\nбудут подходить только те игроки, уровень\nкоторых варьируется от %s55%s до %s58%s (включительно)"] = "Enter a range of levels for the filter.\nfor Example:%s55%s:%s58%s\nwill be approached only by those players, the level\nwhich varies from%s55%s to %s58%s (inclusive)",
