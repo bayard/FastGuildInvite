@@ -5,8 +5,6 @@
 ## SavedVariables: FGI_DB
 ## DefaultState: enabled
 
-Libs\UTF8\UTF8.xml
-
 FGI_Constants.lua
 Locale\Locale.xml
 

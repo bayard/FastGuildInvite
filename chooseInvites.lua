@@ -16,6 +16,13 @@ local function fontSize(self, font, size)
 	self:SetFont(font, size)
 end
 
+local function btnText(frame)
+	local text = frame.text
+	text:ClearAllPoints()
+	text:SetPoint("TOPLEFT", 5, -1)
+	text:SetPoint("BOTTOMRIGHT", -5, 1)
+end
+
 interface.chooseInvites = GUI:Create("ClearFrame")
 local chooseInvites = interface.chooseInvites
 chooseInvites:Hide()
@@ -68,6 +75,7 @@ chooseInvites.invite = GUI:Create("Button")
 local frame = chooseInvites.invite
 frame:SetText(L.interface["Пригласить"])
 fontSize(frame.text)
+btnText(frame)
 frame:SetWidth(size.invite)
 frame:SetHeight(40)
 frame:SetCallback("OnClick", function()
@@ -79,6 +87,7 @@ chooseInvites.reject = GUI:Create("Button")
 local frame = chooseInvites.reject
 frame:SetText(L.interface["Отклонить"])
 fontSize(frame.text)
+btnText(frame)
 frame:SetWidth(size.reject)
 frame:SetHeight(40)
 frame:SetCallback("OnClick", function()
@@ -97,6 +106,7 @@ frame:SetScript('OnEvent', function()
 	chooseInvites:Show()
 	DB = addon.DB
 	
+C_Timer.NewTicker(0.1,function()
 	chooseInvites.closeButton:ClearAllPoints()
 	chooseInvites.closeButton:SetPoint("CENTER", chooseInvites.frame, "TOPRIGHT", -8, -8)
 	
@@ -108,6 +118,7 @@ frame:SetScript('OnEvent', function()
 	
 	chooseInvites.reject:ClearAllPoints()
 	chooseInvites.reject:SetPoint("LEFT", chooseInvites.invite.frame, "RIGHT", 5, 0)
+end, 2)
 	
 	chooseInvites:Hide()
 	frame:UnregisterEvent('PLAYER_ENTERING_WORLD')

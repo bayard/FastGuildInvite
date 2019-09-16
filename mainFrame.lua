@@ -16,6 +16,13 @@ local function fontSize(self, font, size)
 	self:SetFont(font, size)
 end
 
+local function btnText(frame)
+	local text = frame.text
+	text:ClearAllPoints()
+	text:SetPoint("TOPLEFT", 5, -1)
+	text:SetPoint("BOTTOMRIGHT", -5, 1)
+end
+
 interface.gratitudeFrame = GUI:Create("ClearFrame")
 local gratitudeFrame = interface.gratitudeFrame
 gratitudeFrame:Hide()
@@ -246,6 +253,7 @@ mainButtonsGRP.startScan = GUI:Create("Button")
 local frame = mainButtonsGRP.startScan
 frame:SetText(L.interface["Начать сканирование"])
 fontSize(frame.text)
+btnText(frame)
 frame:SetWidth(size.startScan)
 frame:SetHeight(40)
 frame:SetCallback("OnClick", function()
@@ -263,6 +271,7 @@ mainButtonsGRP.chooseInvites = GUI:Create("Button")
 local frame = mainButtonsGRP.chooseInvites
 frame:SetText(L.interface["Выбрать приглашения"])
 fontSize(frame.text)
+btnText(frame)
 frame:SetWidth(size.chooseInvites)
 frame:SetHeight(mainButtonsGRP.startScan.frame:GetHeight())
 frame:SetCallback("OnClick", function() interface.chooseInvites:Show() end)
@@ -272,6 +281,7 @@ mainButtonsGRP.settingsBtn = GUI:Create("Button")
 local frame = mainButtonsGRP.settingsBtn
 frame:SetText(L.interface["Настройки"])
 fontSize(frame.text)
+btnText(frame)
 frame:SetWidth(size.settingsBtn)
 frame:SetHeight(mainButtonsGRP.startScan.frame:GetHeight())
 frame.frame:SetScript("OnClick", function()
@@ -284,6 +294,7 @@ mainButtonsGRP.Gratitude = GUI:Create("Button")
 local frame = mainButtonsGRP.Gratitude
 frame:SetText("Gratitude")
 fontSize(frame.text)
+btnText(frame)
 frame:SetWidth(size.gratitude)
 frame:SetHeight(mainButtonsGRP.startScan.frame:GetHeight())
 frame:SetCallback("OnClick", function() interface.gratitudeFrame:Show() end)
@@ -490,7 +501,7 @@ frame:SetScript('OnEvent', function()
 		searchRangeGRP.classFilterStart.frame:Hide()
 	end
 	
-	
+C_Timer.NewTicker(0.1,function()
 	gratitudeFrame:ClearAllPoints()
 	gratitudeFrame:SetPoint("CENTER", UIParent, "CENTER", 0, 0)
 	
@@ -574,6 +585,7 @@ frame:SetScript('OnEvent', function()
 	
 	mainButtonsGRP.Gratitude:ClearAllPoints()
 	mainButtonsGRP.Gratitude:SetPoint("LEFT", mainButtonsGRP.settingsBtn.frame, "RIGHT", 2, 0)
+end, 2)
 	
 	mainFrame:Hide()
 	gratitudeFrame:Hide()

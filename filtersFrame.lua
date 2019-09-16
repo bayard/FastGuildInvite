@@ -17,6 +17,13 @@ local function fontSize(self, font, size)
 	self:SetFont(font, size)
 end
 
+local function btnText(frame)
+	local text = frame.text
+	text:ClearAllPoints()
+	text:SetPoint("TOPLEFT", 5, -1)
+	text:SetPoint("BOTTOMRIGHT", -5, 1)
+end
+
 local function defaultValues()
 	local addfilterFrame = interface.addfilterFrame
 	if not classicWoW then
@@ -71,11 +78,7 @@ filtersFrame:Hide()
 filtersFrame:SetTitle("FGI Filters")
 filtersFrame:SetWidth(size.filtersFrameW)
 filtersFrame:SetHeight(size.filtersFrameH)
-filtersFrame:SetLayout("Fill")
-
-local frame = GUI:Create("GroupFrame")
-filtersFrame:AddChild(frame)
-frame:Release()
+filtersFrame:SetLayout("Flow")
 
 filtersFrame.title:SetScript('OnMouseUp', function(mover)
 	local frame = mover:GetParent()
@@ -128,6 +131,7 @@ filtersFrame.addFilter = GUI:Create("Button")
 local frame = filtersFrame.addFilter
 frame:SetText(L.interface["Добавить фильтр"])
 fontSize(frame.text)
+btnText(frame)
 frame:SetWidth(size.addFilter)
 frame:SetHeight(40)
 frame:SetCallback("OnClick", function()
@@ -582,6 +586,8 @@ end)
 addfilterFrame.saveButton = GUI:Create('Button')
 local frame = addfilterFrame.saveButton
 frame:SetText(L.interface["Сохранить"])
+fontSize(frame.text)
+btnText(frame)
 frame:SetWidth(size.saveButton)
 frame:SetHeight(40)
 frame:SetCallback('OnClick', saveFilter)
@@ -623,7 +629,7 @@ frame:SetScript('OnEvent', function()
 	end
 	
 	defaultValues()
-	
+C_Timer.NewTicker(0.1,function()
 	filtersFrame.closeButton:ClearAllPoints()
 	filtersFrame.closeButton:SetPoint("CENTER", filtersFrame.frame, "TOPRIGHT", -8, -8)
 	
@@ -657,7 +663,7 @@ frame:SetScript('OnEvent', function()
 	
 	addfilterFrame.bottomHint:ClearAllPoints()
 	addfilterFrame.bottomHint:SetPoint("BOTTOM", addfilterFrame.saveButton.frame, "TOP", 0, 40)
-	
+end, 2)
 	filtersFrame:Hide()
 	addfilterFrame:Hide()
 	frame:UnregisterEvent('PLAYER_ENTERING_WORLD')

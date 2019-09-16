@@ -21,6 +21,13 @@ local function fontSize(self, font, size)
 	self:SetFont(font, size)
 end
 
+local function btnText(frame)
+	local text = frame.text
+	text:ClearAllPoints()
+	text:SetPoint("TOPLEFT", 5, -1)
+	text:SetPoint("BOTTOMRIGHT", -5, 1)
+end
+
 local function playerHaveInvite(msg)
 	local place = strfind(ERR_GUILD_INVITE_S,"%s",1,true)
 	if (place) then
@@ -132,6 +139,8 @@ scanFrame:AddChild(frame)
 scanFrame.invite = GUI:Create("Button")
 local frame = scanFrame.invite
 frame:SetText(format(L.interface["Пригласить: %d"],0))
+-- fontSize(frame.text)
+btnText(frame)
 frame:SetWidth(size.inviteBTN)
 frame:SetHeight(40)
 frame:SetCallback("OnClick", function(self)
@@ -192,6 +201,8 @@ scanFrame:AddChild(frame)
 scanFrame.clear = GUI:Create("Button")
 local frame = scanFrame.clear
 frame:SetText(L.interface["Сбросить"])
+-- fontSize(frame.text)
+btnText(frame)
 frame:SetWidth(size.clearBTN)
 frame:SetHeight(40)
 frame:SetCallback("OnClick", function()
@@ -236,6 +247,7 @@ frame:SetScript('OnEvent', function()
 	scanFrame:Show()
 	DB = addon.DB
 	
+C_Timer.NewTicker(0.1,function()
 	scanFrame.closeButton:ClearAllPoints()
 	scanFrame.closeButton:SetPoint("CENTER", scanFrame.frame, "TOPRIGHT", -8, -8)
 	
@@ -250,7 +262,7 @@ frame:SetScript('OnEvent', function()
 	
 	scanFrame.clear:ClearAllPoints()
 	scanFrame.clear:SetPoint("LEFT", scanFrame.pausePlay.frame, "RIGHT", 2, 0)
-	
+end,2)
 	
 	
 	scanFrame:Hide()
