@@ -52,7 +52,7 @@ local function blackList(self)
 			fullname = name.."-"..server;
 		end
 		
-		fn:blackList(fullname)
+		-- fn:blackList(fullname)
 		interface.blackList:updateList()
 	end
 end

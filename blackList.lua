@@ -15,10 +15,20 @@ local function fontSize(self, font, size)
 	self:SetFont(font, size)
 end
 
+local function btnText(frame)
+	local text = frame.text
+	text:ClearAllPoints()
+	text:SetPoint("TOPLEFT", 5, -1)
+	text:SetPoint("BOTTOMRIGHT", -5, 1)
+end
+
+-- format("Player %s was found in blacklist. Do you want kick %s from guild?", name, name)
+-- format("FGI autoKick: Player %s has been kicked.", name)
+
 interface.blackList = GUI:Create("ClearFrame")
 local blackList = interface.blackList
 blackList:Hide()
-blackList:SetTitle("FGI Black List")
+blackList:SetTitle("FGI Blacklist")
 blackList:SetWidth(size.blackListW)
 blackList:SetHeight(size.blackListH)
 blackList:SetLayout("Flow")
@@ -75,6 +85,7 @@ blackList.saveButton = GUI:Create("Button")
 local frame = blackList.saveButton
 frame:SetText(L.interface["Сохранить"])
 fontSize(frame.text)
+btnText(frame)
 frame:SetWidth(size.saveButton)
 frame:SetHeight(40)
 frame:SetCallback("OnClick", function()
@@ -94,12 +105,124 @@ blackList.frame:HookScript("OnShow", function()
 end)
 
 
+
+
+
+
+
+
+
+--[[interface.uninvite = GUI:Create("ClearFrame")
+local uninvite = interface.uninvite
+uninvite:Hide()
+uninvite:SetTitle("FGI Blacklist UnInvite")
+uninvite:SetWidth(size.uninviteW)
+uninvite:SetHeight(size.uninviteH)
+uninvite:SetLayout("Flow")
+uninvite.list = {}
+
+uninvite.kickLabel = GUI:Create("TLabel")
+local frame = uninvite.kickLabel
+fontSize(frame.label)
+frame.label:SetJustifyH("CENTER")
+uninvite:AddChild(frame)]]
+
+--[[
+local frame = CreateFrame("Button", "TestKick", UIParent, "SecureActionButtonTemplate")
+frame:SetHeight(40)
+frame:SetWidth(100)
+frame:SetPoint("TOP")
+frame:SetAttribute("type", "macro")
+frame:SetAttribute("macrotext", "/guildremove Knoot")
+frame.text = frame:CreateFontString(nil, "OVERLAY")
+frame.text:SetFont(STANDARD_TEXT_FONT, 16, "THINOUTLINE")
+frame.text:SetPoint("CENTER")
+frame.text:SetText("Yes!")]]
+
+
+
+--[[local SecureKick = CreateFrame("Button", "FGISecureKick", UIParent, "SecureActionButtonTemplate")
+local frame = SecureKick
+frame:SetHeight(40)
+frame:SetWidth(100)
+frame:SetPoint("CENTER")
+frame:SetAttribute("type", "macro")
+frame:SetAttribute("macrotext", "/guildremove Knoot")
+frame.text = frame:CreateFontString(nil, "OVERLAY")
+frame.text:SetFont(STANDARD_TEXT_FONT, 16, "THINOUTLINE")
+frame.text:SetPoint("CENTER")
+frame.text:SetText("Yes")
+
+function uninvite:listChange()
+	if #uninvite.list == 0 then return interface.uninvite:Hide() else interface.uninvite:Show() end
+	local name = uninvite.list[1]
+	uninvite.kickLabel:SetText(format(L.interface["Игрок %s был найден в черном списке. Исключить игрока %s из гильдии?"], name, name))
+	-- uninvite.SecureKick:SetAttribute("macrotext", format("/guildremove %s\n/run FGI.interface.uninvite:remove()", name))
+end
+
+function uninvite:add(name)
+	if not name then return end
+	table.insert(uninvite.list, name)
+	uninvite:listChange()
+end
+
+function uninvite:remove()
+	table.remove(uninvite.list, 1)
+	uninvite:listChange()
+end
+
+
+uninvite.cancel = GUI:Create("Button")
+local frame = uninvite.cancel
+frame:SetText(L.interface["Нет"])
+fontSize(frame.text)
+btnText(frame)
+frame:SetWidth(size.no)
+frame:SetHeight(40)
+frame:SetCallback("OnClick", function()
+	uninvite:remove()
+end)
+uninvite:AddChild(frame)]]
+
+
+StaticPopupDialogs["FGI_BLACKLIST"] = {
+	text = '',
+	button1 = "Ok",
+	list = {},
+	OnAccept = function()
+		local list = StaticPopupDialogs["FGI_BLACKLIST"].list
+		table.remove(list, 1)
+		StaticPopup_Hide("FGI_BLACKLIST")
+	end,
+	add = function(name)
+		print(name)
+		local list = StaticPopupDialogs["FGI_BLACKLIST"].list
+		table.insert(list, name)
+		StaticPopup_Show("FGI_BLACKLIST")
+	end,
+	OnShow = function()
+		local list = StaticPopupDialogs["FGI_BLACKLIST"].list
+		if not list[1] then return end
+		StaticPopupDialogs["FGI_BLACKLIST"].text = (format(L.interface["Игрок %s найденный в черном списке, находится в вашей гильдии!"],list[1]))
+	end,
+	OnHide = function()
+		local list = StaticPopupDialogs["FGI_BLACKLIST"].list
+		if not list[1] then return end
+		StaticPopup_Show("FGI_BLACKLIST")
+	end,
+	timeout = 0,
+	whileDead = true,
+	hideOnEscape = false,
+	preferredIndex = 3,
+}
+
 -- set points
 local frame = CreateFrame('Frame')
 frame:RegisterEvent('PLAYER_ENTERING_WORLD')
 frame:SetScript('OnEvent', function()
 	DB = addon.DB
 	blackList:Show()
+C_Timer.NewTicker(0.1,function()
 	
 	blackList.closeButton:ClearAllPoints()
 	blackList.closeButton:SetPoint("CENTER", blackList.frame, "TOPRIGHT", -8, -8)
@@ -110,6 +233,8 @@ frame:SetScript('OnEvent', function()
 	blackList.saveButton:ClearAllPoints()
 	blackList.saveButton:SetPoint("BOTTOM", blackList.frame, "BOTTOM", 0, 10)
 	
+	
 	blackList:Hide()
+end,2)
 	frame:UnregisterEvent('PLAYER_ENTERING_WORLD')
 end)
