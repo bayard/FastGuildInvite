@@ -39,7 +39,7 @@ function addon.dataBroker.OnClick(self, button)
 	end
 end
 
-local function blackList(self)
+local function MenuButtons(self)
 	local button = self.value;
 	if (button == "BLACKLIST") then
 		local dropdownFrame = UIDROPDOWNMENU_INIT_MENU;
@@ -54,18 +54,22 @@ local function blackList(self)
 		
 		fn:blackList(fullname)
 		interface.blackList:updateList()
+	elseif (button == "GUILD_INVITE") then
+		local dropdownFrame = UIDROPDOWNMENU_INIT_MENU;
+		local unit = dropdownFrame.unit;
+		local name = dropdownFrame.name;
+		GuildInvite(name)
 	end
 end
 
-local FGIBlackList = CreateFrame("Frame","FGIBlackListFrame")
-FGIBlackList:SetScript("OnEvent", function() hooksecurefunc("UnitPopup_OnClick", blackList) end)
+local FGIBlackList = CreateFrame("Frame","FGIMenuButtons")
+FGIBlackList:SetScript("OnEvent", function() hooksecurefunc("UnitPopup_OnClick", MenuButtons) end)
 FGIBlackList:RegisterEvent("PLAYER_LOGIN")
 
 local PopupUnits = {}
 
 UnitPopupButtons["BLACKLIST"] = { text = "FGI - Black List",}
-
-table.insert( UnitPopupMenus["SELF"] ,1 , "BLACKLIST")
+UnitPopupButtons["GUILD_INVITE"] = { text = "FGI - Guild Invite",}
 
 for i,UPMenus in pairs(UnitPopupMenus) do
 	for j=1, #UPMenus do
@@ -73,6 +77,7 @@ for i,UPMenus in pairs(UnitPopupMenus) do
 		  PopupUnits[#PopupUnits + 1] = i
 		  pos = j + 1
 		  table.insert( UnitPopupMenus[i] ,pos , "BLACKLIST" )
+		  table.insert( UnitPopupMenus[i] ,j , "GUILD_INVITE" )
 		  break
 		end
 	end
