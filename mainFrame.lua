@@ -326,10 +326,10 @@ frame.label:SetJustifyH("RIGHT")
 frame:SetWidth(30)
 frame.frame:SetScript("OnMouseWheel",function(self,delta)
 	local mod = IsShiftKeyDown() and 5 or 1
-	if delta == 1 and DB.lowLimit+mod <= DB.highLimit then
-		DB.lowLimit = DB.lowLimit + mod
-	elseif delta == -1 and DB.lowLimit-mod >= FGI_MINLVL then
-		DB.lowLimit = DB.lowLimit - mod
+	if delta > 0 then
+		DB.lowLimit = math.min(DB.highLimit, DB.lowLimit + mod)
+	else
+		DB.lowLimit = math.max(FGI_MINLVL, DB.lowLimit - mod)
 	end
 	searchRangeGRP.lvlRangeMin:SetText(DB.lowLimit)
 end)
@@ -351,10 +351,10 @@ frame:SetWidth(searchRangeGRP.lvlRangeMin.frame:GetWidth())
 fontSize(frame.label)
 frame.frame:SetScript("OnMouseWheel",function(self,delta)
 	local mod = IsShiftKeyDown() and 5 or 1
-	if delta == 1 and DB.highLimit+mod <= FGI_MAXLVL then
-		DB.highLimit = DB.highLimit + mod
-	elseif delta == -1 and DB.highLimit-mod >= DB.lowLimit then
-		DB.highLimit = DB.highLimit - mod
+	if delta > 0 then
+		DB.highLimit = math.min(FGI_MAXLVL, DB.highLimit + mod)
+	else
+		DB.highLimit = math.max(DB.lowLimit, DB.highLimit - mod)
 	end
 	searchRangeGRP.lvlRangeMax:SetText(DB.highLimit)
 end)
@@ -383,10 +383,10 @@ frame:SetWidth(40)
 frame.label:SetJustifyH("CENTER")
 frame.frame:SetScript("OnMouseWheel",function(self,delta)
 	local mod = IsShiftKeyDown() and 5 or 1
-	if delta == 1 and DB.searchInterval+mod <= 30 then
-		DB.searchInterval = DB.searchInterval + mod
-	elseif delta == -1 and DB.searchInterval-mod >= 1 then
-		DB.searchInterval = DB.searchInterval - mod
+	if delta > 0 then
+		DB.searchInterval = math.min(FGI_SEARCHINTERVAL_MAX, DB.searchInterval + mod)
+	else
+		DB.searchInterval = math.max(1, DB.searchInterval - mod)
 	end
 	searchRangeGRP.searchIntervalVal:SetText(DB.searchInterval)
 end)
@@ -415,14 +415,10 @@ frame:SetWidth(80)
 frame.label:SetJustifyH("CENTER")
 frame.frame:SetScript("OnMouseWheel",function(self,delta)
 	local mod = IsShiftKeyDown() and 5 or 1
-	if delta == 1 then
-		if DB.raceFilterVal+mod <= FGI_MAXLVL then
-			DB.raceFilterVal = DB.raceFilterVal + mod
-		else
-			DB.raceFilterVal = FGI_MAXLVL+1
-		end
-	elseif delta == -1 and DB.raceFilterVal-mod >= DB.lowLimit then
-		DB.raceFilterVal = DB.raceFilterVal - mod
+	if delta >0 then
+		DB.raceFilterVal = math.min(FGI_MAXLVL+1, DB.raceFilterVal + mod)
+	else
+		DB.raceFilterVal = math.max(DB.lowLimit, DB.raceFilterVal - mod)
 	end
 	searchRangeGRP.raceFilterStartVal:SetText(DB.raceFilterVal == FGI_MAXLVL+1 and L.interface["Откл."] or DB.raceFilterVal)
 end)
@@ -451,14 +447,10 @@ frame:SetWidth(80)
 frame.label:SetJustifyH("CENTER")
 frame.frame:SetScript("OnMouseWheel",function(self,delta)
 	local mod = IsShiftKeyDown() and 5 or 1
-	if delta == 1 then
-		if DB.classFilterVal+mod <= FGI_MAXLVL then
-			DB.classFilterVal = DB.classFilterVal + mod
-		else
-			DB.classFilterVal = FGI_MAXLVL+1
-		end
-	elseif delta == -1 and DB.classFilterVal-mod >= DB.lowLimit then
-		DB.classFilterVal = DB.classFilterVal - mod
+	if delta > 0 then
+			DB.classFilterVal = math.min(FGI_MAXLVL+1, DB.classFilterVal + mod)
+	else
+		DB.classFilterVal = math.max(DB.lowLimit, DB.classFilterVal - mod)
 	end
 	searchRangeGRP.classFilterStartVal:SetText(DB.classFilterVal == FGI_MAXLVL+1 and L.interface["Откл."] or DB.classFilterVal)
 end)
