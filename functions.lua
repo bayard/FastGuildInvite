@@ -640,32 +640,33 @@ local function addNewPlayer(t, p)
 	for i=1,#DB.blackList do
 		if DB.blackList[i] == p.Name then blackList = true;break; end
 	end
-	if not blackList then
-		if p.Guild == "" then
+	local playerInfoStr = format("%s - lvl:%d; race:%s; class:%s; Guild: \"%s\"", p.Name, p.Level, p.Race, p.Class, p.Guild)
+	if p.Guild == "" then
+		if not blackList then
 			if not DB.leave[p.Name] then
 				if not t.tempSendedInvites[p.Name] then
 					if not DB.alredySended[p.Name] then
 						if ((DB.enableFilters and not filtered(p)) or not DB.enableFilters) then
 							table.insert(t.inviteList, {name = p.Name, lvl = p.Level, race = p.Race, class = p.Class,  NoLocaleClass = p.NoLocaleClass})
 							t.tempSendedInvites[p.Name] = true
-							debug(format("Add player %s",p.Name), color.green)
+							debug(format("Add player %s", playerInfoStr), color.green)
 						else
-							debug(format("Player %s has been fitlered",p.Name), color.yellow)
+							debug(format("Player (%s) has been fitlered", playerInfoStr), color.yellow)
 						end
 					else
-						debug(format("Invitation has already been sent to the player %s",p.Name), color.yellow)
+						debug(format("Invitation has already been sent to the player %s", playerInfoStr), color.yellow)
 					end
 				else
-					debug(format("Player %s alrady added",p.Name), color.yellow)
+					debug(format("Player (%s) alrady added", playerInfoStr), color.yellow)
 				end
 			else
-				debug(format("Player %s previously exited (or was expelled) from the guild.", p.Name), color.red)
+				debug(format("Player (%s) previously exited (or was expelled) from the guild.", playerInfoStr), color.red)
 			end
 		else
-			debug(format("Player %s already have guild.",p.Name), color.yellow)
+			debug(format("Player (%s) was found in the blacklist.", playerInfoStr), color.red)
 		end
 	else
-		debug(format("Player %s was found in the blacklist.",p.Name), color.red)
+		debug(format("Player (%s) already have guild.", playerInfoStr), color.yellow)
 	end
 	local list = t.inviteList
 	interface.chooseInvites.player:SetText(#list > 0 and format("%s%s %d %s %s|r", color[list[1].NoLocaleClass:upper()], list[1].name, list[1].lvl, list[1].class, list[1].race) or "")
