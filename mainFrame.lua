@@ -324,11 +324,12 @@ frame:SetText(FGI_MINLVL)
 fontSize(frame.label)
 frame.label:SetJustifyH("RIGHT")
 frame:SetWidth(30)
-frame.frame:SetScript("OnMouseWheel",function(self,mod)
-	if mod == 1 and DB.lowLimit+1 <= DB.highLimit then
-		DB.lowLimit = DB.lowLimit + 1
-	elseif mod == -1 and DB.lowLimit-1 >= FGI_MINLVL then
-		DB.lowLimit = DB.lowLimit - 1
+frame.frame:SetScript("OnMouseWheel",function(self,delta)
+	local mod = IsShiftKeyDown() and 5 or 1
+	if delta == 1 and DB.lowLimit+mod <= DB.highLimit then
+		DB.lowLimit = DB.lowLimit + mod
+	elseif delta == -1 and DB.lowLimit-mod >= FGI_MINLVL then
+		DB.lowLimit = DB.lowLimit - mod
 	end
 	searchRangeGRP.lvlRangeMin:SetText(DB.lowLimit)
 end)
@@ -348,11 +349,12 @@ frame:SetText(FGI_MAXLVL)
 frame.label:SetJustifyH("LEFT")
 frame:SetWidth(searchRangeGRP.lvlRangeMin.frame:GetWidth())
 fontSize(frame.label)
-frame.frame:SetScript("OnMouseWheel",function(self,mod)
-	if mod == 1 and DB.highLimit+1 <= FGI_MAXLVL then
-		DB.highLimit = DB.highLimit + 1
-	elseif mod == -1 and DB.highLimit-1 >= DB.lowLimit then
-		DB.highLimit = DB.highLimit - 1
+frame.frame:SetScript("OnMouseWheel",function(self,delta)
+	local mod = IsShiftKeyDown() and 5 or 1
+	if delta == 1 and DB.highLimit+mod <= FGI_MAXLVL then
+		DB.highLimit = DB.highLimit + mod
+	elseif delta == -1 and DB.highLimit-mod >= DB.lowLimit then
+		DB.highLimit = DB.highLimit - mod
 	end
 	searchRangeGRP.lvlRangeMax:SetText(DB.highLimit)
 end)
@@ -379,11 +381,12 @@ frame:SetText(FGI_DEFAULT_SEARCHINTERVAL)
 fontSize(frame.label)
 frame:SetWidth(40)
 frame.label:SetJustifyH("CENTER")
-frame.frame:SetScript("OnMouseWheel",function(self,mod)
-	if mod == 1 and DB.searchInterval+1 <= 30 then
-		DB.searchInterval = DB.searchInterval + 1
-	elseif mod == -1 and DB.searchInterval-1 >= 1 then
-		DB.searchInterval = DB.searchInterval - 1
+frame.frame:SetScript("OnMouseWheel",function(self,delta)
+	local mod = IsShiftKeyDown() and 5 or 1
+	if delta == 1 and DB.searchInterval+mod <= 30 then
+		DB.searchInterval = DB.searchInterval + mod
+	elseif delta == -1 and DB.searchInterval-mod >= 1 then
+		DB.searchInterval = DB.searchInterval - mod
 	end
 	searchRangeGRP.searchIntervalVal:SetText(DB.searchInterval)
 end)
@@ -410,15 +413,16 @@ frame:SetText(FGI_DEFAULT_RACEFILTERSTART == FGI_MAXLVL+1 and L.interface["От�
 fontSize(frame.label)
 frame:SetWidth(80)
 frame.label:SetJustifyH("CENTER")
-frame.frame:SetScript("OnMouseWheel",function(self,mod)
-	if mod == 1 then
-		if DB.raceFilterVal+1 <= FGI_MAXLVL then
-			DB.raceFilterVal = DB.raceFilterVal + 1
+frame.frame:SetScript("OnMouseWheel",function(self,delta)
+	local mod = IsShiftKeyDown() and 5 or 1
+	if delta == 1 then
+		if DB.raceFilterVal+mod <= FGI_MAXLVL then
+			DB.raceFilterVal = DB.raceFilterVal + mod
 		else
 			DB.raceFilterVal = FGI_MAXLVL+1
 		end
-	elseif mod == -1 and DB.raceFilterVal-1 >= DB.lowLimit then
-		DB.raceFilterVal = DB.raceFilterVal - 1
+	elseif delta == -1 and DB.raceFilterVal-mod >= DB.lowLimit then
+		DB.raceFilterVal = DB.raceFilterVal - mod
 	end
 	searchRangeGRP.raceFilterStartVal:SetText(DB.raceFilterVal == FGI_MAXLVL+1 and L.interface["Откл."] or DB.raceFilterVal)
 end)
@@ -445,15 +449,16 @@ frame:SetText(FGI_DEFAULT_CLASSFILTERSTART == FGI_MAXLVL+1 and L.interface["От
 fontSize(frame.label)
 frame:SetWidth(80)
 frame.label:SetJustifyH("CENTER")
-frame.frame:SetScript("OnMouseWheel",function(self,mod)
-	if mod == 1 then
-		if DB.classFilterVal+1 <= FGI_MAXLVL then
-			DB.classFilterVal = DB.classFilterVal + 1
+frame.frame:SetScript("OnMouseWheel",function(self,delta)
+	local mod = IsShiftKeyDown() and 5 or 1
+	if delta == 1 then
+		if DB.classFilterVal+mod <= FGI_MAXLVL then
+			DB.classFilterVal = DB.classFilterVal + mod
 		else
 			DB.classFilterVal = FGI_MAXLVL+1
 		end
-	elseif mod == -1 and DB.classFilterVal-1 >= DB.lowLimit then
-		DB.classFilterVal = DB.classFilterVal - 1
+	elseif delta == -1 and DB.classFilterVal-mod >= DB.lowLimit then
+		DB.classFilterVal = DB.classFilterVal - mod
 	end
 	searchRangeGRP.classFilterStartVal:SetText(DB.classFilterVal == FGI_MAXLVL+1 and L.interface["Откл."] or DB.classFilterVal)
 end)
