@@ -309,6 +309,7 @@ end
 
 local function rememberPlayer(name)
 	DB.alredySended[name] = time({year = date("%Y"), month = date("%m"), day = date("%d")})
+	addon.search.tempSendedInvites[name] = nil
 	debug(format("Remember: %s",name))
 end
 
