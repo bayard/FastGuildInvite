@@ -162,7 +162,7 @@ frame:SetScript("OnEvent", function(_,_,msg)
 		debug(format(ERR_CHAT_PLAYER_NOT_FOUND_S, name), color.yellow)
 		auto_decline[name] = true
 	elseif type == "invite" then
-		local list = DB.SearchType == 3 and addon.smartSearch.inviteList or addon.search.inviteList
+		local list = addon.search.inviteList
 		local msg = DB.messageList[DB.curMessage]
 		if DB.inviteType == 2 then
 			C_Timer.After(1, function() if not auto_decline[name] and addon.msgQueue[name] then fn:sendWhisper(msg, name); addon.msgQueue[name] = nil end end)
@@ -210,10 +210,6 @@ frame:SetCallback("OnClick", function()
 	local resume = addon.search.state == "start"
 	if resume then
 		scanFrame.pausePlay.frame:Click()
-	else
-		interface.mainFrame.mainCheckBoxGRP.normalSearch:SetDisabled(false)
-		interface.mainFrame.mainCheckBoxGRP.deepSearch:SetDisabled(false)
-		interface.mainFrame.mainCheckBoxGRP.smartSearch:SetDisabled(false)
 	end
 	addon.search.inviteList = {}
 	addon.search.state = "stop"
@@ -221,11 +217,6 @@ frame:SetCallback("OnClick", function()
 	addon.search.timeShift = 0
 	addon.search.tempSendedInvites = {}
 	addon.search.whoQueryList = {}
-	
-	addon.smartSearch.progress = 1
-	addon.smartSearch.whoQueryList = {}
-	addon.smartSearch.inviteList = {}
-	addon.smartSearch.tempSendedInvites = {}
 	
 	scanFrame.progressBar:SetMinMax(0, 1)
 	scanFrame.progressBar:SetProgress(0)

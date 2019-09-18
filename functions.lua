@@ -9,7 +9,6 @@ local GUI = LibStub("AceGUI-3.0")
 local color = addon.color
 local FastGuildInvite = addon.lib
 addon.search = {progress=1, inviteList={}, state='stop', timeShift=0, tempSendedInvites={}, whoQueryList = {}}
-addon.smartSearch = {progress=1, intervalTime = 3, whoQueryList = {}, inviteList={}, tempSendedInvites={}}
 addon.removeMsgList = {}
 addon.libWho = {}
 local DB
@@ -268,52 +267,6 @@ local function getEasyWhoList()
 	return query
 end
 
-local function getWhoList(interval)
-	local min = DB.lowLimit
-	local max = DB.highLimit
-	interval = DB.deepSearch and (interval or DB.searchInterval) or (interval or 1)
-	local raceFilter = DB.raceFilterVal
-	local classFilter = DB.classFilterVal
-	local query = {}
-	
-	for i=min,max,interval do
-		local cur = i
-		local next = i+ interval-1
-		next = next<=max and next or max
-		if DB.deepSearch then
-			if next<=max then
-				if raceFilter <= max and (raceFilter <= cur or raceFilter == next) and classFilter <= max and (classFilter <= cur or classFilter == next) then
-					for k,v in pairs(L.SYSTEM.race) do
-						for _,j in pairs(RaceClassCombo[k]) do
-							-- table.insert(query, cur.."-"..next..L.interface["r-"]..v..L.interface["c-"]..j)
-							table.insert(query, format("%d-%d %s%s %s%s", cur, next, L.SYSTEM["r-"], v, L.SYSTEM["c-"], j))
-						end
-					end
-				elseif raceFilter <= max and (raceFilter <= cur or raceFilter == next) then
-					for _,v in pairs(L.SYSTEM.race) do
-						-- table.insert(query, cur.."-"..next..L.interface["r-"]..v)
-						table.insert(query, format("%d-%d %s%s", cur, next, L.SYSTEM["r-"], v))
-					end
-				elseif classFilter <= max and (classFilter <= cur or classFilter == next) then
-					for _,j in pairs(L.SYSTEM.class) do
-						-- table.insert(query, cur.."-"..next..L.interface["c-"]..j)
-						table.insert(query, format("%d-%d %s%s", cur, next, L.SYSTEM["c-"], j))
-					end
-				else
-					-- table.insert(query, cur.."-"..next)
-					table.insert(query, format("%d-%d", cur, next))
-				end
-			end
-		else
-			-- table.insert(query, cur.."-"..next)
-			table.insert(query, format("%d-%d", cur, next))
-		end
-		if next==max then break end
-	end
-	
-	return (#query>FGI_MAXWHOQUERY and interval<=max-min) and getWhoList(interval+1) or query
-end
-
 function fn:msgMod(msg)
 	if not msg then return end
 	if msg:find("NAME") then
@@ -360,7 +313,7 @@ local function rememberPlayer(name)
 end
 
 function fn:invitePlayer(noInv)
-	local list = DB.SearchType == 3 and addon.smartSearch.inviteList or addon.search.inviteList
+	local list = addon.search.inviteList
 	if #list==0 then return end
 	if DB.inviteType == 2 and not noInv then
 		addon.msgQueue[list[1].name] = true
@@ -419,7 +372,6 @@ C_Timer.NewTicker(0.1,function()
 		end
 	end
 end,2)
-	-- fn:blackListAutoKick()
 	frame:UnregisterEvent('PLAYER_ENTERING_WORLD')
 end)
 
@@ -437,7 +389,7 @@ local function getSearchDeepLvl(query)
 	end
 end
 
-local function smartSearchGetParams(query)
+local function searchGetParams(query)
 	local class = query:match(("%s%%\"(%s+)%%\""):format(L.SYSTEM["c-"],addon.ruReg):gsub("-","%%-"))
 	local race = query:match(("%s%%\"(%s+)%%\""):format(L.SYSTEM["r-"],addon.ruReg):gsub("-","%%-"))
 	local lvl = {}
@@ -451,7 +403,7 @@ end
 local function isQueryFiltered(query)
 	if DB.filtersList == {} or not DB.enableFilters then return false end
 	local filter = {}
-	local q = smartSearchGetParams(query)
+	local q = searchGetParams(query)
 	q.min = tonumber(q.min)
 	q.max = tonumber(q.max)
 	for fName,v in pairs(DB.filtersList) do
@@ -486,8 +438,8 @@ local function isQueryFiltered(query)
 	return false
 end
 
-local function smartSearchAddWhoList(query, lvl)
-	local progress = addon.smartSearch.progress-1
+local function searchAddWhoList(query, lvl)
+	local progress = addon.search.progress-1
 	local tAddN =0
 	local function LVLsplit(query)
 		local v1 = query:gsub("(%d+)%-(%d+)", function(a,b)
@@ -502,47 +454,47 @@ local function smartSearchAddWhoList(query, lvl)
 			tAddN = tAddN+1
 			return a.."-"..b
 		end)
-		table.remove(addon.smartSearch.whoQueryList, progress)
+		table.remove(addon.search.whoQueryList, progress)
 		
 		
 		if isQueryFiltered(v1) then
 			tAddN = tAddN-1
 		else
 			debug(format("Add new lvl query: (%s); Query: %s", v1, query))
-			table.insert(addon.smartSearch.whoQueryList, progress, v1)
+			table.insert(addon.search.whoQueryList, progress, v1)
 		end
 		if isQueryFiltered(v2) then
 			tAddN = tAddN-1
 		else
 			debug(format("Add new lvl query: (%s); Query: %s", v2, query))
-			table.insert(addon.smartSearch.whoQueryList, progress+1-(2-tAddN), v2)
+			table.insert(addon.search.whoQueryList, progress+1-(2-tAddN), v2)
 		end
 		
 		
 		
 		local min, max = interface.scanFrame.progressBar:GetMinMax()
 		interface.scanFrame.progressBar:SetMinMax(min, max+tAddN*FGI_SCANINTERVALTIME)
-		addon.smartSearch.progress = addon.smartSearch.progress - 1
+		addon.search.progress = addon.search.progress - 1
 	end
 	local function RACEsplit(query)
 		local new = 0
-		table.remove(addon.smartSearch.whoQueryList, progress)
+		table.remove(addon.search.whoQueryList, progress)
 		for _,v in pairs(L.SYSTEM.race) do
 			local newQuery = format("%s %s\"%s\"",query,L.SYSTEM["r-"],v)
 			if not isQueryFiltered(newQuery) then
-				table.insert(addon.smartSearch.whoQueryList, progress+new, newQuery)
+				table.insert(addon.search.whoQueryList, progress+new, newQuery)
 				new = new + 1
 			end
 		end
-		if new==0 then return table.insert(addon.smartSearch.whoQueryList, progress, query) end
+		if new==0 then return table.insert(addon.search.whoQueryList, progress, query) end
 		debug(format("Add new race queries: %d; Query: %s", new, query))
 		local min, max = interface.scanFrame.progressBar:GetMinMax()
 		interface.scanFrame.progressBar:SetMinMax(min, max+(new)*FGI_SCANINTERVALTIME)
-		addon.smartSearch.progress = addon.smartSearch.progress - 1
+		addon.search.progress = addon.search.progress - 1
 	end
 	local function CLASSsplit(query, race)
 		local new = 0
-		table.remove(addon.smartSearch.whoQueryList, progress)
+		table.remove(addon.search.whoQueryList, progress)
 		if race then
 			for k,v in pairs(L.SYSTEM.race) do
 				if v==race then
@@ -553,22 +505,22 @@ local function smartSearchAddWhoList(query, lvl)
 			
 			if not RaceClassCombo[race] then return print("FGI Error race -",race) end
 		else
-			return table.insert(addon.smartSearch.whoQueryList, progress, query)
+			return table.insert(addon.search.whoQueryList, progress, query)
 		end
 		for k,v in pairs(RaceClassCombo[race]) do
 			local newQuery = format("%s %s\"%s\"",query,L.SYSTEM["c-"],v)
 			if not isQueryFiltered(newQuery) then
-				table.insert(addon.smartSearch.whoQueryList, progress+new, newQuery)
+				table.insert(addon.search.whoQueryList, progress+new, newQuery)
 				new = new + 1
 			end
 		end
-		if #RaceClassCombo[race]==0 then return table.insert(addon.smartSearch.whoQueryList, progress, query) end
+		if #RaceClassCombo[race]==0 then return table.insert(addon.search.whoQueryList, progress, query) end
 		debug(format("Add new class queries: %d; Query: %s", #RaceClassCombo[race], query))
 		local min, max = interface.scanFrame.progressBar:GetMinMax()
 		interface.scanFrame.progressBar:SetMinMax(min, max+(new)*FGI_SCANINTERVALTIME)
-		addon.smartSearch.progress = addon.smartSearch.progress - 1
+		addon.search.progress = addon.search.progress - 1
 	end
-	local queryParams = smartSearchGetParams(query, lvl)
+	local queryParams = searchGetParams(query, lvl)
 	local difference = (queryParams.max - queryParams.min) > 0
 	if difference then
 		LVLsplit(query)
@@ -674,30 +626,18 @@ end
 
 
 
-local function SmartSearchWhoResultCallback(query, results, complete)
+local function searchWhoResultCallback(query, results, complete)
 	debug(format("Query %s", query))
 	local searchLvl = getSearchDeepLvl(query)
 	if searchLvl == 1 and #results>=FGI_MAXWHORETURN then
-		smartSearchAddWhoList(query,1)
+		searchAddWhoList(query,1)
 		debug(format("Query (%s) return 50 or more results; SearchLevel-%d", query, searchLvl))
 	elseif searchLvl == 2 and #results>=FGI_MAXWHORETURN then
-		smartSearchAddWhoList(query,2)
+		searchAddWhoList(query,2)
 		debug(format("Query (%s) return 50 or more results; SearchLevel-%d", query, searchLvl))
 	-- 3lvl can't modified
 	end
 	
-	for i=1,#results do
-		local player = results[i]
-		addNewPlayer(addon.smartSearch, player)
-	end
-	
-	inviteBtnText(format(L.interface["Пригласить: %d"], #addon.smartSearch.inviteList))
-end
-
-local function WhoResultCallback(query, results, complete)
-	if #results == FGI_MAXWHORETURN and DB.SearchType ~= 1 then
-		print(format(L.FAQ.error["Поиск вернул 50 или более результатов, рекомендуется изменить настройки поиска. Запрос: %s"], query))
-	end
 	for i=1,#results do
 		local player = results[i]
 		addNewPlayer(addon.search, player)
@@ -707,37 +647,19 @@ local function WhoResultCallback(query, results, complete)
 end
 
 nextSearch = function()
-	if (#addon.search.whoQueryList == 0 or addon.search.progress > #addon.search.whoQueryList) and DB.SearchType ~= 3 then
-		addon.search.progress = 1
-		if DB.SearchType == 1 and #addon.search.whoQueryList == 0 then
-			addon.search.whoQueryList = getEasyWhoList()
-		elseif DB.SearchType == 2 and #addon.search.whoQueryList == 0 then
-			addon.search.whoQueryList = getWhoList(DB.searchInterval)
-		end
+	if #addon.search.whoQueryList == 0 then
+		addon.search.whoQueryList = {DB.lowLimit.."-"..DB.highLimit}
 		interface.scanFrame.progressBar:SetMinMax(GetTime(), GetTime()+#addon.search.whoQueryList*FGI_SCANINTERVALTIME)
-	elseif DB.SearchType == 3 then
-		if #addon.smartSearch.whoQueryList == 0 then
-			addon.smartSearch.whoQueryList = {DB.lowLimit.."-"..DB.highLimit}
-			interface.scanFrame.progressBar:SetMinMax(GetTime(), GetTime()+#addon.smartSearch.whoQueryList*FGI_SCANINTERVALTIME)
-		end
-		if addon.smartSearch.progress <= 1 or addon.smartSearch.progress > #addon.smartSearch.whoQueryList then
-			interface.scanFrame.progressBar:SetMinMax(GetTime(), GetTime()+#addon.smartSearch.whoQueryList*FGI_SCANINTERVALTIME)
-		end
+	end
+	if addon.search.progress <= 1 or addon.search.progress > #addon.search.whoQueryList then
+		interface.scanFrame.progressBar:SetMinMax(GetTime(), GetTime()+#addon.search.whoQueryList*FGI_SCANINTERVALTIME)
 	end
 	
 	local curQuery
-	
-	if DB.SearchType ~= 3 then
-		addon.search.progress = (addon.search.progress <= (#addon.search.whoQueryList or 1)) and addon.search.progress or 1
-		curQuery = addon.search.whoQueryList[addon.search.progress]
-		addon.libWho:Who(tostring(curQuery),{queue = addon.libWho.WHOLIB_QUEUE_QUIET, callback = WhoResultCallback})
-		addon.search.progress = addon.search.progress + 1
-	else
-		addon.smartSearch.progress = (addon.smartSearch.progress <= (#addon.smartSearch.whoQueryList or 1)) and addon.smartSearch.progress or 1
-		curQuery = addon.smartSearch.whoQueryList[addon.smartSearch.progress]
-		addon.libWho:Who(tostring(curQuery),{queue = addon.libWho.WHOLIB_QUEUE_QUIET, callback = SmartSearchWhoResultCallback})
-		addon.smartSearch.progress = addon.smartSearch.progress + 1
-	end
+	addon.search.progress = (addon.search.progress <= (#addon.search.whoQueryList or 1)) and addon.search.progress or 1
+	curQuery = addon.search.whoQueryList[addon.search.progress]
+	addon.libWho:Who(tostring(curQuery),{queue = addon.libWho.WHOLIB_QUEUE_QUIET, callback = searchWhoResultCallback})
+	addon.search.progress = addon.search.progress + 1
 end
 
 function dump(t,l)
@@ -817,9 +739,6 @@ function fn:StartSearch(timer)
 	addon.search.state = "start"
 	searchIntervalTimer(true, timer)
 	nextSearch()
-	interface.mainFrame.mainCheckBoxGRP.normalSearch:SetDisabled(true)
-	interface.mainFrame.mainCheckBoxGRP.deepSearch:SetDisabled(true)
-	interface.mainFrame.mainCheckBoxGRP.smartSearch:SetDisabled(true)
 	Searchframe:SetScript("OnUpdate", SearchOnUpdate)
 end
 

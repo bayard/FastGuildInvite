@@ -99,7 +99,7 @@ frame:SetScript("OnEvent", function(...)
 end)
 
 function addon.dataBroker.OnTooltipShow(GameTooltip)
-	local search = DB.SearchType == 3 and addon.smartSearch or addon.search
+	local search = addon.search
 	GameTooltip:SetText(format(L.FAQ.help.minimap,#search.inviteList, interface.scanFrame.progressBar:GetProgress()), 1, 1, 1)
 end
 
@@ -231,7 +231,6 @@ function FastGuildInvite:OnInitialize()
 	DB.classFilterVal = DB.classFilterVal or FGI_DEFAULT_CLASSFILTERSTART
 	DB.searchInterval = DB.searchInterval or FGI_DEFAULT_SEARCHINTERVAL
 	
-	DB.SearchType = DB.SearchType or 3
 	DB.backgroundRun = DB.backgroundRun or false
 	DB.enableFilters = DB.enableFilters or false
 	
