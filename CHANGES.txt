@@ -1,1 +1,1 @@
-delete normal & advanced search
+normal & advanced search were deleted

@@ -180,7 +180,8 @@ mainFrame.mainButtonsGRP = GUI:Create("GroupFrame")
 local mainButtonsGRP = mainFrame.mainButtonsGRP
 mainButtonsGRP:SetLayout("List")
 mainButtonsGRP:SetHeight(80)
-mainButtonsGRP:SetWidth(size.mainButtonsGRP)
+mainButtonsGRP:SetWidth(size.mainFrameW-20)
+-- mainButtonsGRP:SetWidth(size.mainButtonsGRP)
 mainFrame:AddChild(mainButtonsGRP)
 
 mainButtonsGRP.startScan = GUI:Create("Button")
@@ -240,7 +241,7 @@ mainButtonsGRP:AddChild(frame)
 mainFrame.searchRangeGRP = GUI:Create("GroupFrame")
 local searchRangeGRP = mainFrame.searchRangeGRP
 searchRangeGRP:SetLayout("List")
-searchRangeGRP:SetHeight(100)
+searchRangeGRP:SetHeight(50)
 searchRangeGRP:SetWidth(size.searchRangeGRP)
 mainFrame:AddChild(searchRangeGRP)
 
@@ -295,6 +296,25 @@ end)
 searchRangeGRP:AddChild(frame)
 
 
+mainFrame.searchInfo = GUI:Create("TLabel")
+local frame = mainFrame.searchInfo
+frame:SetWidth(350)
+frame.label:SetJustifyH("LEFT")
+fontSize(frame.label, nil, 12)
+frame.placeholder = [[Statistics.
+Total unique players found: %d
+Invitations sent: %d
+Invitations accepted: %d
+Players Filtered by Custom Filters: %d
+]]
+frame.update = function(t)
+	local unique, sended , invited, filtered = unpack(t)
+	frame:SetText(format(frame.placeholder, unique, sended , invited, filtered))
+end
+mainFrame:AddChild(frame)
+
+
+
 
 
 mainFrame.wheelHint = GUI:Create("TLabel")
@@ -315,6 +335,7 @@ frame:SetScript('OnEvent', function()
 	mainFrame:Show()
 	gratitudeFrame:Show()
 	DB = addon.DB
+	
 	
 	
 	inviteTypeGRP.drop:SetValue(DB.inviteType)
@@ -377,6 +398,10 @@ C_Timer.NewTicker(0.1,function()
 	searchRangeGRP.lvlRangeMax:ClearAllPoints()
 	searchRangeGRP.lvlRangeMax:SetPoint("LEFT", searchRangeGRP.lvlRangeLine.frame, "RIGHT", 0, 0)
 	
+	mainFrame.searchInfo:ClearAllPoints()
+	mainFrame.searchInfo:SetPoint("BOTTOMRIGHT", mainButtonsGRP.frame, "TOPRIGHT", 0, 0)
+	-- mainFrame.searchInfo:SetPoint("TOPLEFT", searchRangeGRP.frame, "BOTTOMLEFT", 0, -10)
+	
 	mainButtonsGRP:ClearAllPoints()
 	mainButtonsGRP:SetPoint("TOPLEFT", mainCheckBoxGRP.frame, "BOTTOMLEFT", 0, -10)
 	
@@ -391,7 +416,7 @@ C_Timer.NewTicker(0.1,function()
 	
 	mainButtonsGRP.Gratitude:ClearAllPoints()
 	mainButtonsGRP.Gratitude:SetPoint("LEFT", mainButtonsGRP.settingsBtn.frame, "RIGHT", 2, 0)
-	mainFrame:Hide()
+	-- mainFrame:Hide()
 	gratitudeFrame:Hide()
 end, 2)
 	

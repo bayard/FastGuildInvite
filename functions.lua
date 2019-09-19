@@ -12,9 +12,20 @@ addon.search = {progress=1, inviteList={}, state='stop', timeShift=0, tempSended
 addon.removeMsgList = {}
 addon.libWho = {}
 local DB
-local nextSearch
 LibStub:GetLibrary("LibWho-2.0"):Embed(addon.libWho);
 local classicWoW = addon.isClassic
+addon.searchInfo = {unique = {1}, sended = {1}, invited = {0}, filtered = {1}}
+local mt = {
+	__call = function(self,n)
+		self[1] = self[1] + (n==0 and -self[1] or (n or 1))
+		interface.mainFrame.searchInfo.update(addon.searchInfo())
+		return self[1]
+	end
+}
+setmetatable(addon.searchInfo.unique,mt);setmetatable(addon.searchInfo.sended,mt);setmetatable(addon.searchInfo.invited,mt);setmetatable(addon.searchInfo.filtered,mt);
+setmetatable(addon.searchInfo,{__call = function(self)
+	return {self.unique[1], self.sended[1], self.invited[1], self.filtered[1]}
+end});
 
 local time, next = time, next
 
@@ -330,6 +341,9 @@ function fn:invitePlayer(noInv)
 	if not noInv or DB.rememberAll then
 		rememberPlayer(list[1].name)
 	end
+	if not noInv then
+		addon.searchInfo.sended()
+	end
 	table.remove(list, 1)
 	inviteBtnText(format(L.interface["Пригласить: %d"], #list))
 	
@@ -344,7 +358,7 @@ local Searchframe = CreateFrame('Frame')
 
 local function searchIntervalTimer(onOff, timer)
 	if onOff then
-		 addon.search.intervalTimer = C_Timer.NewTicker(timer or FGI_SCANINTERVALTIME, function()nextSearch()end)
+		 addon.search.intervalTimer = C_Timer.NewTicker(timer or FGI_SCANINTERVALTIME, function()fn:nextSearch()end)
 	else
 		if addon.search.intervalTimer then
 			addon.search.intervalTimer:Cancel()
@@ -474,7 +488,7 @@ local function searchAddWhoList(query, lvl)
 		
 		
 		local min, max = interface.scanFrame.progressBar:GetMinMax()
-		interface.scanFrame.progressBar:SetMinMax(min, max+tAddN*FGI_SCANINTERVALTIME)
+		-- interface.scanFrame.progressBar:SetMinMax(min, max+tAddN*FGI_SCANINTERVALTIME)
 		addon.search.progress = addon.search.progress - 1
 	end
 	local function RACEsplit(query)
@@ -490,7 +504,7 @@ local function searchAddWhoList(query, lvl)
 		if new==0 then return table.insert(addon.search.whoQueryList, progress, query) end
 		debug(format("Add new race queries: %d; Query: %s", new, query))
 		local min, max = interface.scanFrame.progressBar:GetMinMax()
-		interface.scanFrame.progressBar:SetMinMax(min, max+(new)*FGI_SCANINTERVALTIME)
+		-- interface.scanFrame.progressBar:SetMinMax(min, max+(new)*FGI_SCANINTERVALTIME)
 		addon.search.progress = addon.search.progress - 1
 	end
 	local function CLASSsplit(query, race)
@@ -518,7 +532,7 @@ local function searchAddWhoList(query, lvl)
 		if #RaceClassCombo[race]==0 then return table.insert(addon.search.whoQueryList, progress, query) end
 		debug(format("Add new class queries: %d; Query: %s", #RaceClassCombo[race], query))
 		local min, max = interface.scanFrame.progressBar:GetMinMax()
-		interface.scanFrame.progressBar:SetMinMax(min, max+(new)*FGI_SCANINTERVALTIME)
+		-- interface.scanFrame.progressBar:SetMinMax(min, max+(new)*FGI_SCANINTERVALTIME)
 		addon.search.progress = addon.search.progress - 1
 	end
 	local queryParams = searchGetParams(query, lvl)
@@ -604,8 +618,10 @@ local function addNewPlayer(t, p)
 							t.tempSendedInvites[p.Name] = true
 							debug(format("Add player %s", playerInfoStr), color.green)
 						else
+							addon.searchInfo.filtered()
 							debug(format("Player (%s) has been fitlered", playerInfoStr), color.yellow)
 						end
+						addon.searchInfo.unique()
 					else
 						debug(format("Invitation has already been sent to the player %s", playerInfoStr), color.yellow)
 					end
@@ -643,22 +659,25 @@ local function searchWhoResultCallback(query, results, complete)
 		local player = results[i]
 		addNewPlayer(addon.search, player)
 	end
-	
+	interface.scanFrame.progressBar:SetMinMax(0, #addon.search.whoQueryList)
+	interface.scanFrame.progressBar:SetProgress(addon.search.progress-1)
 	inviteBtnText(format(L.interface["Пригласить: %d"], #addon.search.inviteList))
 end
 
-nextSearch = function()
+function fn:nextSearch()
 	if #addon.search.whoQueryList == 0 then
 		addon.search.whoQueryList = {DB.lowLimit.."-"..DB.highLimit}
-		interface.scanFrame.progressBar:SetMinMax(GetTime(), GetTime()+#addon.search.whoQueryList*FGI_SCANINTERVALTIME)
+		-- interface.scanFrame.progressBar:SetMinMax(GetTime(), GetTime()+#addon.search.whoQueryList*FGI_SCANINTERVALTIME)
 	end
 	if addon.search.progress <= 1 or addon.search.progress > #addon.search.whoQueryList then
-		interface.scanFrame.progressBar:SetMinMax(GetTime(), GetTime()+#addon.search.whoQueryList*FGI_SCANINTERVALTIME)
+		-- interface.scanFrame.progressBar:SetMinMax(GetTime(), GetTime()+#addon.search.whoQueryList*FGI_SCANINTERVALTIME)
 	end
 	
-	local curQuery
+	
+	
+	
 	addon.search.progress = (addon.search.progress <= (#addon.search.whoQueryList or 1)) and addon.search.progress or 1
-	curQuery = addon.search.whoQueryList[addon.search.progress]
+	local curQuery = addon.search.whoQueryList[addon.search.progress]
 	addon.libWho:Who(tostring(curQuery),{queue = addon.libWho.WHOLIB_QUEUE_QUIET, callback = searchWhoResultCallback})
 	addon.search.progress = addon.search.progress + 1
 end
@@ -739,7 +758,7 @@ function fn:StartSearch(timer)
 	end
 	addon.search.state = "start"
 	searchIntervalTimer(true, timer)
-	nextSearch()
+	fn:nextSearch()
 	Searchframe:SetScript("OnUpdate", SearchOnUpdate)
 end
 

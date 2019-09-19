@@ -114,11 +114,13 @@ local function SetProgress(self, cur)
 		return SecondsToTime(time)
 	end
 	cur = (cur or 70) - self.progressTexture.min
-	local max = self.progressTexture.max - self.progressTexture.min
+	-- local max = self.progressTexture.max - self.progressTexture.min
+	local max = self.progressTexture.max
 	local percent = math.round(math.progress(max, cur))/100
 	self.progressTexture:SetWidth((self.frame:GetWidth()-10)*percent)
 	
-	local time = modTime(math.round(max - cur))
+	-- local time = modTime(math.round(max - cur))
+	local time = math.round(max - cur)
 	self.statustext:SetText(self.statustext.placeholder:format(math.floor(percent*100), (max - cur)<=0 and "<1" or time))
 end
 
@@ -179,7 +181,9 @@ frame.frame:SetNormalTexture("Interface\\Buttons\\UI-SpellbookIcon-NextPage-Up")
 frame:SetCallback("OnClick", function(self)
 	if not fn:inGuildCanInvite() then return print(L.FAQ.error["Вы не состоите в гильдии или у вас нет прав для приглашения."]) end
 	self = self.frame
-	if self.pause then
+	self:SetNormalTexture("Interface\\Buttons\\UI-SpellbookIcon-NextPage-Up")
+		if LibDBIcon10_FGI then LibDBIcon10_FGI.icon:SetTexture("Interface\\AddOns\\FastGuildInvite\\img\\minimap\\MiniMapButton") end
+	--[[if self.pause then
 		self:SetNormalTexture("Interface\\TimeManager\\PauseButton")
 		if LibDBIcon10_FGI then LibDBIcon10_FGI.icon:SetTexture("Interface\\AddOns\\FastGuildInvite\\img\\minimap\\MiniMapButton-Search") end
 		self.pause = false
@@ -191,7 +195,10 @@ frame:SetCallback("OnClick", function(self)
 		self.pause = true
 		fn:PauseSearch()
 		-- scanFrame.pausePlayFilter:UnregisterEvent("CHAT_MSG_SYSTEM")
-	end
+	end]]
+	scanFrame.pausePlay:SetDisabled(true)
+	C_Timer.After(FGI_SCANINTERVALTIME, function() scanFrame.pausePlay:SetDisabled(false) end)
+	fn:nextSearch()
 end)
 scanFrame:AddChild(frame)
 
