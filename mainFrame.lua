@@ -416,7 +416,7 @@ C_Timer.NewTicker(0.1,function()
 	
 	mainButtonsGRP.Gratitude:ClearAllPoints()
 	mainButtonsGRP.Gratitude:SetPoint("LEFT", mainButtonsGRP.settingsBtn.frame, "RIGHT", 2, 0)
-	-- mainFrame:Hide()
+	mainFrame:Hide()
 	gratitudeFrame:Hide()
 end, 2)
 	
