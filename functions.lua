@@ -12,9 +12,8 @@ addon.search = {progress=1, inviteList={}, state='stop', timeShift=0, tempSended
 addon.removeMsgList = {}
 addon.libWho = {}
 local DB
-LibStub:GetLibrary("LibWho-2.0"):Embed(addon.libWho);
-local classicWoW = addon.isClassic
-addon.searchInfo = {unique = {1}, sended = {1}, invited = {0}, filtered = {1}}
+--LibStub:GetLibrary("LibWho-2.0"):Embed(addon.libWho);
+addon.searchInfo = {unique = {0}, sended = {0}, invited = {-1}, filtered = {0}}
 local mt = {
 	__call = function(self,n)
 		self[1] = self[1] + (n==0 and -self[1] or (n or 1))
@@ -154,11 +153,6 @@ function fn:FilterChange(id)
 		addfilterFrame.classesCheckBoxShaman:SetValue(class[CLASS.Shaman] or false)
 		addfilterFrame.classesCheckBoxWarlock:SetValue(class[CLASS.Warlock] or false)
 		addfilterFrame.classesCheckBoxWarrior:SetValue(class[CLASS.Warrior] or false)
-		if not classicWoW then
-		addfilterFrame.classesCheckBoxDeathKnight:SetValue(class[CLASS.DeathKnight] or false)
-		addfilterFrame.classesCheckBoxDemonHunter:SetValue(class[CLASS.DemonHunter] or false)
-		addfilterFrame.classesCheckBoxMonk:SetValue(class[CLASS.Monk] or false)
-		end
 	end
 	
 	if not raceFilter then 
@@ -224,34 +218,6 @@ end
 
 
 local RaceClassCombo 
-if not classicWoW then
-RaceClassCombo = {
-	Orc = {CLASS.Warrior,CLASS.Hunter,CLASS.Rogue,CLASS.Shaman,CLASS.Mage,CLASS.Warlock,CLASS.Monk,CLASS.DeathKnight},
-	Undead = {CLASS.Warrior,CLASS.Hunter,CLASS.Rogue,CLASS.Priest,CLASS.Mage,CLASS.Warlock,CLASS.Monk,CLASS.DeathKnight},
-	Tauren = {CLASS.Warrior,CLASS.Paladin,CLASS.Hunter,CLASS.Priest,CLASS.Shaman,CLASS.Monk,CLASS.Druid,CLASS.DeathKnight},
-	Troll = {CLASS.Warrior,CLASS.Hunter,CLASS.Rogue,CLASS.Priest,CLASS.Shaman,CLASS.Mage,CLASS.Warlock,CLASS.Monk,CLASS.Druid,CLASS.DeathKnight},
-	Human = {CLASS.Warrior,CLASS.Paladin,CLASS.Hunter,CLASS.Rogue,CLASS.Priest,CLASS.Mage,CLASS.Warlock,CLASS.Monk,CLASS.DeathKnight},
-	Dwarf = {CLASS.Warrior,CLASS.Paladin,CLASS.Hunter,CLASS.Rogue,CLASS.Priest,CLASS.Shaman,CLASS.Mage,CLASS.Warlock,CLASS.Monk,CLASS.DeathKnight},
-	NightElf = {CLASS.Warrior,CLASS.Hunter,CLASS.Rogue,CLASS.Priest,CLASS.Mage,CLASS.Monk,CLASS.Druid,CLASS.DemonHunter,CLASS.DeathKnight},
-	Gnome = {CLASS.Warrior,CLASS.Hunter,CLASS.Rogue,CLASS.Priest,CLASS.Mage,CLASS.Warlock,CLASS.Monk,CLASS.DeathKnight},
-	
-	
-	BloodElf = {CLASS.Warrior,CLASS.Paladin,CLASS.Hunter,CLASS.Priest,CLASS.Mage,CLASS.Warlock,CLASS.Monk,CLASS.DemonHunter,CLASS.DeathKnight},
-	Goblin = {CLASS.Warrior,CLASS.Hunter,CLASS.Rogue,CLASS.Priest,CLASS.Shaman,CLASS.Mage,CLASS.Warlock,CLASS.DeathKnight},
-	Nightborne = {CLASS.Warrior,CLASS.Hunter,CLASS.Rogue,CLASS.Priest,CLASS.Mage,CLASS.Warlock,CLASS.Monk},
-	HightmountainTauren = {CLASS.Warrior,CLASS.Hunter,CLASS.Shaman,CLASS.Monk,CLASS.Druid},
-	MagharOrc = {CLASS.Warrior,CLASS.Hunter,CLASS.Rogue,CLASS.Priest,CLASS.Shaman,CLASS.Mage,CLASS.Monk},
-	Pandaren = {CLASS.Warrior,CLASS.Hunter,CLASS.Rogue,CLASS.Priest,CLASS.Shaman,CLASS.Mage,CLASS.Monk},
-	Draenei = {CLASS.Warrior,CLASS.Paladin,CLASS.Hunter,CLASS.Priest,CLASS.Shaman,CLASS.Mage,CLASS.Monk,CLASS.DeathKnight},
-	Worgen = {CLASS.Warrior,CLASS.Hunter,CLASS.Rogue,CLASS.Priest,CLASS.Mage,CLASS.Warlock,CLASS.Druid,CLASS.DeathKnight},
-	VoidElf = {CLASS.Warrior,CLASS.Hunter,CLASS.Rogue,CLASS.Priest,CLASS.Mage,CLASS.Warlock,CLASS.Monk},
-	LightforgedDraenei = {CLASS.Warrior,CLASS.Paladin,CLASS.Hunter,CLASS.Priest,CLASS.Mage},
-	DarkIronDwarf = {CLASS.Warrior,CLASS.Paladin,CLASS.Hunter,CLASS.Rogue,CLASS.Priest,CLASS.Shaman,CLASS.Mage,CLASS.Warlock,CLASS.Monk},
-	KulTiran = {CLASS.Warrior,CLASS.Hunter,CLASS.Rogue,CLASS.Priest,CLASS.Shaman,CLASS.Mage,CLASS.Monk,CLASS.Druid,},
-	ZandalariTroll = {CLASS.Warrior,CLASS.Paladin,CLASS.Hunter,CLASS.Rogue,CLASS.Priest,CLASS.Shaman,CLASS.Mage,CLASS.Monk,CLASS.Druid,},
-	
-}
-else
 RaceClassCombo = {
 	Orc = {CLASS.Warrior,CLASS.Hunter,CLASS.Rogue,CLASS.Shaman,CLASS.Mage,CLASS.Warlock,CLASS.Monk,CLASS.DeathKnight},
 	Undead = {CLASS.Warrior,CLASS.Hunter,CLASS.Rogue,CLASS.Priest,CLASS.Mage,CLASS.Warlock,CLASS.Monk,CLASS.DeathKnight},
@@ -262,7 +228,6 @@ RaceClassCombo = {
 	NightElf = {CLASS.Warrior,CLASS.Hunter,CLASS.Rogue,CLASS.Priest,CLASS.Mage,CLASS.Monk,CLASS.Druid,CLASS.DemonHunter,CLASS.DeathKnight},
 	Gnome = {CLASS.Warrior,CLASS.Hunter,CLASS.Rogue,CLASS.Priest,CLASS.Mage,CLASS.Warlock,CLASS.Monk,CLASS.DeathKnight},
 }
-end
 
 local function getEasyWhoList()
 	local min = DB.lowLimit
@@ -641,10 +606,16 @@ local function addNewPlayer(t, p)
 	interface.chooseInvites.player:SetText(#list > 0 and format("%s%s %d %s %s|r", color[list[1].NoLocaleClass:upper()], list[1].name, list[1].lvl, list[1].class, list[1].race) or "")
 end
 
-
+local libWho = {whoQuery='', doHide=false, isFGI=false}
+local function GetWho(query)
+	libWho.isFGI = true
+	libWho.doHide = (not WhoFrame:IsShown()) and (not FriendsFrame:IsShown())
+	C_FriendList.SendWho(query)
+end
 
 local function searchWhoResultCallback(query, results, complete)
-	C_Timer.After(FGI_SCANINTERVALTIME, function() interface.scanFrame.pausePlay:SetDisabled(false) end)
+	addon.search.progress = addon.search.progress + 1
+	-- print(query, #results)
 	debug(format("Query %s", query))
 	local searchLvl = getSearchDeepLvl(query)
 	if searchLvl == 1 and #results>=FGI_MAXWHORETURN then
@@ -666,6 +637,7 @@ local function searchWhoResultCallback(query, results, complete)
 end
 
 function fn:nextSearch()
+	C_Timer.After(FGI_SCANINTERVALTIME, function() interface.scanFrame.pausePlay:SetDisabled(false) end)
 	if #addon.search.whoQueryList == 0 then
 		addon.search.whoQueryList = {DB.lowLimit.."-"..DB.highLimit}
 		-- interface.scanFrame.progressBar:SetMinMax(GetTime(), GetTime()+#addon.search.whoQueryList*FGI_SCANINTERVALTIME)
@@ -679,9 +651,46 @@ function fn:nextSearch()
 	
 	addon.search.progress = (addon.search.progress <= (#addon.search.whoQueryList or 1)) and addon.search.progress or 1
 	local curQuery = addon.search.whoQueryList[addon.search.progress]
-	addon.libWho:Who(tostring(curQuery),{queue = addon.libWho.WHOLIB_QUEUE_QUIET, callback = searchWhoResultCallback})
-	addon.search.progress = addon.search.progress + 1
+	GetWho(curQuery)
 end
+
+local function returnWho(result)
+	searchWhoResultCallback(whoQuery, result)
+end
+
+local whoFrame = CreateFrame('Frame')
+whoFrame:RegisterEvent("WHO_LIST_UPDATE")
+whoFrame:SetScript("OnEvent", function()
+	if not libWho.isFGI then return end
+	if libWho.doHide then
+		FriendsFrame:Hide()
+	end
+	libWho.isFGI = false
+	local result = {}
+
+	local total, num = C_FriendList.GetNumWhoResults()
+	for i=1, num do
+	--	self.Result[i] = C_FriendList.GetWhoInfo(i)
+		local info = C_FriendList.GetWhoInfo(i)
+		--backwards compatibility START
+		info.Name=info.fullName
+		info.Guild=info.fullGuildName
+		info.Level=info.level
+		info.Race=info.raceStr
+		info.Class=info.classStr
+		info.Zone=info.area
+		info.NoLocaleClass=info.filename
+		info.Sex=info.gender
+		--backwards compatibility END
+		result[i] = info
+	end
+	
+	returnWho(result)
+end)
+local function test(query)
+	whoQuery = query
+end
+hooksecurefunc(C_FriendList, "SendWho", test);
 
 function dump(t,l)
   local str = '{'
