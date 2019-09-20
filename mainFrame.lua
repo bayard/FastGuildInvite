@@ -25,7 +25,7 @@ end
 
 interface.gratitudeFrame = GUI:Create("ClearFrame")
 local gratitudeFrame = interface.gratitudeFrame
-gratitudeFrame:Hide()
+-- gratitudeFrame:Hide()
 gratitudeFrame:SetTitle("Fast Guild Invite Gratitude")
 gratitudeFrame:SetWidth(700)
 gratitudeFrame:SetHeight(500)
@@ -77,11 +77,11 @@ end)
 
 interface.mainFrame = GUI:Create("ClearFrame")
 local mainFrame = interface.mainFrame
-mainFrame:Hide()
+-- mainFrame:Hide()
 mainFrame:SetTitle("Fast Guild Invite")
 mainFrame:SetWidth(size.mainFrameW)
 mainFrame:SetHeight(size.mainFrameH)
-mainFrame:SetLayout("Flow")
+mainFrame:SetLayout("List")
 
 mainFrame.title:SetScript('OnMouseUp', function(mover)
 	local frame = mover:GetParent()
@@ -332,8 +332,8 @@ mainFrame:AddChild(frame)
 local frame = CreateFrame('Frame')
 frame:RegisterEvent('PLAYER_ENTERING_WORLD')
 frame:SetScript('OnEvent', function()
-	mainFrame:Show()
-	gratitudeFrame:Show()
+	-- mainFrame:Show()
+	-- gratitudeFrame:Show()
 	DB = addon.DB
 	
 	
@@ -416,9 +416,9 @@ C_Timer.NewTicker(0.1,function()
 	
 	mainButtonsGRP.Gratitude:ClearAllPoints()
 	mainButtonsGRP.Gratitude:SetPoint("LEFT", mainButtonsGRP.settingsBtn.frame, "RIGHT", 2, 0)
+end, 2)
 	mainFrame:Hide()
 	gratitudeFrame:Hide()
-end, 2)
 	
 	frame:UnregisterEvent('PLAYER_ENTERING_WORLD')
 end)
