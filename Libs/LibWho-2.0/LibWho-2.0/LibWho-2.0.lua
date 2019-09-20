@@ -868,6 +868,7 @@ end -- if
 
 function lib.hook.SendWho(self, msg)
 	dbg("SendWho: "..msg)
+	print(msg)
 	lib.AskWho(self, {query = msg, queue = lib.WHOLIB_QUEUE_USER, whotoui = lib.SetWhoToUIState, flags = 0})
 end
 

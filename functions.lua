@@ -644,6 +644,7 @@ end
 
 
 local function searchWhoResultCallback(query, results, complete)
+	C_Timer.After(FGI_SCANINTERVALTIME, function() interface.scanFrame.pausePlay:SetDisabled(false) end)
 	debug(format("Query %s", query))
 	local searchLvl = getSearchDeepLvl(query)
 	if searchLvl == 1 and #results>=FGI_MAXWHORETURN then

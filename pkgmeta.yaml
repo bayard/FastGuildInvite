@@ -1,1 +1,7 @@
+<<<<<<< HEAD
 manual-changelog: CHANGES.txt
+=======
+manual-changelog:
+    filename: CHANGELOG.txt
+    markup-type: markdown
+>>>>>>> 9ff22e77272999a1770c70a1c3d1abf86d2567fc

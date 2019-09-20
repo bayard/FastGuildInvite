@@ -197,7 +197,7 @@ frame:SetCallback("OnClick", function(self)
 		-- scanFrame.pausePlayFilter:UnregisterEvent("CHAT_MSG_SYSTEM")
 	end]]
 	scanFrame.pausePlay:SetDisabled(true)
-	C_Timer.After(FGI_SCANINTERVALTIME, function() scanFrame.pausePlay:SetDisabled(false) end)
+	-- C_Timer.After(FGI_SCANINTERVALTIME, function() scanFrame.pausePlay:SetDisabled(false) end)
 	fn:nextSearch()
 end)
 scanFrame:AddChild(frame)

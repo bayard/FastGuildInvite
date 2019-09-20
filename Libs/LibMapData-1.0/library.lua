@@ -1541,25 +1541,3 @@ watchFrame:SetScript("OnEvent", function(frame,event,...)
 	lib:ZoneChanged(false) 
 end)
 
---@alpha@
-function lib:Test()
-	-- Validate map files are all present.
-	for continent in pairs({GetMapContinents()}) do
-		local zones = { GetMapZones(continent) }
-		print("Continent "..continent)
-		for zone, name in pairs(zones) do
-			SetMapZoom(continent, zone)
-			local mapFile = GetMapInfo()
-			local area_id = GetCurrentMapAreaID()
-			local w,h = self:MapArea(mapFile)
-			local aid = self:MapAreaId(mapFile)
-			if w == 0 and h == 0 then
-				error("Failed to find map "..mapFile)
-			end
-			if area_id ~= aid then
-				error(mapFile.." area id mismatch")
-			end
-		end
-	end
-	print("All Tests passed")
-end
