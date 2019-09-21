@@ -11,6 +11,8 @@ local L = {
 			["resetDB"] = "/fgi resetDB - Clear the list of sent invitations.",
 			["resetWindowsPos"] = "/fgi resetWindowsPos - Reset the position of the window(s).",
 			["show"] = "/fgi show - Open the main window of the addon",
+			["invite"] = "/fgi invite - Invite the first player from the queue",
+			["nextSearch"] = "/fgi nextSearch - Run next scan",
 		},
 		["error"] = {
 			["Вы не состоите в гильдии или у вас нет прав для приглашения."] = "You are not a member of the guild or you do not have permission to invite.",

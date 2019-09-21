@@ -283,6 +283,10 @@ end
 function Console:FGIInput(str)
 	if str == '' then return Console:FGIHelp()
 	elseif str == 'show' then return interface.mainFrame:Show()
+	elseif str == "invite" then
+		fn:invitePlayer()
+	elseif str == "nextSearch" then
+		fn:nextSearch()
 	elseif str == 'debug' then 
 		toggleDebug()
 	elseif str == 'resetDB' then DB.alredySended = {}
@@ -343,4 +347,6 @@ function Console:FGIHelp()
 	print(L.FAQ.help.resetDB)
 	print(L.FAQ.help.factorySettings)
 	print(L.FAQ.help.resetWindowsPos)
+	print(L.FAQ.help.invite)
+	print(L.FAQ.help.nextSearch)
 end
