@@ -152,10 +152,8 @@ function FastGuildInvite:OnEnable()
 	
 	if not addon.debug then debugFrame:Hide() else debugFrame:Show() end
 	
-	if DB.keyBind then
-		-- SetBindingClick(DB.keyBind, interface.scanFrame.invite.frame:GetName())
-	end
-	fn:SetKeybind(DB.keyBind)
+	fn:SetKeybind(DB.keyBind.invite, "invite")
+	fn:SetKeybind(DB.keyBind.nextSearch, "nextSearch")
 	
 	
 	if DB.mainFrame then
@@ -206,6 +204,12 @@ function FastGuildInvite:OnEnable()
 	else
 		interface.blackList:SetPoint("CENTER", UIParent)
 	end
+	if DB.keyBindings then
+		interface.keyBindings:ClearAllPoints()
+		interface.keyBindings:SetPoint(DB.keyBindings.point, UIParent, DB.keyBindings.relativePoint, DB.keyBindings.xOfs, DB.keyBindings.yOfs)
+	else
+		interface.keyBindings:SetPoint("CENTER", UIParent)
+	end
 	interface.debugFrame:ClearAllPoints()
 	interface.debugFrame:SetPoint("TOPLEFT", UIParent, "TOPLEFT", 0, 0)
 	
@@ -237,7 +241,7 @@ function FastGuildInvite:OnInitialize()
 	DB.addonMSG = DB.addonMSG or false
 	DB.systemMSG = DB.systemMSG or false
 	DB.sendMSG = DB.sendMSG or false
-	DB.keyBind = DB.keyBind or false
+	DB.keyBind = istable(DB.keyBind) and DB.keyBind or {invite = false, nextSearch = false}
 	DB.rememberAll = DB.rememberAll or false
 	DB.clearDBtimes = DB.clearDBtimes or 3
 	
