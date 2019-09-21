@@ -13,7 +13,7 @@ addon.removeMsgList = {}
 addon.libWho = {}
 local DB
 --LibStub:GetLibrary("LibWho-2.0"):Embed(addon.libWho);
-addon.searchInfo = {unique = {0}, sended = {0}, invited = {-1}, filtered = {0}}
+addon.searchInfo = {unique = {0}, sended = {0}, invited = {0}, filtered = {0}}
 local mt = {
 	__call = function(self,n)
 		self[1] = self[1] + (n==0 and -self[1] or (n or 1))
@@ -29,6 +29,22 @@ end});
 local time, next = time, next
 
 
+
+
+local frame = CreateFrame("Frame")
+frame:RegisterEvent("CHAT_MSG_SYSTEM")
+frame:SetScript("OnEvent", function(_,_,msg)
+	local place = strfind(ERR_GUILD_JOIN_S,"%s",1,true)
+	if (place) then
+		local n = strsub(msg,place)
+		local name = strsub(n,1,(strfind(n,"%s") or 2)-1)
+		if format(ERR_GUILD_JOIN_S,name) == msg then
+			if DB.alredySended[name] then
+				addon.searchInfo.invited()
+			end
+		end
+	end
+end)
 
 --ERR_GUILD_INVITE_S,ERR_GUILD_DECLINE_S,ERR_ALREADY_IN_GUILD_S,ERR_ALREADY_INVITED_TO_GUILD_S,ERR_GUILD_DECLINE_AUTO_S,ERR_GUILD_JOIN_S,ERR_GUILD_PLAYER_NOT_FOUND_S,ERR_CHAT_PLAYER_NOT_FOUND_S
 --	CanGuildInvite()
@@ -667,7 +683,8 @@ whoFrame:RegisterEvent("WHO_LIST_UPDATE")
 whoFrame:SetScript("OnEvent", function()
 	if not libWho.isFGI then return end
 	if libWho.doHide then
-		FriendsFrame:Hide()
+		-- FriendsFrame:Hide()
+		FriendsFrameCloseButton:Click()
 	end
 	libWho.isFGI = false
 	local result = {}
