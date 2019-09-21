@@ -90,6 +90,7 @@ local L = {
 			["Запускать поиск в фоновом режиме"] = "Run a background search",
 			["Количество уровней сканируемых за один раз"] = "Number of levels scanned at one time",
 			["Назначить клавишу для приглашения"] = "Assign a key to the invitation",
+			["Назначить клавишу следующего поиска"] = "Assign a key to the next search",
 			["Не отображать в чате отправляемые сообщения"] = "Do not show sent messages in chat",
 			["Не отображать в чате системные сообщения"] = "Do not display system messages in Chat",
 			["Не отображать в чате сообщения аддона"] = "Do not display addon messages in Chat",

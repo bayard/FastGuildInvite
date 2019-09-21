@@ -98,20 +98,24 @@ function fn.debug(...)
 end
 local debug = fn.debug
 
-function fn:SetKeybind(key)
+function fn:SetKeybind(key, keyType)
+	local DBkey = addon.DB.keyBind
 	if key then
-		if GetBindingAction(key) == "" or addon.DB.keyBind == key then
-			addon.DB.keyBind = key
+		if keyType == "invite" then
+			DBkey.invite = key
 			SetBindingClick(key, interface.scanFrame.invite.frame:GetName())
-		else
-			BasicMessageDialog:SetFrameStrata("TOOLTIP")
-			message(L.FAQ.error["Сочетание клавиш уже занято"])
+		elseif keyType == "nextSearch" then
+			DBkey.nextSearch = key
+			SetBindingClick(key, interface.scanFrame.pausePlay.frame:GetName())
 		end
 	else
-		addon.DB.keyBind = false
+		DBkey[keyType] = false
 	end
-	interface.settingsFrame.settingsButtonsGRP.keyBind:SetLabel(format(L.interface["Назначить кнопку (%s)"], addon.DB.keyBind or "none"))
-	interface.settingsFrame.settingsButtonsGRP.keyBind:SetKey(addon.DB.keyBind)
+	
+	interface.keyBindings.buttonsGRP.keyBind.invite:SetLabel(format(L.interface["Назначить кнопку (%s)"], DBkey.invite or "none"))
+	interface.keyBindings.buttonsGRP.keyBind.invite:SetKey(DBkey.invite)
+	interface.keyBindings.buttonsGRP.keyBind.nextSearch:SetLabel(format(L.interface["Назначить кнопку (%s)"], DBkey.nextSearch or "none"))
+	interface.keyBindings.buttonsGRP.keyBind.nextSearch:SetKey(DBkey.nextSearch)
 end
 
 function fn:FiltersInit()
