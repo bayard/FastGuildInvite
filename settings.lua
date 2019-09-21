@@ -159,14 +159,13 @@ frame:SetCallback("OnClick", function()
 end)
 settingsButtonsGRP:AddChild(frame)
 
-settingsButtonsGRP.keyBind = GUI:Create("TKeybinding")
+settingsButtonsGRP.keyBind = GUI:Create("Button")
 local frame = settingsButtonsGRP.keyBind
--- frame:SetLabel(format(L.interface["Назначить кнопку (%s)"], "none"))
-frame:SetTooltip(L.interface.tooltip["Назначить клавишу для приглашения"])
-fontSize(frame.label)
+frame:SetText("KeyBind")
+fontSize(frame.text)
 frame:SetWidth(size.keyBind)
 frame:SetHeight(40)
-frame:SetCallback("OnKeyChanged", function(self) fn:SetKeybind(self:GetKey()) end)
+frame:SetCallback("OnClick", function() interface.keyBindings:Show() end)
 settingsButtonsGRP:AddChild(frame)
 
 settingsButtonsGRP.setMSG = GUI:Create("Button")
