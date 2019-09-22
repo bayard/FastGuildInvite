@@ -296,7 +296,7 @@ L.Gratitude = {
 	{"Category", "Name", "Contact", "Donate"},
 	{"", "", "", ""},
 	{"Author", "Knoot", "Knoot#7430", "paypal.me/Knoot"},
-	{"Translate-zhTW", "Anchep", "Services@280i.com", "paypal.me/anchep"},
+	{"Translate-zhTW", "Anchep", "Services@280i.com", "paypal.me/280i"},
 	{"Testing", "Shujin", "", ""},
 	{"Testing", "StreetX", "", ""},
 	{"Testing", "Мойгосподин", "", ""},
