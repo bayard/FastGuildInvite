@@ -121,13 +121,14 @@ local function SetProgress(self, cur)
 	
 	-- local time = modTime(math.round(max - cur))
 	local time = math.round(max - cur)
-	self.statustext:SetText(self.statustext.placeholder:format(math.floor(percent*100), (max - cur)<=0 and "<1" or time))
+	-- self.statustext:SetText(self.statustext.placeholder:format(math.floor(percent*100), (max - cur)<=0 and "<1" or time))
+	self.statustext:SetText(self.statustext.placeholder:format(math.floor(percent*100), cur, max))
 end
 
 scanFrame.progressBar = GUI:Create("ProgressBar")
 local frame = scanFrame.progressBar
 frame.SetProgress = SetProgress
-frame:SetPlaceholder("%s%% %s")
+frame:SetPlaceholder("%s%% %s/%s")
 fontSize(frame.statustext)
 frame:SetWidth(scanFrame.frame:GetWidth()-20)
 frame:SetHeight(30)
@@ -172,6 +173,18 @@ frame:SetScript("OnEvent", function(_,_,msg)
 	end
 end)
 
+
+scanFrame.pausePlayLabel = GUI:Create("TLabel")
+local frame = scanFrame.pausePlayLabel
+frame:SetWidth(38)
+frame:SetHeight(40)
+frame.label:SetJustifyH("CENTER")
+frame.frame:SetFrameStrata("TOOLTIP")
+frame:SetText('')
+frame.timer = 0
+fontSize(frame.label, nil, 18)
+scanFrame:AddChild(frame)
+
 scanFrame.pausePlay = GUI:Create("Button")
 local frame = scanFrame.pausePlay
 frame:SetWidth(38)
@@ -180,27 +193,22 @@ frame.frame.pause = true
 frame.frame:SetNormalTexture("Interface\\Buttons\\UI-SpellbookIcon-NextPage-Up")
 frame:SetCallback("OnClick", function(self)
 	if not fn:inGuildCanInvite() then return print(L.FAQ.error["Вы не состоите в гильдии или у вас нет прав для приглашения."]) end
-	self = self.frame
-	self:SetNormalTexture("Interface\\Buttons\\UI-SpellbookIcon-NextPage-Up")
-		if LibDBIcon10_FGI then LibDBIcon10_FGI.icon:SetTexture("Interface\\AddOns\\FastGuildInvite\\img\\minimap\\MiniMapButton") end
-	--[[if self.pause then
-		self:SetNormalTexture("Interface\\TimeManager\\PauseButton")
-		if LibDBIcon10_FGI then LibDBIcon10_FGI.icon:SetTexture("Interface\\AddOns\\FastGuildInvite\\img\\minimap\\MiniMapButton-Search") end
-		self.pause = false
-		fn:StartSearch()
-		-- scanFrame.pausePlayFilter:RegisterEvent("CHAT_MSG_SYSTEM")
-	else
-		self:SetNormalTexture("Interface\\Buttons\\UI-SpellbookIcon-NextPage-Up")
-		if LibDBIcon10_FGI then LibDBIcon10_FGI.icon:SetTexture("Interface\\AddOns\\FastGuildInvite\\img\\minimap\\MiniMapButton") end
-		self.pause = true
-		fn:PauseSearch()
-		-- scanFrame.pausePlayFilter:UnregisterEvent("CHAT_MSG_SYSTEM")
-	end]]
 	scanFrame.pausePlay:SetDisabled(true)
-	-- C_Timer.After(FGI_SCANINTERVALTIME, function() scanFrame.pausePlay:SetDisabled(false) end)
+	scanFrame.pausePlayLabel.timer = FGI_SCANINTERVALTIME
+	scanFrame.pausePlayLabel.frame:SetFrameStrata("TOOLTIP")
+	scanFrame.pausePlayLabel.frame:Show()
+	C_Timer.NewTicker(1, function()
+		local n = scanFrame.pausePlayLabel.timer
+		scanFrame.pausePlayLabel.timer = scanFrame.pausePlayLabel.timer-1
+		scanFrame.pausePlayLabel:SetText(scanFrame.pausePlayLabel.timer)
+		if scanFrame.pausePlayLabel.timer == 0 then scanFrame.pausePlayLabel.frame:Hide() end
+	end, FGI_SCANINTERVALTIME)
+	scanFrame.pausePlayLabel:SetText(scanFrame.pausePlayLabel.timer)
 	fn:nextSearch()
 end)
 scanFrame:AddChild(frame)
+
+
 
 
 
@@ -257,6 +265,9 @@ C_Timer.NewTicker(0.1,function()
 	
 	scanFrame.pausePlay:ClearAllPoints()
 	scanFrame.pausePlay:SetPoint("LEFT", scanFrame.invite.frame, "RIGHT", 2, 0)
+	
+	scanFrame.pausePlayLabel:ClearAllPoints()
+	scanFrame.pausePlayLabel:SetPoint("CENTER", scanFrame.pausePlay.frame, "CENTER", 0, 0)
 	
 	scanFrame.clear:ClearAllPoints()
 	scanFrame.clear:SetPoint("LEFT", scanFrame.pausePlay.frame, "RIGHT", 2, 0)
