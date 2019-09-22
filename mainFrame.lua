@@ -41,35 +41,42 @@ frame:SetCallback('OnClick', function()
 end)
 gratitudeFrame:AddChild(frame)
 
-local labelWidth = (interface.gratitudeFrame.frame:GetWidth()-60)/3
-gratitudeFrame.testing = GUI:Create("TLabel")
-local frame = gratitudeFrame.testing
-frame:SetText(table.concat(L.Gratitude.testing, "\n"))
+local labelWidth = (interface.gratitudeFrame.frame:GetWidth()-60)/4
+gratitudeFrame.Category = GUI:Create("TLabel")
+local frame = gratitudeFrame.Category
+-- frame:SetText(table.concat(L.Gratitude, "\n"))
 fontSize(frame.label)
 frame:SetWidth(labelWidth)
 gratitudeFrame:AddChild(frame)
 
-gratitudeFrame.coding = GUI:Create("TLabel")
-local frame = gratitudeFrame.coding
-frame:SetText(table.concat(L.Gratitude.coding, "\n"))
+gratitudeFrame.Name = GUI:Create("TLabel")
+local frame = gratitudeFrame.Name
+-- frame:SetText(table.concat(L.Gratitude, "\n"))
 fontSize(frame.label)
 frame:SetWidth(labelWidth)
 gratitudeFrame:AddChild(frame)
 
-gratitudeFrame.donations = GUI:Create("TLabel")
-local frame = gratitudeFrame.donations
-frame:SetText(table.concat(L.Gratitude.donations, "\n"))
+gratitudeFrame.Contact = GUI:Create("TLabel")
+local frame = gratitudeFrame.Contact
+-- frame:SetText(table.concat(L.Gratitude, "\n"))
+fontSize(frame.label)
+frame:SetWidth(labelWidth)
+gratitudeFrame:AddChild(frame)
+
+gratitudeFrame.Donate = GUI:Create("TLabel")
+local frame = gratitudeFrame.Donate
+-- frame:SetText(table.concat(L.Gratitude, "\n"))
 fontSize(frame.label)
 frame:SetWidth(labelWidth)
 gratitudeFrame:AddChild(frame)
 
 
 gratitudeFrame.frame:HookScript("OnShow", function()
-	gratitudeFrame.testing:SetWidth(labelWidth)
-	gratitudeFrame.coding:SetWidth(labelWidth)
-	gratitudeFrame.donations:SetWidth(labelWidth)
+	gratitudeFrame.Category:SetWidth(labelWidth)
+	gratitudeFrame.Name:SetWidth(labelWidth)
+	gratitudeFrame.Contact:SetWidth(labelWidth)
+	gratitudeFrame.Donate:SetWidth(labelWidth)
 end)
-
 
 
 
@@ -336,6 +343,16 @@ frame:SetScript('OnEvent', function()
 	-- gratitudeFrame:Show()
 	DB = addon.DB
 	
+	local cat,name,contact,donate = '','','',''
+	for i=1,#L.Gratitude do
+		local u = L.Gratitude[i]
+		local Ctype = u[1]:find("Author") and color.green or u[1]:find("Translate") and color.blue or u[1]:find("Donate") and color.yellow or u[1]:find("Testing") and color.orange or ''
+		cat,name,contact,donate = format("%s\n%s%s|r", cat, Ctype, u[1]),format("%s\n%s%s|r", name, Ctype, u[2]),format("%s\n%s%s|r", contact, Ctype, u[3]),format("%s\n%s%s|r", donate, Ctype, u[4])
+	end
+	gratitudeFrame.Category:SetText(cat)
+	gratitudeFrame.Name:SetText(name)
+	gratitudeFrame.Contact:SetText(contact)
+	gratitudeFrame.Donate:SetText(donate)
 	
 	
 	inviteTypeGRP.drop:SetValue(DB.inviteType)
@@ -353,17 +370,21 @@ C_Timer.NewTicker(0.1,function()
 	gratitudeFrame.closeButton:ClearAllPoints()
 	gratitudeFrame.closeButton:SetPoint("CENTER", gratitudeFrame.frame, "TOPRIGHT", -8, -8)
 	
-	gratitudeFrame.testing:ClearAllPoints()
-	gratitudeFrame.testing:SetPoint("TOPLEFT", gratitudeFrame.frame, "TOPLEFT", 20, -80)
-	gratitudeFrame.testing:SetPoint("BOTTOM", gratitudeFrame.frame, "BOTTOM", 0, 10)
+	gratitudeFrame.Category:ClearAllPoints()
+	gratitudeFrame.Category:SetPoint("TOPLEFT", gratitudeFrame.frame, "TOPLEFT", 20, -20)
+	gratitudeFrame.Category:SetPoint("BOTTOM", gratitudeFrame.frame, "BOTTOM", 0, 10)
 	
-	gratitudeFrame.coding:ClearAllPoints()
-	gratitudeFrame.coding:SetPoint("TOPLEFT", gratitudeFrame.testing.frame, "TOPRIGHT", 0, 0)
-	gratitudeFrame.coding:SetPoint("BOTTOM", gratitudeFrame.frame, "BOTTOM", 0, 10)
+	gratitudeFrame.Name:ClearAllPoints()
+	gratitudeFrame.Name:SetPoint("TOPLEFT", gratitudeFrame.Category.frame, "TOPRIGHT", 0, 0)
+	gratitudeFrame.Name:SetPoint("BOTTOM", gratitudeFrame.frame, "BOTTOM", 0, 10)
 	
-	gratitudeFrame.donations:ClearAllPoints()
-	gratitudeFrame.donations:SetPoint("TOPLEFT", gratitudeFrame.coding.frame, "TOPRIGHT", 0, 0)
-	gratitudeFrame.donations:SetPoint("BOTTOM", gratitudeFrame.frame, "BOTTOM", 0, 10)
+	gratitudeFrame.Contact:ClearAllPoints()
+	gratitudeFrame.Contact:SetPoint("TOPLEFT", gratitudeFrame.Name.frame, "TOPRIGHT", 0, 0)
+	gratitudeFrame.Contact:SetPoint("BOTTOM", gratitudeFrame.frame, "BOTTOM", 0, 10)
+	
+	gratitudeFrame.Donate:ClearAllPoints()
+	gratitudeFrame.Donate:SetPoint("TOPLEFT", gratitudeFrame.Contact.frame, "TOPRIGHT", 0, 0)
+	gratitudeFrame.Donate:SetPoint("BOTTOM", gratitudeFrame.frame, "BOTTOM", 0, 10)
 	
 	mainFrame.closeButton:ClearAllPoints()
 	mainFrame.closeButton:SetPoint("CENTER", mainFrame.frame, "TOPRIGHT", -8, -8)
