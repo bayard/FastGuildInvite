@@ -38,3 +38,4 @@ keybindings.lua
 filtersFrame.lua
 Scan.lua
 blackList.lua
+customList.lua

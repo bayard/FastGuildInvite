@@ -44,28 +44,24 @@ gratitudeFrame:AddChild(frame)
 local labelWidth = (interface.gratitudeFrame.frame:GetWidth()-60)/4
 gratitudeFrame.Category = GUI:Create("TLabel")
 local frame = gratitudeFrame.Category
--- frame:SetText(table.concat(L.Gratitude, "\n"))
 fontSize(frame.label)
 frame:SetWidth(labelWidth)
 gratitudeFrame:AddChild(frame)
 
 gratitudeFrame.Name = GUI:Create("TLabel")
 local frame = gratitudeFrame.Name
--- frame:SetText(table.concat(L.Gratitude, "\n"))
 fontSize(frame.label)
 frame:SetWidth(labelWidth)
 gratitudeFrame:AddChild(frame)
 
 gratitudeFrame.Contact = GUI:Create("TLabel")
 local frame = gratitudeFrame.Contact
--- frame:SetText(table.concat(L.Gratitude, "\n"))
 fontSize(frame.label)
 frame:SetWidth(labelWidth)
 gratitudeFrame:AddChild(frame)
 
 gratitudeFrame.Donate = GUI:Create("TLabel")
 local frame = gratitudeFrame.Donate
--- frame:SetText(table.concat(L.Gratitude, "\n"))
 fontSize(frame.label)
 frame:SetWidth(labelWidth)
 gratitudeFrame:AddChild(frame)
@@ -157,6 +153,17 @@ mainCheckBoxGRP:SetLayout("List")
 mainCheckBoxGRP:SetHeight(120)
 mainCheckBoxGRP:SetWidth(size.mainCheckBoxGRP)
 mainFrame:AddChild(mainCheckBoxGRP)
+
+mainCheckBoxGRP.customList = GUI:Create("TCheckBox")
+local frame = mainCheckBoxGRP.customList
+frame:SetWidth(size.customListBtn)
+frame:SetLabel(L.interface["Пользовательский список"])
+frame:SetTooltip(L.interface.tooltip["Использовать пользовательский список запросов"])
+fontSize(frame.text)
+frame.frame:HookScript("OnClick", function()
+	DB.customWho = mainCheckBoxGRP.customList:GetValue()
+end)
+mainCheckBoxGRP:AddChild(frame)
 
 mainCheckBoxGRP.backgroundRun = GUI:Create("TCheckBox")
 local frame = mainCheckBoxGRP.backgroundRun
@@ -357,6 +364,7 @@ frame:SetScript('OnEvent', function()
 	
 	inviteTypeGRP.drop:SetValue(DB.inviteType)
 	
+	mainCheckBoxGRP.customList:SetValue(DB.customWho or false)
 	mainCheckBoxGRP.backgroundRun:SetValue(DB.backgroundRun or false)
 	mainCheckBoxGRP.enableFilters:SetValue(DB.enableFilters or false)
 	
@@ -386,6 +394,11 @@ C_Timer.NewTicker(0.1,function()
 	gratitudeFrame.Donate:SetPoint("TOPLEFT", gratitudeFrame.Contact.frame, "TOPRIGHT", 0, 0)
 	gratitudeFrame.Donate:SetPoint("BOTTOM", gratitudeFrame.frame, "BOTTOM", 0, 10)
 	
+	
+	
+	
+	
+	
 	mainFrame.closeButton:ClearAllPoints()
 	mainFrame.closeButton:SetPoint("CENTER", mainFrame.frame, "TOPRIGHT", -8, -8)
 	
@@ -398,8 +411,8 @@ C_Timer.NewTicker(0.1,function()
 	mainCheckBoxGRP:ClearAllPoints()
 	mainCheckBoxGRP:SetPoint("TOPLEFT", inviteTypeGRP.frame, "BOTTOMLEFT", 0, -20)
 	
-	mainCheckBoxGRP.backgroundRun:ClearAllPoints()
-	mainCheckBoxGRP.backgroundRun:SetPoint("TOPLEFT", mainCheckBoxGRP.frame, "TOPLEFT", 0, 0)
+	mainCheckBoxGRP.customList:ClearAllPoints()
+	mainCheckBoxGRP.customList:SetPoint("TOPLEFT", mainCheckBoxGRP.frame, "TOPLEFT", 0, 0)
 	
 	mainFrame.wheelHint:ClearAllPoints()
 	mainFrame.wheelHint:SetPoint("TOPLEFT", inviteTypeGRP.frame, "TOPRIGHT", 15, 0)

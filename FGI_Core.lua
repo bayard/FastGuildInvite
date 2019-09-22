@@ -210,6 +210,12 @@ function FastGuildInvite:OnEnable()
 	else
 		interface.keyBindings:SetPoint("CENTER", UIParent)
 	end
+	if DB.customListPos then
+		interface.customList:ClearAllPoints()
+		interface.customList:SetPoint(DB.customListPos.point, UIParent, DB.customListPos.relativePoint, DB.customListPos.xOfs, DB.customListPos.yOfs)
+	else
+		interface.customList:SetPoint("CENTER", UIParent)
+	end
 	interface.debugFrame:ClearAllPoints()
 	interface.debugFrame:SetPoint("TOPLEFT", UIParent, "TOPLEFT", 0, 0)
 	
@@ -237,6 +243,7 @@ function FastGuildInvite:OnInitialize()
 	
 	DB.backgroundRun = DB.backgroundRun or false
 	DB.enableFilters = DB.enableFilters or false
+	DB.customWho = DB.customWho or false
 	
 	DB.addonMSG = DB.addonMSG or false
 	DB.systemMSG = DB.systemMSG or false
@@ -252,6 +259,7 @@ function FastGuildInvite:OnInitialize()
 	DB.filtersList = istable(DB.filtersList) and DB.filtersList or {}
 	DB.blackList = istable(DB.blackList) and DB.blackList or {}
 	DB.leave = istable(DB.leave) and DB.leave or {}
+	DB.customWhoList = istable(DB.customWhoList) and DB.customWhoList or {}
 	
 	DB.debug = DB.debug or false
 	

@@ -634,6 +634,9 @@ local function GetWho(query)
 end
 
 local function searchWhoResultCallback(query, results, complete)
+	if #results >= FGI_MAXWHORETURN and DB.customWho then
+		print(format(L.FAQ.error["Поиск вернул 50 или более результатов, рекомендуется изменить настройки поиска. Запрос: %s"], query))
+	end
 	addon.search.progress = addon.search.progress + 1
 	-- print(query, #results)
 	debug(format("Query %s", query))
@@ -659,14 +662,14 @@ end
 function fn:nextSearch()
 	C_Timer.After(FGI_SCANINTERVALTIME, function() interface.scanFrame.pausePlay:SetDisabled(false) end)
 	if #addon.search.whoQueryList == 0 then
+		if DB.customWho then
+			for i=1, #DB.customWhoList do
+				table.insert(addon.search.whoQueryList, DB.customWhoList[i])
+			end
+		else
 		addon.search.whoQueryList = {DB.lowLimit.."-"..DB.highLimit}
-		-- interface.scanFrame.progressBar:SetMinMax(GetTime(), GetTime()+#addon.search.whoQueryList*FGI_SCANINTERVALTIME)
+		end
 	end
-	if addon.search.progress <= 1 or addon.search.progress > #addon.search.whoQueryList then
-		-- interface.scanFrame.progressBar:SetMinMax(GetTime(), GetTime()+#addon.search.whoQueryList*FGI_SCANINTERVALTIME)
-	end
-	
-	
 	
 	
 	addon.search.progress = (addon.search.progress <= (#addon.search.whoQueryList or 1)) and addon.search.progress or 1

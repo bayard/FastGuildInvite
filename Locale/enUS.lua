@@ -28,6 +28,7 @@ local L = {
 	["interface"] = {
 		["Включен"] = "Included",
 		["Черный список"] = "Blacklist",
+		["Пользовательский список"] = "Custom list",
 		["Включить фильтры"] = "Enable filters",
 		["Выбрать приглашения"] = "Choose invitations",
 		["Выключен"] = "Switched off",
@@ -99,6 +100,7 @@ local L = {
 			["Уровень, с которого начинается фильтр по классам"] = "The level at which the filter starts by class",
 			["Уровень, с которого начинается фильтр по расам"] = "The level at which the race filter starts",
 			["Записывать игрока в базу данных даже если приглашение не было отправлено"] = "Write a player to the database even if the invitation has not been sent",
+			["Использовать пользовательский список запросов"] = "Use custom query list",
 		},
 		["invType"] = {
 			["Отправить сообщение и пригласить"] = "Send a message and invite",

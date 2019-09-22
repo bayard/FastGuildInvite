@@ -191,6 +191,17 @@ frame:SetCallback("OnClick", function()
 end)
 settingsButtonsGRP:AddChild(frame)
 
+settingsButtonsGRP.customListBtn = GUI:Create("Button")
+local frame = settingsButtonsGRP.customListBtn
+frame:SetText(L.interface["Пользовательский список"])
+fontSize(frame.text)
+frame:SetWidth(size.customListBtn)
+frame:SetHeight(40)
+frame:SetCallback("OnClick", function()
+	interface.customList:Show()
+end)
+settingsButtonsGRP:AddChild(frame)
+
 
 
 
@@ -230,6 +241,9 @@ frame:SetScript('OnEvent', function()
 	
 	settingsButtonsGRP.blackList:ClearAllPoints()
 	settingsButtonsGRP.blackList:SetPoint("TOPRIGHT", settingsFrame.frame, "TOPRIGHT", -20, -30)
+	
+	settingsButtonsGRP.customListBtn:ClearAllPoints()
+	settingsButtonsGRP.customListBtn:SetPoint("TOPRIGHT", settingsFrame.settingsButtonsGRP.blackList.frame, "BOTTOMRIGHT", 0, 2)
 	
 	settingsCheckBoxGRP.addonMSG:SetValue(DB.addonMSG or false)
 	settingsCheckBoxGRP.systemMSG:SetValue(DB.systemMSG or false)
