@@ -109,7 +109,6 @@ function fn.debug(...)
 	end
 	if colored then msg = format("%s%s|r", colored, msg) end
 	if not addon.debug then return end
-	-- interface.debugFrame.debugList.txt = interface.debugFrame.debugList.txt..msg.."\n"
 	interface.debugFrame.debugList:SetText(format("%s\n%s",msg,text))
 end
 local debug = fn.debug
@@ -303,7 +302,7 @@ local function inviteBtnText(text)
 	interface.scanFrame.invite:SetText(text)
 end
 
-local function rememberPlayer(name)
+function fn:rememberPlayer(name)
 	DB.alredySended[name] = time({year = date("%Y"), month = date("%m"), day = date("%d")})
 	addon.search.tempSendedInvites[name] = nil
 	debug(format("Remember: %s",name))
@@ -324,7 +323,7 @@ function fn:invitePlayer(noInv)
 		GuildInvite(list[1].name)
 	end
 	if not noInv or DB.rememberAll then
-		rememberPlayer(list[1].name)
+		fn:rememberPlayer(list[1].name)
 	end
 	if not noInv then
 		addon.searchInfo.sended()
@@ -630,6 +629,7 @@ local libWho = {whoQuery='', doHide=false, isFGI=false}
 local function GetWho(query)
 	libWho.isFGI = true
 	libWho.doHide = (not WhoFrame:IsShown()) and (not FriendsFrame:IsShown())
+	C_FriendList.SetWhoToUi(true)
 	C_FriendList.SendWho(query)
 end
 
@@ -706,6 +706,7 @@ whoFrame:SetScript("OnEvent", function()
 		result[i] = info
 	end
 	
+	C_FriendList.SetWhoToUi(false)
 	returnWho(result)
 end)
 local function test(query)

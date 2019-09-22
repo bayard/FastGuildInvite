@@ -59,6 +59,7 @@ local function MenuButtons(self)
 		local unit = dropdownFrame.unit;
 		local name = dropdownFrame.name;
 		GuildInvite(name)
+		fn:rememberPlayer(name)
 	end
 end
 
@@ -95,7 +96,6 @@ frame:SetScript("OnEvent", function(...)
 			debug(format("Player %s left the guild or was expelled.", name), color.yellow)
 		end
 	end
-	--ERR_GUILD_REMOVE_SS
 end)
 
 function addon.dataBroker.OnTooltipShow(GameTooltip)
@@ -286,7 +286,7 @@ function Console:FGIInput(str)
 	elseif str == "invite" then
 		fn:invitePlayer()
 	elseif str == "nextSearch" then
-		fn:nextSearch()
+		interface.scanFrame.pausePlay.frame:Click()
 	elseif str == 'debug' then 
 		toggleDebug()
 	elseif str == 'resetDB' then DB.alredySended = {}
