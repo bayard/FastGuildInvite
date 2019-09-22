@@ -293,9 +293,15 @@ L.settings = {
 	FontSize = 16,
 }
 L.Gratitude = {
-	testing = {"Testing:",},
-	coding = {"Coding:", "Knoot",},
-	donations = {"Donations:",}
+	{"Category", "Name", "Contact", "Donate"},
+	{"", "", "", ""},
+	{"Author", "Knoot", "Knoot#7430", "paypal.me/Knoot"},
+	{"Translate-zhTW", "Anchep", "Services@280i.com", "paypal.me/anchep"},
+	{"Testing", "Shujin", "", ""},
+	{"Testing", "StreetX", "", ""},
+	{"Testing", "Мойгосподин", "", ""},
+	{"Donate", "Anchep", "", ""},
+	{"Donate", "dLuxian", "", ""},
 }
 
 
