@@ -5,15 +5,11 @@ LibStub("AceEvent-3.0"):Embed(addon.lib)
 
 
 addon.DB = {}
--- addon.debug = false
--- addon.debug = true
 addon.ruReg = "[%aабвгдеёжзийклмнопрстуфхцчшщъьыэюяАБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЬЫЭЮЯ'%s]"
 addon.functions = {}
 addon.interface = {}
 addon.version = GetAddOnMetadata('FastGuildInvite', 'Version')
 addon.whoQueryList = {}
-addon.isClassic = select(4,GetBuildInfo())<20000
-if addon.isClassic then FGI_MAXLVL = 60 end
 addon.color = {
 	WARRIOR='|cffc79c6e',
 	PALADIN='|cfff58cba',
@@ -32,4 +28,6 @@ addon.color = {
 	yellow='|cffffff00',
 	orange='|cffFFA500',
 	blue='|cff00BFFF',
+	purple='|cFF660099',
+	pink='|cFFFFC0CB',
 }

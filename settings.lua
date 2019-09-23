@@ -18,7 +18,7 @@ end
 
 interface.settingsFrame = GUI:Create("ClearFrame")
 local settingsFrame = interface.settingsFrame
-settingsFrame:Hide()
+-- settingsFrame:Hide()
 settingsFrame:SetTitle("FGI Settings")
 settingsFrame:SetWidth(size.settingsFrameW)
 settingsFrame:SetHeight(size.settingsFrameH)
@@ -159,14 +159,13 @@ frame:SetCallback("OnClick", function()
 end)
 settingsButtonsGRP:AddChild(frame)
 
-settingsButtonsGRP.keyBind = GUI:Create("TKeybinding")
+settingsButtonsGRP.keyBind = GUI:Create("Button")
 local frame = settingsButtonsGRP.keyBind
--- frame:SetLabel(format(L.interface["Назначить кнопку (%s)"], "none"))
-frame:SetTooltip(L.interface.tooltip["Назначить клавишу для приглашения"])
-fontSize(frame.label)
+frame:SetText("KeyBind")
+fontSize(frame.text)
 frame:SetWidth(size.keyBind)
 frame:SetHeight(40)
-frame:SetCallback("OnKeyChanged", function(self) fn:SetKeybind(self:GetKey()) end)
+frame:SetCallback("OnClick", function() interface.keyBindings:Show() end)
 settingsButtonsGRP:AddChild(frame)
 
 settingsButtonsGRP.setMSG = GUI:Create("Button")
@@ -192,16 +191,26 @@ frame:SetCallback("OnClick", function()
 end)
 settingsButtonsGRP:AddChild(frame)
 
+settingsButtonsGRP.customListBtn = GUI:Create("Button")
+local frame = settingsButtonsGRP.customListBtn
+frame:SetText(L.interface["Пользовательский список"])
+fontSize(frame.text)
+frame:SetWidth(size.customListBtn)
+frame:SetHeight(40)
+frame:SetCallback("OnClick", function()
+	interface.customList:Show()
+end)
+settingsButtonsGRP:AddChild(frame)
+
 
 
 
 
 -- set points
 local frame = CreateFrame('Frame')
-frame:RegisterEvent('PLAYER_ENTERING_WORLD')
+frame:RegisterEvent('PLAYER_LOGIN')
 frame:SetScript('OnEvent', function()
 	DB = addon.DB
-	settingsFrame:Show()
 	
 	settingsCheckBoxGRP.addonMSG:SetValue(true)
 	
@@ -232,6 +241,9 @@ frame:SetScript('OnEvent', function()
 	settingsButtonsGRP.blackList:ClearAllPoints()
 	settingsButtonsGRP.blackList:SetPoint("TOPRIGHT", settingsFrame.frame, "TOPRIGHT", -20, -30)
 	
+	settingsButtonsGRP.customListBtn:ClearAllPoints()
+	settingsButtonsGRP.customListBtn:SetPoint("TOPRIGHT", settingsFrame.settingsButtonsGRP.blackList.frame, "BOTTOMRIGHT", 0, 2)
+	
 	settingsCheckBoxGRP.addonMSG:SetValue(DB.addonMSG or false)
 	settingsCheckBoxGRP.systemMSG:SetValue(DB.systemMSG or false)
 	settingsCheckBoxGRP.sendMSG:SetValue(DB.sendMSG or false)
@@ -240,5 +252,4 @@ frame:SetScript('OnEvent', function()
 	settingsFrame.clearDBtimes:SetValue(DB.clearDBtimes)
 	
 	settingsFrame:Hide()
-	frame:UnregisterEvent('PLAYER_ENTERING_WORLD')
 end)

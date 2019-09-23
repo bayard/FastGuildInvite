@@ -11,6 +11,8 @@ local L = {
 			["resetDB"] = "/fgi resetDB - Очистить список отправленных приглашений.",
 			["resetWindowsPos"] = "/fgi resetWindowsPos - Сбросить позиции окон.",
 			["show"] = "/fgi show - Открыть главное окно аддона",
+			["invite"] = "/fgi invite - Пригласить первого игрока из очереди",
+			["nextSearch"] = "/fgi nextSearch - Запустить следующее сканирование",
 		},
 		["error"] = {
 			["Вы не состоите в гильдии или у вас нет прав для приглашения."] = "Вы не состоите в гильдии или у вас нет прав для приглашения.",
@@ -24,8 +26,11 @@ local L = {
 		}
 	},
 	["interface"] = {
-		["Игрок не добавлен в список исключений."] = "Игрок не добавлен в список исключений.",
+		defaultReason = "no reason",
+		["Игрок %s добавлен в черный список."] = "Игрок %s добавлен в черный список.",
+		["Причина"] = "Причина",
 		["Черный список"] = "Черный список",
+		["Пользовательский список"] = "Пользовательский список",
 		["Для изменения значений используйте колесо мыши"] = "Для изменения значений используйте колесо мыши",
 		["Включен"] = "Включен",
 		["Включить фильтры"] = "Включить фильтры",
@@ -90,12 +95,14 @@ local L = {
 			["Запускать поиск в фоновом режиме"] = "Запускать поиск в фоновом режиме",
 			["Количество уровней сканируемых за один раз"] = "Количество уровней сканируемых за один раз",
 			["Назначить клавишу для приглашения"] = "Назначить клавишу для приглашения",
+			["Назначить клавишу следующего поиска"] = "Назначить клавишу следующего поиска",
 			["Не отображать в чате отправляемые сообщения"] = "Не отображать в чате отправляемые сообщения",
 			["Не отображать в чате системные сообщения"] = "Не отображать в чате системные сообщения",
 			["Не отображать в чате сообщения аддона"] = "Не отображать в чате сообщения аддона",
 			["Уровень, с которого начинается фильтр по классам"] = "Уровень, с которого начинается фильтр по классам",
 			["Уровень, с которого начинается фильтр по расам"] = "Уровень, с которого начинается фильтр по расам",
 			["Записывать игрока в базу данных даже если приглашение не было отправлено"] = "Записывать игрока в базу данных даже если приглашение не было отправлено",
+			["Использовать пользовательский список запросов"] = "Использовать пользовательский список запросов",
 		},
 		["invType"] = {
 			["Отправить сообщение и пригласить"] = "Отправить сообщение и пригласить",
@@ -131,50 +138,50 @@ local L = {
 		["femaleClass"] = {},
 		["race"] = {
 			["Horde"] = {
-				["BloodElf"] = GetRaceName(10),	--	"Эльф крови"
-				["Goblin"] = GetRaceName(9),	--	"Гоблин"
-				["HightmountainTauren"] = GetRaceName(28),	--	"Таурен Крутогорья"
-				["MagharOrc"] = GetRaceName(36),	--	"Маг'хар"
-				["Nightborne"] = GetRaceName(27),	--	"Ночнорожденный"
 				["Orc"] = GetRaceName(2),	--	"Орк"
-				["Pandaren"] = GetRaceName(26),	--	"Пандарен"
 				["Tauren"] = GetRaceName(6),	--	"Таурен"
 				["Troll"] = GetRaceName(8),	--	"Тролль"
 				["Undead"] = GetRaceName(5),	--	"Нежить"
-				["ZandalariTroll"] = GetRaceName(31),	--	"Зандалар"
+				-- ["BloodElf"] = GetRaceName(10),	--	"Эльф крови"
+				-- ["Goblin"] = GetRaceName(9),	--	"Гоблин"
+				-- ["HightmountainTauren"] = GetRaceName(28),	--	"Таурен Крутогорья"
+				-- ["MagharOrc"] = GetRaceName(36),	--	"Маг'хар"
+				-- ["Nightborne"] = GetRaceName(27),	--	"Ночнорожденный"
+				-- ["Pandaren"] = GetRaceName(26),	--	"Пандарен"
+				-- ["ZandalariTroll"] = GetRaceName(31),	--	"Зандалар"
 			},
 			["Alliance"] = {
-				["DarkIronDwarf"] = GetRaceName(34),	--	"Дворф из клана Черного Железа"
-				["Draenei"] = GetRaceName(11),	--	"Дреней"
 				["Dwarf"] = GetRaceName(3),	--	"Дворф"
 				["Gnome"] = GetRaceName(7),	--	"Гном"
 				["Human"] = GetRaceName(1),	--	"Человек"
-				["LightforgedDraenei"] = GetRaceName(30),	--	"Озаренный дреней"
 				["NightElf"] = GetRaceName(4),	--	"Ночной эльф"
-				["Pandaren"] = GetRaceName(25),	--	"Пандарен"
-				["VoidElf"] = GetRaceName(29),	--	"Эльф Бездны"
-				["Worgen"] = GetRaceName(22),	--	"Ворген"
-				["KulTiran"] = GetRaceName(32),	--	"Култирасец"
+				-- ["DarkIronDwarf"] = GetRaceName(34),	--	"Дворф из клана Черного Железа"
+				-- ["Draenei"] = GetRaceName(11),	--	"Дреней"
+				-- ["LightforgedDraenei"] = GetRaceName(30),	--	"Озаренный дреней"
+				-- ["Pandaren"] = GetRaceName(25),	--	"Пандарен"
+				-- ["VoidElf"] = GetRaceName(29),	--	"Эльф Бездны"
+				-- ["Worgen"] = GetRaceName(22),	--	"Ворген"
+				-- ["KulTiran"] = GetRaceName(32),	--	"Култирасец"
 			},
 		},
 		["femaleRace"] = {
-			["BloodElf"] = "Эльфийка крови",
-			["HightmountainTauren"] = "Тауренка Крутогорья",
-			["MagharOrc"] = "Маг'харка",
-			["Nightborne"] = "Ночнорожденная",
+			-- ["BloodElf"] = "Эльфийка крови",
+			-- ["HightmountainTauren"] = "Тауренка Крутогорья",
+			-- ["MagharOrc"] = "Маг'харка",
+			-- ["Nightborne"] = "Ночнорожденная",
 			["Orc"] = "Орчиха",
-			["Pandaren"] = "Пандаренка",
+			-- ["Pandaren"] = "Пандаренка",
 			["Tauren"] = "Тауренка",
-			["ZandalariTroll"] = "Зандаларка",
-			["DarkIronDwarf"] = "Дворфийка из клана Черного Железа",
-			["Draenei"] = "Дренейка",
+			-- ["ZandalariTroll"] = "Зандаларка",
+			-- ["DarkIronDwarf"] = "Дворфийка из клана Черного Железа",
+			-- ["Draenei"] = "Дренейка",
 			["Dwarf"] = "Дворфийка",
 			["Gnome"] = "Гномка",
-			["LightforgedDraenei"] = "Озаренная дренейка",
+			-- ["LightforgedDraenei"] = "Озаренная дренейка",
 			["NightElf"] = "Ночная эльфийка",
-			["Pandaren"] = "Пандаренка",
-			["VoidElf"] = "Эльфийка Бездны",
-			["KulTiran"] = "Култираска",
+			-- ["Pandaren"] = "Пандаренка",
+			-- ["VoidElf"] = "Эльфийка Бездны",
+			-- ["KulTiran"] = "Култираска",
 		},
 	}
 }
@@ -213,6 +220,8 @@ L.settings = {
 		rememberAll = 260,
 		clearDBtimes = 150,
 		filters = 150,
+		keyBindingsW = 440,
+		keyBindingsH = 150,
 		keyBind = 200,
 		setMSG = 160,
 		filtersFrameW = 620,
@@ -231,11 +240,14 @@ L.settings = {
 		chooseInvitesH = 100,
 		reject = 100,
 		invite = 100,
-		blackListW = 200,
+		blackListW = 400,
 		blackListH = 360,
 		blackList = 150,
 		uninviteW = 220,
 		uninviteH = 160,
+		customListW = 360,
+		customListH = 360,
+		customListBtn = 200,
 		
 		classLabel = 60,
 		Ignore = 120,
@@ -291,9 +303,16 @@ L.settings = {
 	FontSize = 16,
 }
 L.Gratitude = {
-	testing = {"Testing:",},
-	coding = {"Coding:", "Knoot",},
-	donations = {"Donations:",}
+	{"Category", "Name", "Contact", "Donate"},
+	{"", "", "", ""},
+	{"Author", "Knoot", "Knoot#7430", "paypal.me/Knoot"},
+	{"Donate", "Anchep", "", ""},
+	{"Donate", "dLuxian", "", ""},
+	{"Translate-zhTW", "Anchep", "Services@280i.com", "paypal.me/280i"},
+	{"Testing", "Shujin", "", ""},
+	{"Testing", "StreetX", "", ""},
+	{"Testing", "Мойгосподин", "", ""},
+	{"OtherHelp\n", "\"Нам Везёт Мы Играем\"-Змейталак", "\n", "\n"},
 }
 
 

@@ -24,7 +24,7 @@ FGI.L.SYSTEM.race = FGI.L.SYSTEM.race[UnitFactionGroup("player")]
 
 
 size.mainButtonsGRP = size.startScan + size.chooseInvites + size.settingsBtn
-size.mainCheckBoxGRP = math.max(size.deepSearch, size.normalSearch, size.smartSearch, size.backgroundRun, size.enableFilters)
+size.mainCheckBoxGRP = math.max(size.backgroundRun, size.enableFilters, size.customListBtn)
 size.searchRangeGRP = math.max(size.lvlRange + size.raceFilterStart, size.searchInterval + size.classFilterStart)+30
 size.settingsCheckBoxGRP = math.max(size.addonMSG, size.systemMSG, size.sendMSG, size.minimapButton, size.rememberAll)
 size.settingsButtonsGRP = size.filters + size.keyBind + size.setMSG

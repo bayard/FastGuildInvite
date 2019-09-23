@@ -13,13 +13,42 @@ addon.smartSearch = {progress=1, intervalTime = 3, whoQueryList = {}, inviteList
 addon.removeMsgList = {}
 addon.libWho = {}
 local DB
+local debugDB
 local nextSearch
 LibStub:GetLibrary("LibWho-2.0"):Embed(addon.libWho);
-local classicWoW = addon.isClassic
+
+addon.searchInfo = {unique = {0}, sended = {0}, invited = {0}, filtered = {0}}
+local mt = {
+	__call = function(self,n)
+		self[1] = self[1] + (n==0 and -self[1] or (n or 1))
+		-- interface.mainFrame.searchInfo.update(addon.searchInfo())
+		return self[1]
+	end
+}
+setmetatable(addon.searchInfo.unique,mt);setmetatable(addon.searchInfo.sended,mt);setmetatable(addon.searchInfo.invited,mt);setmetatable(addon.searchInfo.filtered,mt);
+setmetatable(addon.searchInfo,{__call = function(self)
+	return {self.unique[1], self.sended[1], self.invited[1], self.filtered[1]}
+end});
 
 local time, next = time, next
 
 
+
+
+local frame = CreateFrame("Frame")
+frame:RegisterEvent("CHAT_MSG_SYSTEM")
+frame:SetScript("OnEvent", function(_,_,msg)
+	local place = strfind(ERR_GUILD_JOIN_S,"%s",1,true)
+	if (place) then
+		local n = strsub(msg,place)
+		local name = strsub(n,1,(strfind(n,"%s") or 2)-1)
+		if format(ERR_GUILD_JOIN_S,name) == msg then
+			if DB.alredySended[name] then
+				addon.searchInfo.invited()
+			end
+		end
+	end
+end)
 
 --ERR_GUILD_INVITE_S,ERR_GUILD_DECLINE_S,ERR_ALREADY_IN_GUILD_S,ERR_ALREADY_INVITED_TO_GUILD_S,ERR_GUILD_DECLINE_AUTO_S,ERR_GUILD_JOIN_S,ERR_GUILD_PLAYER_NOT_FOUND_S,ERR_CHAT_PLAYER_NOT_FOUND_S
 --	CanGuildInvite()
@@ -27,6 +56,7 @@ local time, next = time, next
 
 function fn:initDB()
 	DB = addon.DB
+	debugDB = addon.debugDB
 end
 
 local function IsInBlacklist(name)
@@ -39,7 +69,7 @@ end
 
 function fn:blacklistKick()
 	for i=1, GetNumGuildMembers() do
-		local name = GetGuildRosterInfo(i)
+		local name = GetGuildRosterInfo(i):match("(.*)-")
 		if IsInBlacklist(name) then guildKick(name) end
 	end
 end
@@ -65,8 +95,8 @@ function fn:blackListAutoKick()
 end
 
 function fn:blackList(name)
-	DB.blackList[name] = true
-	print(format("%sPlayer %s has been blacklisted|r", color.red, name))
+	DB.blackList[name] = L.interface.defaultReason
+	print(format("%s%s|r", color.red, format(L.interface["Игрок %s добавлен в черный список."], name)))
 	fn:blacklistKick()
 end
 
@@ -76,33 +106,35 @@ function fn:closeBtn(obj)
 end
 
 function fn.debug(...)
+	if not addon.debug then return end
 	local msg, colored = ...
-	local text = interface.debugFrame.debugList:GetText() or ''
 	if msg == nil or type(msg) == "table" then
-		interface.debugFrame.debugList:SetText(format("%swrong debug input - msg = %s\n%s",color.red,type(msg),text))
+		table.insert(debugDB,format("%swrong debug input - msg = %s\n%s",color.red,type(msg),text))
 		return
 	end
 	if colored then msg = format("%s%s|r", colored, msg) end
-	if not addon.debug then return end
-	-- interface.debugFrame.debugList.txt = interface.debugFrame.debugList.txt..msg.."\n"
-	interface.debugFrame.debugList:SetText(format("%s\n%s",msg,text))
+	table.insert(debugDB,msg)
 end
 local debug = fn.debug
 
-function fn:SetKeybind(key)
+function fn:SetKeybind(key, keyType)
+	local DBkey = addon.DB.keyBind
 	if key then
-		if GetBindingAction(key) == "" or addon.DB.keyBind == key then
-			addon.DB.keyBind = key
+		if keyType == "invite" then
+			DBkey.invite = key
 			SetBindingClick(key, interface.scanFrame.invite.frame:GetName())
-		else
-			BasicMessageDialog:SetFrameStrata("TOOLTIP")
-			message(L.FAQ.error["Сочетание клавиш уже занято"])
+		elseif keyType == "nextSearch" then
+			DBkey.nextSearch = key
+			SetBindingClick(key, interface.scanFrame.pausePlay.frame:GetName())
 		end
 	else
-		addon.DB.keyBind = false
+		DBkey[keyType] = false
 	end
-	interface.settingsFrame.settingsButtonsGRP.keyBind:SetLabel(format(L.interface["Назначить кнопку (%s)"], addon.DB.keyBind or "none"))
-	interface.settingsFrame.settingsButtonsGRP.keyBind:SetKey(addon.DB.keyBind)
+	
+	interface.keyBindings.buttonsGRP.keyBind.invite:SetLabel(format(L.interface["Назначить кнопку (%s)"], DBkey.invite or "none"))
+	interface.keyBindings.buttonsGRP.keyBind.invite:SetKey(DBkey.invite)
+	interface.keyBindings.buttonsGRP.keyBind.nextSearch:SetLabel(format(L.interface["Назначить кнопку (%s)"], DBkey.nextSearch or "none"))
+	interface.keyBindings.buttonsGRP.keyBind.nextSearch:SetKey(DBkey.nextSearch)
 end
 
 function fn:FiltersInit()
@@ -144,11 +176,9 @@ function fn:FilterChange(id)
 		addfilterFrame.classesCheckBoxShaman:SetValue(class[CLASS.Shaman] or false)
 		addfilterFrame.classesCheckBoxWarlock:SetValue(class[CLASS.Warlock] or false)
 		addfilterFrame.classesCheckBoxWarrior:SetValue(class[CLASS.Warrior] or false)
-		if not classicWoW then
 		addfilterFrame.classesCheckBoxDeathKnight:SetValue(class[CLASS.DeathKnight] or false)
 		addfilterFrame.classesCheckBoxDemonHunter:SetValue(class[CLASS.DemonHunter] or false)
 		addfilterFrame.classesCheckBoxMonk:SetValue(class[CLASS.Monk] or false)
-		end
 	end
 	
 	if not raceFilter then 
@@ -213,9 +243,7 @@ function fn:FiltersUpdate()
 end
 
 
-local RaceClassCombo 
-if not classicWoW then
-RaceClassCombo = {
+local RaceClassCombo = {
 	Orc = {CLASS.Warrior,CLASS.Hunter,CLASS.Rogue,CLASS.Shaman,CLASS.Mage,CLASS.Warlock,CLASS.Monk,CLASS.DeathKnight},
 	Undead = {CLASS.Warrior,CLASS.Hunter,CLASS.Rogue,CLASS.Priest,CLASS.Mage,CLASS.Warlock,CLASS.Monk,CLASS.DeathKnight},
 	Tauren = {CLASS.Warrior,CLASS.Paladin,CLASS.Hunter,CLASS.Priest,CLASS.Shaman,CLASS.Monk,CLASS.Druid,CLASS.DeathKnight},
@@ -241,18 +269,6 @@ RaceClassCombo = {
 	ZandalariTroll = {CLASS.Warrior,CLASS.Paladin,CLASS.Hunter,CLASS.Rogue,CLASS.Priest,CLASS.Shaman,CLASS.Mage,CLASS.Monk,CLASS.Druid,},
 	
 }
-else
-RaceClassCombo = {
-	Orc = {CLASS.Warrior,CLASS.Hunter,CLASS.Rogue,CLASS.Shaman,CLASS.Mage,CLASS.Warlock,CLASS.Monk,CLASS.DeathKnight},
-	Undead = {CLASS.Warrior,CLASS.Hunter,CLASS.Rogue,CLASS.Priest,CLASS.Mage,CLASS.Warlock,CLASS.Monk,CLASS.DeathKnight},
-	Tauren = {CLASS.Warrior,CLASS.Paladin,CLASS.Hunter,CLASS.Priest,CLASS.Shaman,CLASS.Monk,CLASS.Druid,CLASS.DeathKnight},
-	Troll = {CLASS.Warrior,CLASS.Hunter,CLASS.Rogue,CLASS.Priest,CLASS.Shaman,CLASS.Mage,CLASS.Warlock,CLASS.Monk,CLASS.Druid,CLASS.DeathKnight},
-	Human = {CLASS.Warrior,CLASS.Paladin,CLASS.Hunter,CLASS.Rogue,CLASS.Priest,CLASS.Mage,CLASS.Warlock,CLASS.Monk,CLASS.DeathKnight},
-	Dwarf = {CLASS.Warrior,CLASS.Paladin,CLASS.Hunter,CLASS.Rogue,CLASS.Priest,CLASS.Shaman,CLASS.Mage,CLASS.Warlock,CLASS.Monk,CLASS.DeathKnight},
-	NightElf = {CLASS.Warrior,CLASS.Hunter,CLASS.Rogue,CLASS.Priest,CLASS.Mage,CLASS.Monk,CLASS.Druid,CLASS.DemonHunter,CLASS.DeathKnight},
-	Gnome = {CLASS.Warrior,CLASS.Hunter,CLASS.Rogue,CLASS.Priest,CLASS.Mage,CLASS.Warlock,CLASS.Monk,CLASS.DeathKnight},
-}
-end
 
 local function getEasyWhoList()
 	local min = DB.lowLimit
@@ -360,7 +376,7 @@ local function rememberPlayer(name)
 end
 
 function fn:invitePlayer(noInv)
-	local list = DB.SearchType == 3 and addon.smartSearch.inviteList or addon.search.inviteList
+	local list = (DB.SearchType == 3 or DB.customWho) and addon.smartSearch.inviteList or addon.search.inviteList
 	if #list==0 then return end
 	if DB.inviteType == 2 and not noInv then
 		addon.msgQueue[list[1].name] = true
@@ -375,6 +391,9 @@ function fn:invitePlayer(noInv)
 	end
 	if not noInv or DB.rememberAll then
 		rememberPlayer(list[1].name)
+	end
+	if not noInv then
+		addon.searchInfo.sended()
 	end
 	table.remove(list, 1)
 	inviteBtnText(format(L.interface["Пригласить: %d"], #list))
@@ -399,10 +418,8 @@ local function searchIntervalTimer(onOff, timer)
 end
 
 local frame = CreateFrame('Frame')
-frame:RegisterEvent('PLAYER_ENTERING_WORLD')
+frame:RegisterEvent('PLAYER_LOGIN')
 frame:SetScript('OnEvent', function()
-	-- DB = addon.DB
-C_Timer.NewTicker(0.1,function()
 	local parent = interface.filtersFrame
 	local list = parent.filterList
 	for i=1, #list do
@@ -418,9 +435,6 @@ C_Timer.NewTicker(0.1,function()
 			end
 		end
 	end
-end,2)
-	-- fn:blackListAutoKick()
-	frame:UnregisterEvent('PLAYER_ENTERING_WORLD')
 end)
 
 local function getSearchDeepLvl(query)
@@ -651,8 +665,10 @@ local function addNewPlayer(t, p)
 							t.tempSendedInvites[p.Name] = true
 							debug(format("Add player %s", playerInfoStr), color.green)
 						else
+							addon.searchInfo.filtered()
 							debug(format("Player (%s) has been fitlered", playerInfoStr), color.yellow)
 						end
+						addon.searchInfo.unique()
 					else
 						debug(format("Invitation has already been sent to the player %s", playerInfoStr), color.yellow)
 					end
@@ -707,7 +723,7 @@ local function WhoResultCallback(query, results, complete)
 end
 
 nextSearch = function()
-	if (#addon.search.whoQueryList == 0 or addon.search.progress > #addon.search.whoQueryList) and DB.SearchType ~= 3 then
+	if (#addon.search.whoQueryList == 0 or addon.search.progress > #addon.search.whoQueryList) and DB.SearchType ~= 3 and not DB.customWho then
 		addon.search.progress = 1
 		if DB.SearchType == 1 and #addon.search.whoQueryList == 0 then
 			addon.search.whoQueryList = getEasyWhoList()
@@ -715,9 +731,15 @@ nextSearch = function()
 			addon.search.whoQueryList = getWhoList(DB.searchInterval)
 		end
 		interface.scanFrame.progressBar:SetMinMax(GetTime(), GetTime()+#addon.search.whoQueryList*FGI_SCANINTERVALTIME)
-	elseif DB.SearchType == 3 then
+	elseif DB.SearchType == 3 or DB.customWho then
 		if #addon.smartSearch.whoQueryList == 0 then
-			addon.smartSearch.whoQueryList = {DB.lowLimit.."-"..DB.highLimit}
+			if DB.customWho then
+				for i=1, #DB.customWhoList do
+					table.insert(addon.smartSearch.whoQueryList, DB.customWhoList[i])
+				end
+			else
+				addon.smartSearch.whoQueryList = {DB.lowLimit.."-"..DB.highLimit}
+			end
 			interface.scanFrame.progressBar:SetMinMax(GetTime(), GetTime()+#addon.smartSearch.whoQueryList*FGI_SCANINTERVALTIME)
 		end
 		if addon.smartSearch.progress <= 1 or addon.smartSearch.progress > #addon.smartSearch.whoQueryList then
@@ -727,7 +749,7 @@ nextSearch = function()
 	
 	local curQuery
 	
-	if DB.SearchType ~= 3 then
+	if DB.SearchType ~= 3 and not DB.customWho then
 		addon.search.progress = (addon.search.progress <= (#addon.search.whoQueryList or 1)) and addon.search.progress or 1
 		curQuery = addon.search.whoQueryList[addon.search.progress]
 		addon.libWho:Who(tostring(curQuery),{queue = addon.libWho.WHOLIB_QUEUE_QUIET, callback = WhoResultCallback})
@@ -735,6 +757,7 @@ nextSearch = function()
 	else
 		addon.smartSearch.progress = (addon.smartSearch.progress <= (#addon.smartSearch.whoQueryList or 1)) and addon.smartSearch.progress or 1
 		curQuery = addon.smartSearch.whoQueryList[addon.smartSearch.progress]
+		print(curQuery)
 		addon.libWho:Who(tostring(curQuery),{queue = addon.libWho.WHOLIB_QUEUE_QUIET, callback = SmartSearchWhoResultCallback})
 		addon.smartSearch.progress = addon.smartSearch.progress + 1
 	end

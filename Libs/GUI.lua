@@ -2,6 +2,7 @@
 FGI Filter Widget
 Graphical Button.
 -------------------------------------------------------------------------------]]
+do
 local Type, Version = "FilterButton", 1
 local AceGUI = LibStub and LibStub("AceGUI-3.0", true)
 if not AceGUI or (AceGUI:GetWidgetVersion(Type) or 0) >= Version then return end
@@ -172,13 +173,13 @@ local function Constructor()
 end
 
 AceGUI:RegisterWidgetType(Type, Constructor, Version)
-
-
+end
 -------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 --[[-----------------------------------------------------------------------------
 Frame Container
 -------------------------------------------------------------------------------]]
+do
 local Type, Version = "ClearFrame", 26
 local AceGUI = LibStub and LibStub("AceGUI-3.0", true)
 if not AceGUI or (AceGUI:GetWidgetVersion(Type) or 0) >= Version then return end
@@ -388,13 +389,12 @@ local function Constructor()
 end
 
 AceGUI:RegisterWidgetType(Type, Constructor, Version)
-
-
---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+end
 
 --[[-----------------------------------------------------------------------------
 Frame Container
 -------------------------------------------------------------------------------]]
+do
 local Type, Version = "GroupFrame", 26
 local AceGUI = LibStub and LibStub("AceGUI-3.0", true)
 if not AceGUI or (AceGUI:GetWidgetVersion(Type) or 0) >= Version then return end
@@ -509,14 +509,13 @@ local function Constructor()
 end
 
 AceGUI:RegisterWidgetType(Type, Constructor, Version)
-
-
---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+end
 
 
 --[[-----------------------------------------------------------------------------
 Checkbox Widget
 -------------------------------------------------------------------------------]]
+do
 local Type, Version = "TCheckBox", 26
 local AceGUI = LibStub and LibStub("AceGUI-3.0", true)
 if not AceGUI or (AceGUI:GetWidgetVersion(Type) or 0) >= Version then return end
@@ -834,15 +833,14 @@ local function Constructor()
 end
 
 AceGUI:RegisterWidgetType(Type, Constructor, Version)
-
-
---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+end
 
 
 --[[-----------------------------------------------------------------------------
 Label Widget
 Displays text and optionally an icon.
 -------------------------------------------------------------------------------]]
+do
 local Type, Version = "TLabel", 26
 local AceGUI = LibStub and LibStub("AceGUI-3.0", true)
 if not AceGUI or (AceGUI:GetWidgetVersion(Type) or 0) >= Version then return end
@@ -1037,15 +1035,15 @@ local function Constructor()
 end
 
 AceGUI:RegisterWidgetType(Type, Constructor, Version)
+end
 
-
-------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 
 --[[-----------------------------------------------------------------------------
 Keybinding Widget
 Set Keybindings in the Config UI.
 -------------------------------------------------------------------------------]]
+do
 local Type, Version = "TKeybinding", 25
 local AceGUI = LibStub and LibStub("AceGUI-3.0", true)
 if not AceGUI or (AceGUI:GetWidgetVersion(Type) or 0) >= Version then return end
@@ -1303,14 +1301,14 @@ local function Constructor()
 end
 
 AceGUI:RegisterWidgetType(Type, Constructor, Version)
+end
 
-
-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 
 --[[-----------------------------------------------------------------------------
 Progress Bar Widget
 -------------------------------------------------------------------------------]]
+do
 local Type, Version = "ProgressBar", 1
 local AceGUI = LibStub and LibStub("AceGUI-3.0", true)
 if not AceGUI or (AceGUI:GetWidgetVersion(Type) or 0) >= Version then return end
@@ -1483,3 +1481,4 @@ local function Constructor()
 end
 
 AceGUI:RegisterWidgetType(Type, Constructor, Version)
+end

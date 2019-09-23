@@ -10,6 +10,8 @@ local GUI = LibStub("AceGUI-3.0")
 local FastGuildInvite = addon.lib
 local DB
 
+local gratitudeFrame, scrollBar, mainFrame, inviteTypeGRP, mainCheckBoxGRP, searchRangeGRP, mainButtonsGRP
+
 local function fontSize(self, font, size)
 	font = font or settings.Font
 	size = size or settings.FontSize
@@ -23,13 +25,19 @@ local function btnText(frame)
 	text:SetPoint("BOTTOMRIGHT", -5, 1)
 end
 
+do		--	gratitude
 interface.gratitudeFrame = GUI:Create("ClearFrame")
-local gratitudeFrame = interface.gratitudeFrame
-gratitudeFrame:Hide()
+gratitudeFrame = interface.gratitudeFrame
+-- gratitudeFrame:Hide()
 gratitudeFrame:SetTitle("Fast Guild Invite Gratitude")
 gratitudeFrame:SetWidth(700)
 gratitudeFrame:SetHeight(500)
-gratitudeFrame:SetLayout("Flow")
+gratitudeFrame:SetLayout("Fill")
+
+gratitudeFrame.scrollBar = GUI:Create("ScrollFrame")
+scrollBar = gratitudeFrame.scrollBar
+gratitudeFrame:AddChild(scrollBar)
+scrollBar:SetLayout("Flow")
 
 gratitudeFrame.closeButton = GUI:Create('Button')
 local frame = gratitudeFrame.closeButton
@@ -41,47 +49,55 @@ frame:SetCallback('OnClick', function()
 end)
 gratitudeFrame:AddChild(frame)
 
-local labelWidth = (interface.gratitudeFrame.frame:GetWidth()-60)/3
-gratitudeFrame.testing = GUI:Create("TLabel")
-local frame = gratitudeFrame.testing
-frame:SetText(table.concat(L.Gratitude.testing, "\n"))
-fontSize(frame.label)
-frame:SetWidth(labelWidth)
-gratitudeFrame:AddChild(frame)
 
-gratitudeFrame.coding = GUI:Create("TLabel")
-local frame = gratitudeFrame.coding
-frame:SetText(table.concat(L.Gratitude.coding, "\n"))
-fontSize(frame.label)
-frame:SetWidth(labelWidth)
-gratitudeFrame:AddChild(frame)
 
-gratitudeFrame.donations = GUI:Create("TLabel")
-local frame = gratitudeFrame.donations
-frame:SetText(table.concat(L.Gratitude.donations, "\n"))
+
+local labelWidth = (interface.gratitudeFrame.frame:GetWidth()-60)/4
+gratitudeFrame.Category = GUI:Create("TLabel")
+local frame = gratitudeFrame.Category
 fontSize(frame.label)
 frame:SetWidth(labelWidth)
-gratitudeFrame:AddChild(frame)
+scrollBar:AddChild(frame)
+
+gratitudeFrame.Name = GUI:Create("TLabel")
+local frame = gratitudeFrame.Name
+fontSize(frame.label)
+frame:SetWidth(labelWidth)
+scrollBar:AddChild(frame)
+
+gratitudeFrame.Contact = GUI:Create("TLabel")
+local frame = gratitudeFrame.Contact
+fontSize(frame.label)
+frame:SetWidth(labelWidth)
+scrollBar:AddChild(frame)
+
+gratitudeFrame.Donate = GUI:Create("TLabel")
+local frame = gratitudeFrame.Donate
+fontSize(frame.label)
+frame:SetWidth(labelWidth)
+scrollBar:AddChild(frame)
 
 
 gratitudeFrame.frame:HookScript("OnShow", function()
-	gratitudeFrame.testing:SetWidth(labelWidth)
-	gratitudeFrame.coding:SetWidth(labelWidth)
-	gratitudeFrame.donations:SetWidth(labelWidth)
+	gratitudeFrame.Category:SetWidth(labelWidth)
+	gratitudeFrame.Name:SetWidth(labelWidth)
+	gratitudeFrame.Contact:SetWidth(labelWidth)
+	gratitudeFrame.Donate:SetWidth(labelWidth)
 end)
+end
 
 
 
 
 
-
+do		--	mainFrame
 interface.mainFrame = GUI:Create("ClearFrame")
-local mainFrame = interface.mainFrame
-mainFrame:Hide()
+mainFrame = interface.mainFrame
+-- mainFrame:Hide()
 mainFrame:SetTitle("Fast Guild Invite")
 mainFrame:SetWidth(size.mainFrameW)
 mainFrame:SetHeight(size.mainFrameH)
-mainFrame:SetLayout("Flow")
+mainFrame:SetLayout("List")
 
 mainFrame.title:SetScript('OnMouseUp', function(mover)
 	local frame = mover:GetParent()
@@ -111,12 +127,12 @@ frame:SetCallback('OnClick', function()
 	interface.mainFrame:Hide()
 end)
 mainFrame:AddChild(frame)
+end
 
 
-
-
+do		--	inviteTypeGRP
 mainFrame.inviteTypeGRP = GUI:Create("GroupFrame")
-local inviteTypeGRP = mainFrame.inviteTypeGRP
+inviteTypeGRP = mainFrame.inviteTypeGRP
 inviteTypeGRP:SetLayout("List")
 inviteTypeGRP:SetHeight(50)
 inviteTypeGRP:SetWidth(size.inviteTypeGRP)
@@ -140,14 +156,14 @@ frame:SetCallback("OnValueChanged", function(key)
 	DB.inviteType = inviteTypeGRP.drop:GetValue()
 end)
 inviteTypeGRP:AddChild(frame)
+end
 
 
-
-
+do		--	mainCheckBoxGRP
 mainFrame.mainCheckBoxGRP = GUI:Create("GroupFrame")
-local mainCheckBoxGRP = mainFrame.mainCheckBoxGRP
+mainCheckBoxGRP = mainFrame.mainCheckBoxGRP
 mainCheckBoxGRP:SetLayout("List")
-mainCheckBoxGRP:SetHeight(120)
+mainCheckBoxGRP:SetHeight(140)
 mainCheckBoxGRP:SetWidth(size.mainCheckBoxGRP)
 mainFrame:AddChild(mainCheckBoxGRP)
 
@@ -217,6 +233,17 @@ frame.frame:SetScript("OnClick", function()
 end)
 mainCheckBoxGRP:AddChild(frame)
 
+mainCheckBoxGRP.customList = GUI:Create("TCheckBox")
+local frame = mainCheckBoxGRP.customList
+frame:SetWidth(size.customListBtn)
+frame:SetLabel(L.interface["Пользовательский список"])
+frame:SetTooltip(L.interface.tooltip["Использовать пользовательский список запросов"])
+fontSize(frame.text)
+frame.frame:HookScript("OnClick", function()
+	DB.customWho = mainCheckBoxGRP.customList:GetValue()
+end)
+mainCheckBoxGRP:AddChild(frame)
+
 mainCheckBoxGRP.backgroundRun = GUI:Create("TCheckBox")
 local frame = mainCheckBoxGRP.backgroundRun
 frame:SetWidth(size.backgroundRun)
@@ -238,12 +265,12 @@ frame.frame:HookScript("OnClick", function()
 	DB.enableFilters = mainCheckBoxGRP.enableFilters:GetValue()
 end)
 mainCheckBoxGRP:AddChild(frame)
+end
 
 
-
-
+do		--	mainButtonsGRP
 mainFrame.mainButtonsGRP = GUI:Create("GroupFrame")
-local mainButtonsGRP = mainFrame.mainButtonsGRP
+mainButtonsGRP = mainFrame.mainButtonsGRP
 mainButtonsGRP:SetLayout("List")
 mainButtonsGRP:SetHeight(80)
 mainButtonsGRP:SetWidth(size.mainButtonsGRP)
@@ -299,12 +326,12 @@ frame:SetWidth(size.gratitude)
 frame:SetHeight(mainButtonsGRP.startScan.frame:GetHeight())
 frame:SetCallback("OnClick", function() interface.gratitudeFrame:Show() end)
 mainButtonsGRP:AddChild(frame)
+end
 
 
-
-
+do		--	searchRangeGRP
 mainFrame.searchRangeGRP = GUI:Create("GroupFrame")
-local searchRangeGRP = mainFrame.searchRangeGRP
+searchRangeGRP = mainFrame.searchRangeGRP
 searchRangeGRP:SetLayout("List")
 searchRangeGRP:SetHeight(100)
 searchRangeGRP:SetWidth(size.searchRangeGRP)
@@ -367,13 +394,13 @@ frame:SetTooltip(L.interface.tooltip["Количество уровней ска
 fontSize(frame.label)
 frame:SetWidth(size.searchInterval)
 frame.label:SetJustifyH("CENTER")
+searchRangeGRP:AddChild(frame)
 frame.frame:HookScript("OnHide", function()
 	searchRangeGRP.searchIntervalVal.frame:Hide()
 end)
 frame.frame:HookScript("OnShow", function()
 	searchRangeGRP.searchIntervalVal.frame:Show()
 end)
-searchRangeGRP:AddChild(frame)
 
 searchRangeGRP.searchIntervalVal = GUI:Create("TLabel")
 local frame = searchRangeGRP.searchIntervalVal
@@ -399,13 +426,13 @@ frame:SetTooltip(L.interface.tooltip["Уровень, с которого нач
 fontSize(frame.label)
 frame:SetWidth(size.raceFilterStart)
 frame.label:SetJustifyH("CENTER")
+searchRangeGRP:AddChild(frame)
 frame.frame:HookScript("OnHide", function()
 	searchRangeGRP.raceFilterStartVal.frame:Hide()
 end)
 frame.frame:HookScript("OnShow", function()
 	searchRangeGRP.raceFilterStartVal.frame:Show()
 end)
-searchRangeGRP:AddChild(frame)
 
 searchRangeGRP.raceFilterStartVal = GUI:Create("TLabel")
 local frame = searchRangeGRP.raceFilterStartVal
@@ -431,13 +458,13 @@ frame:SetTooltip(L.interface.tooltip["Уровень, с которого нач
 fontSize(frame.label)
 frame:SetWidth(size.classFilterStart)
 frame.label:SetJustifyH("CENTER")
+searchRangeGRP:AddChild(frame)
 frame.frame:HookScript("OnHide", function()
 	searchRangeGRP.classFilterStartVal.frame:Hide()
 end)
 frame.frame:HookScript("OnShow", function()
 	searchRangeGRP.classFilterStartVal.frame:Show()
 end)
-searchRangeGRP:AddChild(frame)
 
 searchRangeGRP.classFilterStartVal = GUI:Create("TLabel")
 local frame = searchRangeGRP.classFilterStartVal
@@ -455,7 +482,7 @@ frame.frame:SetScript("OnMouseWheel",function(self,delta)
 	searchRangeGRP.classFilterStartVal:SetText(DB.classFilterVal == FGI_MAXLVL+1 and L.interface["Откл."] or DB.classFilterVal)
 end)
 searchRangeGRP:AddChild(frame)
-
+end
 
 
 
@@ -472,18 +499,28 @@ mainFrame:AddChild(frame)
 
 -- set points
 local frame = CreateFrame('Frame')
-frame:RegisterEvent('PLAYER_ENTERING_WORLD')
+frame:RegisterEvent('PLAYER_LOGIN')
 frame:SetScript('OnEvent', function()
-	mainFrame:Show()
-	gratitudeFrame:Show()
 	DB = addon.DB
 	
+	local cat,name,contact,donate = '','','',''
+	for i=1,#L.Gratitude do
+		local u = L.Gratitude[i]
+		local Ctype = u[1]:find("Author") and color.green or u[1]:find("Translate") and color.blue or u[1]:find("Donate") and color.yellow or u[1]:find("Testing") and color.orange or ''
+		cat,name,contact,donate = format("%s\n%s%s|r", cat, Ctype, u[1]),format("%s\n%s%s|r", name, Ctype, u[2]),format("%s\n%s%s|r", contact, Ctype, u[3]),format("%s\n%s%s|r", donate, Ctype, u[4])
+	end
+	gratitudeFrame.Category:SetText(cat)
+	gratitudeFrame.Name:SetText(name)
+	gratitudeFrame.Contact:SetText(contact)
+	gratitudeFrame.Donate:SetText(donate)
+	scrollBar.content:SetHeight(gratitudeFrame.Category.frame:GetHeight())
 	
 	inviteTypeGRP.drop:SetValue(DB.inviteType)
 	
 	mainCheckBoxGRP.normalSearch:SetValue(DB.SearchType==1)
 	mainCheckBoxGRP.deepSearch:SetValue(DB.SearchType==2)
 	mainCheckBoxGRP.smartSearch:SetValue(DB.SearchType==3)
+	mainCheckBoxGRP.customList:SetValue(DB.customWho or false)
 	mainCheckBoxGRP.backgroundRun:SetValue(DB.backgroundRun or false)
 	mainCheckBoxGRP.enableFilters:SetValue(DB.enableFilters or false)
 	
@@ -498,24 +535,24 @@ frame:SetScript('OnEvent', function()
 		searchRangeGRP.classFilterStart.frame:Hide()
 	end
 	
-C_Timer.NewTicker(0.1,function()
+	
 	gratitudeFrame:ClearAllPoints()
 	gratitudeFrame:SetPoint("CENTER", UIParent, "CENTER", 0, 0)
 	
 	gratitudeFrame.closeButton:ClearAllPoints()
 	gratitudeFrame.closeButton:SetPoint("CENTER", gratitudeFrame.frame, "TOPRIGHT", -8, -8)
 	
-	gratitudeFrame.testing:ClearAllPoints()
-	gratitudeFrame.testing:SetPoint("TOPLEFT", gratitudeFrame.frame, "TOPLEFT", 20, -80)
-	gratitudeFrame.testing:SetPoint("BOTTOM", gratitudeFrame.frame, "BOTTOM", 0, 10)
+	gratitudeFrame.Category:ClearAllPoints()
+	gratitudeFrame.Category:SetPoint("TOPLEFT", gratitudeFrame.scrollBar.frame, "TOPLEFT", 20, -20)
 	
-	gratitudeFrame.coding:ClearAllPoints()
-	gratitudeFrame.coding:SetPoint("TOPLEFT", gratitudeFrame.testing.frame, "TOPRIGHT", 0, 0)
-	gratitudeFrame.coding:SetPoint("BOTTOM", gratitudeFrame.frame, "BOTTOM", 0, 10)
+	gratitudeFrame.Name:ClearAllPoints()
+	gratitudeFrame.Name:SetPoint("TOPLEFT", gratitudeFrame.Category.frame, "TOPRIGHT", 0, 0)
 	
-	gratitudeFrame.donations:ClearAllPoints()
-	gratitudeFrame.donations:SetPoint("TOPLEFT", gratitudeFrame.coding.frame, "TOPRIGHT", 0, 0)
-	gratitudeFrame.donations:SetPoint("BOTTOM", gratitudeFrame.frame, "BOTTOM", 0, 10)
+	gratitudeFrame.Contact:ClearAllPoints()
+	gratitudeFrame.Contact:SetPoint("TOPLEFT", gratitudeFrame.Name.frame, "TOPRIGHT", 0, 0)
+	
+	gratitudeFrame.Donate:ClearAllPoints()
+	gratitudeFrame.Donate:SetPoint("TOPLEFT", gratitudeFrame.Contact.frame, "TOPRIGHT", 0, 0)
 	
 	mainFrame.closeButton:ClearAllPoints()
 	mainFrame.closeButton:SetPoint("CENTER", mainFrame.frame, "TOPRIGHT", -8, -8)
@@ -582,9 +619,9 @@ C_Timer.NewTicker(0.1,function()
 	
 	mainButtonsGRP.Gratitude:ClearAllPoints()
 	mainButtonsGRP.Gratitude:SetPoint("LEFT", mainButtonsGRP.settingsBtn.frame, "RIGHT", 2, 0)
-end, 2)
+
+
 	
 	mainFrame:Hide()
 	gratitudeFrame:Hide()
-	frame:UnregisterEvent('PLAYER_ENTERING_WORLD')
 end)

@@ -9,6 +9,8 @@ local GUI = LibStub("AceGUI-3.0")
 local FastGuildInvite = addon.lib
 local DB
 
+local blackList, scrollBar
+
 local function fontSize(self, font, size)
 	font = font or settings.Font
 	size = size or settings.FontSize
@@ -26,12 +28,20 @@ end
 -- format("FGI autoKick: Player %s has been kicked.", name)
 
 interface.blackList = GUI:Create("ClearFrame")
-local blackList = interface.blackList
-blackList:Hide()
+blackList = interface.blackList
+-- blackList:Hide()
 blackList:SetTitle("FGI Blacklist")
 blackList:SetWidth(size.blackListW)
 blackList:SetHeight(size.blackListH)
 blackList:SetLayout("Flow")
+
+function blackList:updateList()
+	local str = ''
+	for k,v in pairs(DB.blackList) do
+		str = format("%s%s\n", str, k)
+	end
+	blackList.list:SetText(str)
+end
 
 blackList.title:SetScript('OnMouseUp', function(mover)
 	local DB = addon.DB
@@ -53,6 +63,15 @@ blackList.title:SetScript('OnMouseUp', function(mover)
 	DB.blackListPos.yOfs=yOfs
 end)
 
+blackList.scrollBar = GUI:Create("ScrollFrame")
+scrollBar = blackList.scrollBar
+scrollBar:SetFullWidth(true)
+scrollBar:SetFullWidth(true)
+-- scrollBar:SetWidth(blackList.frame:GetWidth()-20)
+-- scrollBar:SetHeight(blackList.frame:GetHeight()-40)
+scrollBar:SetLayout("Flow")
+blackList:AddChild(scrollBar)
+
 blackList.closeButton = GUI:Create('Button')
 local frame = blackList.closeButton
 frame:SetText('X')
@@ -63,15 +82,97 @@ frame:SetCallback('OnClick', function()
 end)
 blackList:AddChild(frame)
 
-function blackList:updateList()
-	local str = ''
-	for k,v in pairs(DB.blackList) do
-		str = format("%s%s\n", str, k)
-	end
-	blackList.list:SetText(str)
+scrollBar.items = {}
+
+StaticPopupDialogs["FGI_BLACKLIST_CHANGE"] = {
+	text = L.interface["Причина"],
+	button1 = "Ok",
+	button2 = "Cancel",
+	OnAccept = function(self, data)
+		local reason = self.editBox:GetText()
+		DB.blackList[data.name] = reason
+		if type(data.frame) == "table" then
+			data.frame.r:SetText(reason)
+			data.frame.r:SetTooltip(reason)
+		else
+			blackList:add({name=data.name, reason=reason})
+			SendChatMessage(format("%s %s - %s", format(L.interface["Игрок %s добавлен в черный список."], data.name), L.interface["Причина"], reason) , "OFFICER",  GetDefaultLanguage("player"))
+		end
+		StaticPopup_Hide("FGI_BLACKLIST_CHANGE")
+		blackList:update()
+		return true
+	end,
+	OnShow = function(self, data)
+		self.text:SetText(format("%s - %s", L.interface["Причина"], data.name))
+		self.editBox:SetText(tostring(DB.blackList[data.name]))
+	end,
+	timeout = 0,
+	whileDead = true,
+	hideOnEscape = true,
+	preferredIndex = 3,
+	hasEditBox = true
+}
+
+
+local function AddHookClick(frame, parent)
+	local menu = {
+		{text = "Select an Option", isTitle = true},
+		{text = "Change", func = function()
+			StaticPopup_Show("FGI_BLACKLIST_CHANGE", _,_,  {name = frame.label:GetText(), frame = parent})
+		end},
+		{text = "Delete", func = function()
+			DB.blackList[frame.label:GetText()] = nil
+			blackList:update()
+		end},
+		--[[{ text = "More Options", hasArrow = true,
+			menuList = {
+				{ text = "Option 3", func = function() print("You've chosen option 3"); end }
+			} 
+		}]]
+	}
+	local menuFrame = CreateFrame("Frame", "ExampleMenuFrame", UIParent, "UIDropDownMenuTemplate")
+	frame.frame:HookScript("OnMouseDown",function(self, button,...)
+		if button == "RightButton" then
+			EasyMenu(menu, menuFrame, "cursor", 0 , 0, "MENU");
+		end
+	end)
+end
+local help = "RBM - change\nRBM - change"
+function blackList:add(data)
+	scrollBar.items[#scrollBar.items+1] = GUI:Create("SimpleGroup")
+	local frame = scrollBar.items[#scrollBar.items]
+	frame:SetFullWidth(true)
+	frame:SetLayout("Flow")
+	frame.n = GUI:Create("TLabel")
+		frame.n:SetText(data.name)
+		frame.n:SetWidth(90)
+		frame.n:SetHeight(20)
+		frame.n:SetTooltip(help)
+		AddHookClick(frame.n, frame)
+	frame:AddChild(frame.n)
+	frame.r = GUI:Create("TLabel")
+		frame.r:SetText(data.reason)
+		frame.r:SetHeight(20)
+		frame.r:SetTooltip(data.reason)
+	frame:AddChild(frame.r)
+	frame:SetHeight(frame.n.frame:GetHeight())
+	scrollBar:AddChild(frame)
 end
 
-blackList.list = GUI:Create("MultiLineEditBox")
+function blackList:update()
+	local i=1
+	for k,v in pairs(DB.blackList) do
+		local f = scrollBar.items[i]
+		f.n:SetText(k)
+		f.r:SetText(tostring(v))
+		i = i+1
+	end
+	for i=i, #scrollBar.items do
+		scrollBar.items[i].frame:Hide()
+	end
+end
+
+--[[blackList.list = GUI:Create("MultiLineEditBox")
 local frame = blackList.list
 frame:SetLabel("")
 frame:SetWidth(size.blackListW-40)
@@ -104,111 +205,35 @@ blackList.frame:HookScript("OnShow", function()
 	blackList:updateList()
 end)
 
+]]
 
-
-
-
-
-
-
-
---[[interface.uninvite = GUI:Create("ClearFrame")
-local uninvite = interface.uninvite
-uninvite:Hide()
-uninvite:SetTitle("FGI Blacklist UnInvite")
-uninvite:SetWidth(size.uninviteW)
-uninvite:SetHeight(size.uninviteH)
-uninvite:SetLayout("Flow")
-uninvite.list = {}
-
-uninvite.kickLabel = GUI:Create("TLabel")
-local frame = uninvite.kickLabel
-fontSize(frame.label)
-frame.label:SetJustifyH("CENTER")
-uninvite:AddChild(frame)]]
-
---[[
-local frame = CreateFrame("Button", "TestKick", UIParent, "SecureActionButtonTemplate")
-frame:SetHeight(40)
-frame:SetWidth(100)
-frame:SetPoint("TOP")
-frame:SetAttribute("type", "macro")
-frame:SetAttribute("macrotext", "/guildremove Knoot")
-frame.text = frame:CreateFontString(nil, "OVERLAY")
-frame.text:SetFont(STANDARD_TEXT_FONT, 16, "THINOUTLINE")
-frame.text:SetPoint("CENTER")
-frame.text:SetText("Yes!")]]
-
-
-
---[[local SecureKick = CreateFrame("Button", "FGISecureKick", UIParent, "SecureActionButtonTemplate")
-local frame = SecureKick
-frame:SetHeight(40)
-frame:SetWidth(100)
-frame:SetPoint("CENTER")
-frame:SetAttribute("type", "macro")
-frame:SetAttribute("macrotext", "/guildremove Knoot")
-frame.text = frame:CreateFontString(nil, "OVERLAY")
-frame.text:SetFont(STANDARD_TEXT_FONT, 16, "THINOUTLINE")
-frame.text:SetPoint("CENTER")
-frame.text:SetText("Yes")
-
-function uninvite:listChange()
-	if #uninvite.list == 0 then return interface.uninvite:Hide() else interface.uninvite:Show() end
-	local name = uninvite.list[1]
-	uninvite.kickLabel:SetText(format(L.interface["Игрок %s был найден в черном списке. Исключить игрока %s из гильдии?"], name, name))
-	-- uninvite.SecureKick:SetAttribute("macrotext", format("/guildremove %s\n/run FGI.interface.uninvite:remove()", name))
+local function showNext()
+	local data = StaticPopupDialogs["FGI_BLACKLIST"].data
+	if not data[1] then return end
+	StaticPopupDialogs["FGI_BLACKLIST"].text = format(L.interface["Игрок %s найденный в черном списке, находится в вашей гильдии!"],data[1])
+	StaticPopup_Show("FGI_BLACKLIST")
 end
-
-function uninvite:add(name)
-	if not name then return end
-	table.insert(uninvite.list, name)
-	uninvite:listChange()
-end
-
-function uninvite:remove()
-	table.remove(uninvite.list, 1)
-	uninvite:listChange()
-end
-
-
-uninvite.cancel = GUI:Create("Button")
-local frame = uninvite.cancel
-frame:SetText(L.interface["Нет"])
-fontSize(frame.text)
-btnText(frame)
-frame:SetWidth(size.no)
-frame:SetHeight(40)
-frame:SetCallback("OnClick", function()
-	uninvite:remove()
-end)
-uninvite:AddChild(frame)]]
-
-
 StaticPopupDialogs["FGI_BLACKLIST"] = {
 	text = '',
 	button1 = "Ok",
-	list = {},
+	data = {},
+	data2 = {},
 	OnAccept = function()
-		local list = StaticPopupDialogs["FGI_BLACKLIST"].list
-		table.remove(list, 1)
+		local data = StaticPopupDialogs["FGI_BLACKLIST"].data
+		StaticPopupDialogs["FGI_BLACKLIST"].data2[data[1] ] = true
+		table.remove(data, 1)
 		StaticPopup_Hide("FGI_BLACKLIST")
+		showNext()
+		return true
 	end,
 	add = function(name)
-		print(name)
-		local list = StaticPopupDialogs["FGI_BLACKLIST"].list
-		table.insert(list, name)
-		StaticPopup_Show("FGI_BLACKLIST")
+		local data = StaticPopupDialogs["FGI_BLACKLIST"].data
+		if not StaticPopupDialogs["FGI_BLACKLIST"].data2[name] then table.insert(data, name) end
+		showNext()
 	end,
 	OnShow = function()
-		local list = StaticPopupDialogs["FGI_BLACKLIST"].list
-		if not list[1] then return end
-		StaticPopupDialogs["FGI_BLACKLIST"].text = (format(L.interface["Игрок %s найденный в черном списке, находится в вашей гильдии!"],list[1]))
-	end,
-	OnHide = function()
-		local list = StaticPopupDialogs["FGI_BLACKLIST"].list
-		if not list[1] then return end
-		StaticPopup_Show("FGI_BLACKLIST")
+		local data = StaticPopupDialogs["FGI_BLACKLIST"].data
+		if not data[1] then return end
 	end,
 	timeout = 0,
 	whileDead = true,
@@ -218,23 +243,17 @@ StaticPopupDialogs["FGI_BLACKLIST"] = {
 
 -- set points
 local frame = CreateFrame('Frame')
-frame:RegisterEvent('PLAYER_ENTERING_WORLD')
+frame:RegisterEvent('PLAYER_LOGIN')
 frame:SetScript('OnEvent', function()
 	DB = addon.DB
-	blackList:Show()
-C_Timer.NewTicker(0.1,function()
 	
 	blackList.closeButton:ClearAllPoints()
 	blackList.closeButton:SetPoint("CENTER", blackList.frame, "TOPRIGHT", -8, -8)
 	
-	blackList.list:ClearAllPoints()
-	blackList.list:SetPoint("TOP", blackList.frame, "TOP", 0, -30)
-	
-	blackList.saveButton:ClearAllPoints()
-	blackList.saveButton:SetPoint("BOTTOM", blackList.frame, "BOTTOM", 0, 10)
+	for k,v in pairs(DB.blackList) do
+		blackList:add({name=tostring(k),reason=tostring(v)})
+	end
 	
 	
 	blackList:Hide()
-end,2)
-	frame:UnregisterEvent('PLAYER_ENTERING_WORLD')
 end)

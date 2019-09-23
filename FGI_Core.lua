@@ -7,6 +7,7 @@ local Console = LibStub("AceConsole-3.0")
 local GUI = LibStub("AceGUI-3.0")
 local FastGuildInvite = addon.lib
 local DB = addon.DB
+local debugDB = addon.debugDB
 addon.icon = LibStub("LibDBIcon-1.0")
 local icon = addon.icon
 local color = addon.color
@@ -53,12 +54,15 @@ local function MenuButtons(self)
 		end
 		
 		fn:blackList(fullname)
-		interface.blackList:updateList()
+		-- interface.blackList:updateList()
+		StaticPopup_Show("FGI_BLACKLIST_CHANGE", _,_,  {name = fullname})
+		
 	elseif (button == "GUILD_INVITE") then
 		local dropdownFrame = UIDROPDOWNMENU_INIT_MENU;
 		local unit = dropdownFrame.unit;
 		local name = dropdownFrame.name;
 		GuildInvite(name)
+		fn:rememberPlayer(name)
 	end
 end
 
@@ -95,11 +99,10 @@ frame:SetScript("OnEvent", function(...)
 			debug(format("Player %s left the guild or was expelled.", name), color.yellow)
 		end
 	end
-	--ERR_GUILD_REMOVE_SS
 end)
 
 function addon.dataBroker.OnTooltipShow(GameTooltip)
-	local search = DB.SearchType == 3 and addon.smartSearch or addon.search
+	local search = addon.search
 	GameTooltip:SetText(format(L.FAQ.help.minimap,#search.inviteList, interface.scanFrame.progressBar:GetProgress()), 1, 1, 1)
 end
 
@@ -149,13 +152,11 @@ function FastGuildInvite:OnEnable()
 	debugFrame:AddChild(frame)
 	-- debugFrame.closeButton:ClearAllPoints()
 	debugFrame.closeButton:SetPoint("CENTER", debugFrame.frame, "TOPRIGHT", -8, -8)
+	debugFrame:Hide()
+	-- if not addon.debug then debugFrame:Hide() else debugFrame:Show() end
 	
-	if not addon.debug then debugFrame:Hide() else debugFrame:Show() end
-	
-	if DB.keyBind then
-		-- SetBindingClick(DB.keyBind, interface.scanFrame.invite.frame:GetName())
-	end
-	fn:SetKeybind(DB.keyBind)
+	fn:SetKeybind(DB.keyBind.invite, "invite")
+	fn:SetKeybind(DB.keyBind.nextSearch, "nextSearch")
 	
 	
 	if DB.mainFrame then
@@ -206,6 +207,18 @@ function FastGuildInvite:OnEnable()
 	else
 		interface.blackList:SetPoint("CENTER", UIParent)
 	end
+	if DB.keyBindings then
+		interface.keyBindings:ClearAllPoints()
+		interface.keyBindings:SetPoint(DB.keyBindings.point, UIParent, DB.keyBindings.relativePoint, DB.keyBindings.xOfs, DB.keyBindings.yOfs)
+	else
+		interface.keyBindings:SetPoint("CENTER", UIParent)
+	end
+	if DB.customListPos then
+		interface.customList:ClearAllPoints()
+		interface.customList:SetPoint(DB.customListPos.point, UIParent, DB.customListPos.relativePoint, DB.customListPos.xOfs, DB.customListPos.yOfs)
+	else
+		interface.customList:SetPoint("CENTER", UIParent)
+	end
 	interface.debugFrame:ClearAllPoints()
 	interface.debugFrame:SetPoint("TOPLEFT", UIParent, "TOPLEFT", 0, 0)
 	
@@ -213,15 +226,23 @@ function FastGuildInvite:OnEnable()
 	interface.gratitudeFrame:SetPoint("CENTER", UIParent)
 	
 	Console:RegisterChatCommand('fgi', 'FGIInput')
+	Console:RegisterChatCommand('fgidebug', 'FGIdebug')
 	Console:RegisterChatCommand('FastGuildInvite', 'FGIInput')
 end
 
 function FastGuildInvite:OnInitialize()
 	self.db = LibStub("AceDB-3.0"):New("FGI_DB")
+	self.debugdb = LibStub("AceDB-3.0"):New("FGI_DEBUG")
 	self.db.RegisterCallback(self, "OnDatabaseReset", function() C_UI.Reload() end)
 	
 	DB = self.db.global
 	addon.DB = DB
+	debugDB = self.debugdb.global
+	for i=#debugDB, 1, -1  do
+		if not debugDB[i][1] then table.remove(debugDB,i)end
+	end
+	table.insert(debugDB, {})
+	addon.debugDB = debugDB[#debugDB]
 	
 	DB.inviteType = DB.inviteType or 1
 	
@@ -231,14 +252,14 @@ function FastGuildInvite:OnInitialize()
 	DB.classFilterVal = DB.classFilterVal or FGI_DEFAULT_CLASSFILTERSTART
 	DB.searchInterval = DB.searchInterval or FGI_DEFAULT_SEARCHINTERVAL
 	
-	DB.SearchType = DB.SearchType or 3
 	DB.backgroundRun = DB.backgroundRun or false
 	DB.enableFilters = DB.enableFilters or false
+	DB.customWho = DB.customWho or false
 	
 	DB.addonMSG = DB.addonMSG or false
 	DB.systemMSG = DB.systemMSG or false
 	DB.sendMSG = DB.sendMSG or false
-	DB.keyBind = DB.keyBind or false
+	DB.keyBind = istable(DB.keyBind) and DB.keyBind or {invite = false, nextSearch = false}
 	DB.rememberAll = DB.rememberAll or false
 	DB.clearDBtimes = DB.clearDBtimes or 3
 	
@@ -249,6 +270,7 @@ function FastGuildInvite:OnInitialize()
 	DB.filtersList = istable(DB.filtersList) and DB.filtersList or {}
 	DB.blackList = istable(DB.blackList) and DB.blackList or {}
 	DB.leave = istable(DB.leave) and DB.leave or {}
+	DB.customWhoList = istable(DB.customWhoList) and DB.customWhoList or {"1-15 c-\"Class\" r-\"Race\""}
 	
 	DB.debug = DB.debug or false
 	
@@ -270,16 +292,39 @@ end
 local function toggleDebug()
 	DB.debug = not DB.debug
 	addon.debug = DB.debug
-	if addon.debug then
-		interface.debugFrame:Show()
-	else
-		interface.debugFrame:Hide()
-	end
 	print("FGI Debug "..(DB.debug and color.green.."on" or color.red.."off").."|r")
 end
+
+function Console:FGIdebug(str)
+	if not addon.debug then return end
+	if str == '' then return Console:FGIdebugHelp()
+	elseif str == 'show' then return interface.debugFrame:Show()
+	elseif str == 'load' then
+		local text = ''
+		for k,v in pairs(addon.debugDB)do
+			text = format("%s%s\n",text,v)
+		end
+		
+		interface.debugFrame.debugList:SetText(text)
+		return
+	
+	end
+end
+
+function Console:FGIdebugHelp()
+	if not addon.debug then return end
+	print("/fgidebug show - show debug frame")
+	print("/fgidebug load - load current debug info")
+	-- print("")
+end
+
 function Console:FGIInput(str)
 	if str == '' then return Console:FGIHelp()
 	elseif str == 'show' then return interface.mainFrame:Show()
+	elseif str == "invite" then
+		fn:invitePlayer()
+	elseif str == "nextSearch" then
+		interface.scanFrame.pausePlay.frame:Click()
 	elseif str == 'debug' then 
 		toggleDebug()
 	elseif str == 'resetDB' then DB.alredySended = {}
@@ -340,4 +385,6 @@ function Console:FGIHelp()
 	print(L.FAQ.help.resetDB)
 	print(L.FAQ.help.factorySettings)
 	print(L.FAQ.help.resetWindowsPos)
+	print(L.FAQ.help.invite)
+	print(L.FAQ.help.nextSearch)
 end

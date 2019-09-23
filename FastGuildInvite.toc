@@ -28,12 +28,15 @@ init.lua
 
 
 
+
 functions.lua
 FGI_Core.lua
 chooseInvites.lua
 mainFrame.lua
 message.lua
 settings.lua
+keybindings.lua
 filtersFrame.lua
 Scan.lua
 blackList.lua
+customList.lua
