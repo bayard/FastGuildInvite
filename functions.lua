@@ -64,7 +64,7 @@ end
 
 function fn:blacklistKick()
 	for i=1, GetNumGuildMembers() do
-		local name = GetGuildRosterInfo(i)
+		local name = GetGuildRosterInfo(i):match("(.*)-")
 		if IsInBlacklist(name) then guildKick(name) end
 	end
 end
