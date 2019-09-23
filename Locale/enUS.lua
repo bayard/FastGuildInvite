@@ -26,6 +26,8 @@ local L = {
 		}
 	},
 	["interface"] = {
+		["Игрок %s добавлен в черный список."] = "Player %s has been blacklisted.",
+		["Причина"] = "Reason",
 		["Включен"] = "Included",
 		["Черный список"] = "Blacklist",
 		["Пользовательский список"] = "Custom list",
