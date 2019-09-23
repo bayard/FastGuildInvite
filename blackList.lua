@@ -89,10 +89,15 @@ StaticPopupDialogs["FGI_BLACKLIST_CHANGE"] = {
 	button1 = "Ok",
 	button2 = "Cancel",
 	OnAccept = function(self, data)
-		local text = self.editBox:GetText()
-		DB.blackList[data.name] = text
-		data.frame.r:SetText(text)
-		data.frame.r:SetTooltip(text)
+		local reason = self.editBox:GetText()
+		DB.blackList[data.name] = reason
+		if type(data.frame) == "table" then
+			data.frame.r:SetText(reason)
+			data.frame.r:SetTooltip(reason)
+		else
+			blackList:add({name=data.name, reason=reason})
+			SendChatMessage(format("Player %s has been blacklisted. Reason - %s", data.name, reason) , "OFFICER",  GetDefaultLanguage("player"))
+		end
 		StaticPopup_Hide("FGI_BLACKLIST_CHANGE")
 		blackList:update()
 		return true
@@ -250,5 +255,5 @@ frame:SetScript('OnEvent', function()
 	end
 	
 	
-	blackList:Hide()
+	-- blackList:Hide()
 end)

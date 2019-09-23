@@ -55,7 +55,8 @@ local function MenuButtons(self)
 		
 		fn:blackList(fullname)
 		-- interface.blackList:updateList()
-		interface.blackList:add({name=fullname, reason=L.interface.defaultReason})
+		StaticPopup_Show("FGI_BLACKLIST_CHANGE", _,_,  {name = fullname})
+		
 	elseif (button == "GUILD_INVITE") then
 		local dropdownFrame = UIDROPDOWNMENU_INIT_MENU;
 		local unit = dropdownFrame.unit;
