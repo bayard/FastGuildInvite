@@ -7,6 +7,7 @@ local Console = LibStub("AceConsole-3.0")
 local GUI = LibStub("AceGUI-3.0")
 local FastGuildInvite = addon.lib
 local DB = addon.DB
+local debugDB = addon.debugDB
 addon.icon = LibStub("LibDBIcon-1.0")
 local icon = addon.icon
 local color = addon.color
@@ -53,7 +54,8 @@ local function MenuButtons(self)
 		end
 		
 		fn:blackList(fullname)
-		interface.blackList:updateList()
+		-- interface.blackList:updateList()
+		interface.blackList:add({name=fullname, reason=L.interface.defaultReason})
 	elseif (button == "GUILD_INVITE") then
 		local dropdownFrame = UIDROPDOWNMENU_INIT_MENU;
 		local unit = dropdownFrame.unit;
@@ -149,8 +151,8 @@ function FastGuildInvite:OnEnable()
 	debugFrame:AddChild(frame)
 	-- debugFrame.closeButton:ClearAllPoints()
 	debugFrame.closeButton:SetPoint("CENTER", debugFrame.frame, "TOPRIGHT", -8, -8)
-	
-	if not addon.debug then debugFrame:Hide() else debugFrame:Show() end
+	debugFrame:Hide()
+	-- if not addon.debug then debugFrame:Hide() else debugFrame:Show() end
 	
 	fn:SetKeybind(DB.keyBind.invite, "invite")
 	fn:SetKeybind(DB.keyBind.nextSearch, "nextSearch")
@@ -223,15 +225,23 @@ function FastGuildInvite:OnEnable()
 	interface.gratitudeFrame:SetPoint("CENTER", UIParent)
 	
 	Console:RegisterChatCommand('fgi', 'FGIInput')
+	Console:RegisterChatCommand('fgidebug', 'FGIdebug')
 	Console:RegisterChatCommand('FastGuildInvite', 'FGIInput')
 end
 
 function FastGuildInvite:OnInitialize()
 	self.db = LibStub("AceDB-3.0"):New("FGI_DB")
+	self.debugdb = LibStub("AceDB-3.0"):New("FGI_DEBUG")
 	self.db.RegisterCallback(self, "OnDatabaseReset", function() C_UI.Reload() end)
 	
 	DB = self.db.global
 	addon.DB = DB
+	debugDB = self.debugdb.global
+	for i=#debugDB, 1, -1  do
+		if not debugDB[i][1] then table.remove(debugDB,i)end
+	end
+	table.insert(debugDB, {})
+	addon.debugDB = debugDB[#debugDB]
 	
 	DB.inviteType = DB.inviteType or 1
 	
@@ -259,7 +269,7 @@ function FastGuildInvite:OnInitialize()
 	DB.filtersList = istable(DB.filtersList) and DB.filtersList or {}
 	DB.blackList = istable(DB.blackList) and DB.blackList or {}
 	DB.leave = istable(DB.leave) and DB.leave or {}
-	DB.customWhoList = istable(DB.customWhoList) and DB.customWhoList or {}
+	DB.customWhoList = istable(DB.customWhoList) and DB.customWhoList or {"1-15 c-\"Class\" r-\"Race\""}
 	
 	DB.debug = DB.debug or false
 	
@@ -281,13 +291,32 @@ end
 local function toggleDebug()
 	DB.debug = not DB.debug
 	addon.debug = DB.debug
-	if addon.debug then
-		interface.debugFrame:Show()
-	else
-		interface.debugFrame:Hide()
-	end
 	print("FGI Debug "..(DB.debug and color.green.."on" or color.red.."off").."|r")
 end
+
+function Console:FGIdebug(str)
+	if not addon.debug then return end
+	if str == '' then return Console:FGIdebugHelp()
+	elseif str == 'show' then return interface.debugFrame:Show()
+	elseif str == 'load' then
+		local text = ''
+		for k,v in pairs(addon.debugDB)do
+			text = format("%s%s\n",text,v)
+		end
+		
+		interface.debugFrame.debugList:SetText(text)
+		return
+	
+	end
+end
+
+function Console:FGIdebugHelp()
+	if not addon.debug then return end
+	print("/fgidebug show - show debug frame")
+	print("/fgidebug load - load current debug info")
+	-- print("")
+end
+
 function Console:FGIInput(str)
 	if str == '' then return Console:FGIHelp()
 	elseif str == 'show' then return interface.mainFrame:Show()
