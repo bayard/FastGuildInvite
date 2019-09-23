@@ -12,6 +12,7 @@ addon.search = {progress=1, inviteList={}, state='stop', timeShift=0, tempSended
 addon.removeMsgList = {}
 addon.libWho = {}
 local DB
+local debugDB
 --LibStub:GetLibrary("LibWho-2.0"):Embed(addon.libWho);
 addon.searchInfo = {unique = {0}, sended = {0}, invited = {0}, filtered = {0}}
 local mt = {
@@ -52,6 +53,7 @@ end)
 
 function fn:initDB()
 	DB = addon.DB
+	debugDB = addon.debugDB
 end
 
 local function IsInBlacklist(name)
@@ -90,7 +92,7 @@ function fn:blackListAutoKick()
 end
 
 function fn:blackList(name)
-	DB.blackList[name] = true
+	DB.blackList[name] = L.interface.defaultReason
 	print(format("%sPlayer %s has been blacklisted|r", color.red, name))
 	fn:blacklistKick()
 end
@@ -101,15 +103,14 @@ function fn:closeBtn(obj)
 end
 
 function fn.debug(...)
+	if not addon.debug then return end
 	local msg, colored = ...
-	local text = interface.debugFrame.debugList:GetText() or ''
 	if msg == nil or type(msg) == "table" then
-		interface.debugFrame.debugList:SetText(format("%swrong debug input - msg = %s\n%s",color.red,type(msg),text))
+		table.insert(debugDB,format("%swrong debug input - msg = %s\n%s",color.red,type(msg),text))
 		return
 	end
 	if colored then msg = format("%s%s|r", colored, msg) end
-	if not addon.debug then return end
-	interface.debugFrame.debugList:SetText(format("%s\n%s",msg,text))
+	table.insert(debugDB,msg)
 end
 local debug = fn.debug
 
@@ -351,7 +352,7 @@ local function searchIntervalTimer(onOff, timer)
 end
 
 local frame = CreateFrame('Frame')
-frame:RegisterEvent('PLAYER_ENTERING_WORLD')
+frame:RegisterEvent('PLAYER_LOGIN')
 frame:SetScript('OnEvent', function()
 	-- DB = addon.DB
 C_Timer.NewTicker(0.1,function()
@@ -371,7 +372,6 @@ C_Timer.NewTicker(0.1,function()
 		end
 	end
 end,2)
-	frame:UnregisterEvent('PLAYER_ENTERING_WORLD')
 end)
 
 local function getSearchDeepLvl(query)

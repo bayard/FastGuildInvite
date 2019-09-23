@@ -26,6 +26,7 @@ local L = {
 		}
 	},
 	["interface"] = {
+		defaultReason = "no reason",
 		["Игрок не добавлен в список исключений."] = "Игрок не добавлен в список исключений.",
 		["Черный список"] = "Черный список",
 		["Пользовательский список"] = "Пользовательский список",
@@ -235,7 +236,7 @@ L.settings = {
 		chooseInvitesH = 100,
 		reject = 100,
 		invite = 100,
-		blackListW = 200,
+		blackListW = 400,
 		blackListH = 360,
 		blackList = 150,
 		uninviteW = 220,
@@ -301,12 +302,12 @@ L.Gratitude = {
 	{"Category", "Name", "Contact", "Donate"},
 	{"", "", "", ""},
 	{"Author", "Knoot", "Knoot#7430", "paypal.me/Knoot"},
+	{"Donate", "Anchep", "", ""},
+	{"Donate", "dLuxian", "", ""},
 	{"Translate-zhTW", "Anchep", "Services@280i.com", "paypal.me/280i"},
 	{"Testing", "Shujin", "", ""},
 	{"Testing", "StreetX", "", ""},
 	{"Testing", "Мойгосподин", "", ""},
-	{"Donate", "Anchep", "", ""},
-	{"Donate", "dLuxian", "", ""},
 }
 
 
