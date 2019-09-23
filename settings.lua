@@ -18,7 +18,7 @@ end
 
 interface.settingsFrame = GUI:Create("ClearFrame")
 local settingsFrame = interface.settingsFrame
-settingsFrame:Hide()
+-- settingsFrame:Hide()
 settingsFrame:SetTitle("FGI Settings")
 settingsFrame:SetWidth(size.settingsFrameW)
 settingsFrame:SetHeight(size.settingsFrameH)
@@ -208,10 +208,9 @@ settingsButtonsGRP:AddChild(frame)
 
 -- set points
 local frame = CreateFrame('Frame')
-frame:RegisterEvent('PLAYER_ENTERING_WORLD')
+frame:RegisterEvent('PLAYER_LOGIN')
 frame:SetScript('OnEvent', function()
 	DB = addon.DB
-	settingsFrame:Show()
 	
 	settingsCheckBoxGRP.addonMSG:SetValue(true)
 	
@@ -253,5 +252,4 @@ frame:SetScript('OnEvent', function()
 	settingsFrame.clearDBtimes:SetValue(DB.clearDBtimes)
 	
 	settingsFrame:Hide()
-	frame:UnregisterEvent('PLAYER_ENTERING_WORLD')
 end)

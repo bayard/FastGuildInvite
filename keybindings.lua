@@ -105,11 +105,10 @@ buttonsGRP:AddChild(frame)
 
 -- set points
 local frame = CreateFrame('Frame')
-frame:RegisterEvent('PLAYER_ENTERING_WORLD')
+frame:RegisterEvent('PLAYER_LOGIN')
 frame:SetScript('OnEvent', function()
 	DB = addon.DB
-	-- keyBindings:Show()
-C_Timer.NewTicker(0.1,function()
+	
 	keyBindings.closeButton:ClearAllPoints()
 	keyBindings.closeButton:SetPoint("CENTER", keyBindings.frame, "TOPRIGHT", -8, -8)
 	
@@ -127,8 +126,6 @@ C_Timer.NewTicker(0.1,function()
 	
 	buttonsGRP.nextSearchLabel:ClearAllPoints()
 	buttonsGRP.nextSearchLabel:SetPoint("BOTTOM", buttonsGRP.keyBind.nextSearch.frame, "TOP", 0, 20)
-end,2)
 	
 	keyBindings:Hide()
-	frame:UnregisterEvent('PLAYER_ENTERING_WORLD')
 end)

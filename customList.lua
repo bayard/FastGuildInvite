@@ -92,16 +92,15 @@ customList:AddChild(frame)
 
 -- set points
 local frame = CreateFrame('Frame')
-frame:RegisterEvent('PLAYER_ENTERING_WORLD')
+frame:RegisterEvent('PLAYER_LOGIN')
 frame:SetScript('OnEvent', function()
 	DB = addon.DB
-	-- customList:Show()
+	
 	local str = ''
 	for i=1,#DB.customWhoList do
 		str = format("%s%s\n", str, DB.customWhoList[i])
 		customList.list:SetText(str)
 	end
-C_Timer.NewTicker(0.1,function()
 	
 	customList.closeButton:ClearAllPoints()
 	customList.closeButton:SetPoint("CENTER", customList.frame, "TOPRIGHT", -8, -8)
@@ -114,6 +113,4 @@ C_Timer.NewTicker(0.1,function()
 	
 	
 	customList:Hide()
-end,2)
-	frame:UnregisterEvent('PLAYER_ENTERING_WORLD')
 end)

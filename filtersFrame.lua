@@ -60,10 +60,13 @@ local function defaultValues()
 	addfilterFrame.change = false
 end
 
+local filtersFrame, addfilterFrame
 
+
+do		--filtersFrame
 interface.filtersFrame = GUI:Create("ClearFrame")
-local filtersFrame = interface.filtersFrame
-filtersFrame:Hide()
+filtersFrame = interface.filtersFrame
+-- filtersFrame:Hide()
 filtersFrame:SetTitle("FGI Filters")
 filtersFrame:SetWidth(size.filtersFrameW)
 filtersFrame:SetHeight(size.filtersFrameH)
@@ -136,17 +139,14 @@ frame:SetCallback("OnClick", function()
 	interface.filtersFrame:Hide()
 end)
 filtersFrame:AddChild(frame)
+end
 
 
 
-
-
-
-
-
+do		--addfilterFrame
 interface.addfilterFrame = GUI:Create("ClearFrame")
-local addfilterFrame = interface.addfilterFrame
-addfilterFrame:Hide()
+addfilterFrame = interface.addfilterFrame
+-- addfilterFrame:Hide()
 addfilterFrame:SetTitle("FGI add new filter")
 addfilterFrame:SetWidth(size.addfilterFrameW)
 addfilterFrame:SetHeight(size.addfilterFrameH)
@@ -194,7 +194,7 @@ addfilterFrame:AddChild(frame)
 
 
 
-
+do		--class
 addfilterFrame.classLabel = GUI:Create("TLabel")
 local frame = addfilterFrame.classLabel
 frame:SetText(L.interface["Классы:"])
@@ -299,11 +299,11 @@ frame:SetWidth(size.Warrior)
 frame:SetLabel(L.SYSTEM.class.Warrior)
 fontSize(frame.text)
 addfilterFrame:AddChild(frame)
+end
 
 
 
-
-
+do		--race
 addfilterFrame.raceLabel = GUI:Create("TLabel")
 local frame = addfilterFrame.raceLabel
 frame:SetText(L.interface["Расы:"])
@@ -546,17 +546,16 @@ addfilterFrame:AddChild(frame)
 
 
 addfilterFrame.frame:HookScript("OnShow", defaultValues)
+end
 
-
-
+end
 
 -- set points
 local frame = CreateFrame('Frame')
-frame:RegisterEvent('PLAYER_ENTERING_WORLD')
+frame:RegisterEvent('PLAYER_LOGIN')
 frame:SetScript('OnEvent', function()
 	DB = addon.DB
-	filtersFrame:Show()
-	addfilterFrame:Show()
+	
 	
 	local i = 1
 	for k,v in pairs(L.SYSTEM.race) do
@@ -567,7 +566,6 @@ frame:SetScript('OnEvent', function()
 	end
 	
 	defaultValues()
-C_Timer.NewTicker(0.1,function()
 	filtersFrame.closeButton:ClearAllPoints()
 	filtersFrame.closeButton:SetPoint("CENTER", filtersFrame.frame, "TOPRIGHT", -8, -8)
 	
@@ -593,7 +591,6 @@ C_Timer.NewTicker(0.1,function()
 	addfilterFrame.raceLabel:SetPoint("LEFT", addfilterFrame.classLabel.frame, "RIGHT", size.raceShift, 0)
 	
 	addfilterFrame.filterNameLabel:ClearAllPoints()
-	-- addfilterFrame.filterNameLabel:SetPoint("LEFT", addfilterFrame.raceLabel.frame, "RIGHT", size.filterNameShift, 0)
 	addfilterFrame.filterNameLabel:SetPoint("RIGHT", addfilterFrame.frame, "RIGHT", -15, 150)
 	
 	addfilterFrame.saveButton:ClearAllPoints()
@@ -601,8 +598,8 @@ C_Timer.NewTicker(0.1,function()
 	
 	addfilterFrame.bottomHint:ClearAllPoints()
 	addfilterFrame.bottomHint:SetPoint("BOTTOM", addfilterFrame.saveButton.frame, "TOP", 0, 40)
-end, 2)
+	
+	
 	filtersFrame:Hide()
 	addfilterFrame:Hide()
-	frame:UnregisterEvent('PLAYER_ENTERING_WORLD')
 end)

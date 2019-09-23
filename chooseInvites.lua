@@ -23,9 +23,12 @@ local function btnText(frame)
 	text:SetPoint("BOTTOMRIGHT", -5, 1)
 end
 
+local chooseInvites
+
+do		--	chooseInvites
 interface.chooseInvites = GUI:Create("ClearFrame")
-local chooseInvites = interface.chooseInvites
-chooseInvites:Hide()
+chooseInvites = interface.chooseInvites
+-- chooseInvites:Hide()
 chooseInvites:SetTitle("FGI Choose Invites")
 chooseInvites:SetWidth(size.chooseInvitesW)
 chooseInvites:SetHeight(size.chooseInvitesH)
@@ -94,19 +97,17 @@ frame:SetCallback("OnClick", function()
 	fn:invitePlayer(true)
 end)
 chooseInvites:AddChild(frame)
-
+end
 
 
 
 
 -- set points
 local frame = CreateFrame('Frame')
-frame:RegisterEvent('PLAYER_ENTERING_WORLD')
+frame:RegisterEvent('PLAYER_LOGIN')
 frame:SetScript('OnEvent', function()
-	chooseInvites:Show()
 	DB = addon.DB
 	
-C_Timer.NewTicker(0.1,function()
 	chooseInvites.closeButton:ClearAllPoints()
 	chooseInvites.closeButton:SetPoint("CENTER", chooseInvites.frame, "TOPRIGHT", -8, -8)
 	
@@ -118,8 +119,6 @@ C_Timer.NewTicker(0.1,function()
 	
 	chooseInvites.reject:ClearAllPoints()
 	chooseInvites.reject:SetPoint("LEFT", chooseInvites.invite.frame, "RIGHT", 5, 0)
-end, 2)
 	
 	chooseInvites:Hide()
-	frame:UnregisterEvent('PLAYER_ENTERING_WORLD')
 end)

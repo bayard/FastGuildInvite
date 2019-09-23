@@ -248,12 +248,11 @@ scanFrame:AddChild(frame)
 
 
 local frame = CreateFrame('Frame')
-frame:RegisterEvent('PLAYER_ENTERING_WORLD')
+frame:RegisterEvent('PLAYER_LOGIN')
 frame:SetScript('OnEvent', function()
 	scanFrame:Show()
 	DB = addon.DB
 	
-C_Timer.NewTicker(0.1,function()
 	scanFrame.closeButton:ClearAllPoints()
 	scanFrame.closeButton:SetPoint("CENTER", scanFrame.frame, "TOPRIGHT", -8, -8)
 	
@@ -271,9 +270,7 @@ C_Timer.NewTicker(0.1,function()
 	
 	scanFrame.clear:ClearAllPoints()
 	scanFrame.clear:SetPoint("LEFT", scanFrame.pausePlay.frame, "RIGHT", 2, 0)
-end,2)
 	
 	
 	scanFrame:Hide()
-	frame:UnregisterEvent('PLAYER_ENTERING_WORLD')
 end)
