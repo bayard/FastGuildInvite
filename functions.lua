@@ -93,7 +93,7 @@ end
 
 function fn:blackList(name)
 	DB.blackList[name] = L.interface.defaultReason
-	print(format("%sPlayer %s has been blacklisted|r", color.red, name))
+	print(format("%s%s|r", color.red, format(L.interface["Игрок %s добавлен в черный список."], name)))
 	fn:blacklistKick()
 end
 

@@ -85,7 +85,7 @@ blackList:AddChild(frame)
 scrollBar.items = {}
 
 StaticPopupDialogs["FGI_BLACKLIST_CHANGE"] = {
-	text = 'Reason',
+	text = L.interface["Причина"],
 	button1 = "Ok",
 	button2 = "Cancel",
 	OnAccept = function(self, data)
@@ -96,14 +96,14 @@ StaticPopupDialogs["FGI_BLACKLIST_CHANGE"] = {
 			data.frame.r:SetTooltip(reason)
 		else
 			blackList:add({name=data.name, reason=reason})
-			SendChatMessage(format("Player %s has been blacklisted. Reason - %s", data.name, reason) , "OFFICER",  GetDefaultLanguage("player"))
+			SendChatMessage(format("%s %s - %s", format(L.interface["Игрок %s добавлен в черный список."], data.name), L.interface["Причина"], reason) , "OFFICER",  GetDefaultLanguage("player"))
 		end
 		StaticPopup_Hide("FGI_BLACKLIST_CHANGE")
 		blackList:update()
 		return true
 	end,
 	OnShow = function(self, data)
-		self.text:SetText("Reason "..data.name)
+		self.text:SetText(format("%s - %s", L.interface["Причина"], data.name))
 		self.editBox:SetText(tostring(DB.blackList[data.name]))
 	end,
 	timeout = 0,
@@ -255,5 +255,5 @@ frame:SetScript('OnEvent', function()
 	end
 	
 	
-	-- blackList:Hide()
+	blackList:Hide()
 end)
