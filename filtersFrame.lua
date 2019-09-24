@@ -340,6 +340,7 @@ for k,v in pairs(L.SYSTEM.race) do
 	fontSize(frame.text)
 	addfilterFrame:AddChild(frame)
 end
+end
 
 local function EditBoxChange(frame)
 	frame.editbox:SetScript("OnEnterPressed", function(self)
@@ -546,7 +547,7 @@ addfilterFrame:AddChild(frame)
 
 
 addfilterFrame.frame:HookScript("OnShow", defaultValues)
-end
+
 
 end
 

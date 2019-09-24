@@ -355,7 +355,6 @@ local frame = CreateFrame('Frame')
 frame:RegisterEvent('PLAYER_LOGIN')
 frame:SetScript('OnEvent', function()
 	-- DB = addon.DB
-C_Timer.NewTicker(0.1,function()
 	local parent = interface.filtersFrame
 	local list = parent.filterList
 	for i=1, #list do
@@ -371,7 +370,6 @@ C_Timer.NewTicker(0.1,function()
 			end
 		end
 	end
-end,2)
 end)
 
 local function getSearchDeepLvl(query)
@@ -662,7 +660,7 @@ end
 function fn:nextSearch()
 	C_Timer.After(FGI_SCANINTERVALTIME, function() interface.scanFrame.pausePlay:SetDisabled(false) end)
 	if #addon.search.whoQueryList == 0 then
-		if DB.customWho then
+		if  DB.customWho then
 			for i=1, #DB.customWhoList do
 				table.insert(addon.search.whoQueryList, DB.customWhoList[i])
 			end

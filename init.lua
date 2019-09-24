@@ -5,8 +5,6 @@ LibStub("AceEvent-3.0"):Embed(addon.lib)
 
 
 addon.DB = {}
--- addon.debug = false
--- addon.debug = true
 addon.ruReg = "[%aабвгдеёжзийклмнопрстуфхцчшщъьыэюяАБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЬЫЭЮЯ'%s]"
 addon.functions = {}
 addon.interface = {}
