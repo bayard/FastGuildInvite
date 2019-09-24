@@ -246,7 +246,7 @@ local frame = CreateFrame('Frame')
 frame:RegisterEvent('PLAYER_LOGIN')
 frame:SetScript('OnEvent', function()
 	DB = addon.DB
-	
+	C_Timer.After(0.1, function()
 	blackList.closeButton:ClearAllPoints()
 	blackList.closeButton:SetPoint("CENTER", blackList.frame, "TOPRIGHT", -8, -8)
 	
@@ -256,4 +256,5 @@ frame:SetScript('OnEvent', function()
 	
 	
 	blackList:Hide()
+	end)
 end)

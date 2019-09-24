@@ -307,13 +307,15 @@ L.Gratitude = {
 	{"Category", "Name", "Contact", "Donate"},
 	{"", "", "", ""},
 	{"Author", "Knoot", "Knoot#7430", "paypal.me/Knoot"},
-	{"Donate", "Anchep", "", ""},
-	{"Donate", "dLuxian", "", ""},
+	{"Donate", "Anchep", "-", "-"},
+	{"Donate", "dLuxian", "-", "-"},
+	{"Donate", "Zipacna (Bleeding Hollow) <Imperial Patent>", "-", "-"},
 	{"Translate-zhTW", "Anchep", "Services@280i.com", "paypal.me/280i"},
-	{"Testing", "Shujin", "", ""},
-	{"Testing", "StreetX", "", ""},
-	{"Testing", "Мойгосподин", "", ""},
-	{"OtherHelp\n", "\"Нам Везёт Мы Играем\"-Змейталак", "\n", "\n"},
+	{"Testing", "Shujin", "-", "-"},
+	{"Testing", "StreetX", "-", "-"},
+	{"Testing", "Мойгосподин", "-", "-"},
+	{"Testing", "Zipacna", "-", "-"},
+	{"OtherHelp", "(Змейталак) <Нам Везёт Мы Играем>", "-", "-"},
 }
 
 

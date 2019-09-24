@@ -422,6 +422,7 @@ frame:RegisterEvent('PLAYER_LOGIN')
 frame:SetScript('OnEvent', function()
 	local parent = interface.filtersFrame
 	local list = parent.filterList
+	C_Timer.After(0.1, function()
 	for i=1, #list do
 		local frame = list[i]
 		frame:ClearAllPoints()
@@ -435,6 +436,7 @@ frame:SetScript('OnEvent', function()
 			end
 		end
 	end
+	end)
 end)
 
 local function getSearchDeepLvl(query)
@@ -757,7 +759,6 @@ nextSearch = function()
 	else
 		addon.smartSearch.progress = (addon.smartSearch.progress <= (#addon.smartSearch.whoQueryList or 1)) and addon.smartSearch.progress or 1
 		curQuery = addon.smartSearch.whoQueryList[addon.smartSearch.progress]
-		print(curQuery)
 		addon.libWho:Who(tostring(curQuery),{queue = addon.libWho.WHOLIB_QUEUE_QUIET, callback = SmartSearchWhoResultCallback})
 		addon.smartSearch.progress = addon.smartSearch.progress + 1
 	end

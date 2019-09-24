@@ -606,6 +606,7 @@ frame:SetScript('OnEvent', function()
 	end
 	
 	defaultValues()
+	C_Timer.After(0.1, function()
 	filtersFrame.closeButton:ClearAllPoints()
 	filtersFrame.closeButton:SetPoint("CENTER", filtersFrame.frame, "TOPRIGHT", -8, -8)
 	
@@ -642,4 +643,5 @@ frame:SetScript('OnEvent', function()
 
 	filtersFrame:Hide()
 	addfilterFrame:Hide()
+	end)
 end)

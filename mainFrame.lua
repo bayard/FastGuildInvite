@@ -26,11 +26,20 @@ local function btnText(frame)
 end
 
 do		--	gratitude
+local FrameBackdrop = {
+	bgFile = "Interface\\FrameGeneral\\UI-Background-Rock",
+	edgeFile = "Interface\\DialogFrame\\UI-DialogBox-Border",
+	tile = true, tileSize = 32, edgeSize = 32,
+	insets = { left = 8, right = 8, top = 8, bottom = 8 }
+}
+
 interface.gratitudeFrame = GUI:Create("ClearFrame")
 gratitudeFrame = interface.gratitudeFrame
 -- gratitudeFrame:Hide()
+gratitudeFrame.frame:SetBackdrop(FrameBackdrop)
+gratitudeFrame.frame:SetBackdropColor(0, 0, 0, 0.9)
 gratitudeFrame:SetTitle("Fast Guild Invite Gratitude")
-gratitudeFrame:SetWidth(700)
+gratitudeFrame:SetWidth(800)
 gratitudeFrame:SetHeight(500)
 gratitudeFrame:SetLayout("Fill")
 
@@ -52,38 +61,30 @@ gratitudeFrame:AddChild(frame)
 
 
 
-local labelWidth = (interface.gratitudeFrame.frame:GetWidth()-60)/4
+-- local labelWidth = (interface.gratitudeFrame.frame:GetWidth()-60)/4
 gratitudeFrame.Category = GUI:Create("TLabel")
 local frame = gratitudeFrame.Category
 fontSize(frame.label)
-frame:SetWidth(labelWidth)
+frame:SetWidth(110)
 scrollBar:AddChild(frame)
 
 gratitudeFrame.Name = GUI:Create("TLabel")
 local frame = gratitudeFrame.Name
 fontSize(frame.label)
-frame:SetWidth(labelWidth)
+frame:SetWidth(300)
 scrollBar:AddChild(frame)
 
 gratitudeFrame.Contact = GUI:Create("TLabel")
 local frame = gratitudeFrame.Contact
 fontSize(frame.label)
-frame:SetWidth(labelWidth)
+frame:SetWidth(180)
 scrollBar:AddChild(frame)
 
 gratitudeFrame.Donate = GUI:Create("TLabel")
 local frame = gratitudeFrame.Donate
 fontSize(frame.label)
-frame:SetWidth(labelWidth)
+frame:SetWidth(120)
 scrollBar:AddChild(frame)
-
-
-gratitudeFrame.frame:HookScript("OnShow", function()
-	gratitudeFrame.Category:SetWidth(labelWidth)
-	gratitudeFrame.Name:SetWidth(labelWidth)
-	gratitudeFrame.Contact:SetWidth(labelWidth)
-	gratitudeFrame.Donate:SetWidth(labelWidth)
-end)
 end
 
 
@@ -536,6 +537,8 @@ frame:SetScript('OnEvent', function()
 	end
 	
 	
+	C_Timer.After(0.1, function()
+	
 	gratitudeFrame:ClearAllPoints()
 	gratitudeFrame:SetPoint("CENTER", UIParent, "CENTER", 0, 0)
 	
@@ -624,4 +627,5 @@ frame:SetScript('OnEvent', function()
 	
 	mainFrame:Hide()
 	gratitudeFrame:Hide()
+	end)
 end)

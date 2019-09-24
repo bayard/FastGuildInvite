@@ -101,6 +101,7 @@ frame:SetScript('OnEvent', function()
 		str = format("%s%s\n", str, DB.customWhoList[i])
 		customList.list:SetText(str)
 	end
+	C_Timer.After(0.1, function()
 	
 	customList.closeButton:ClearAllPoints()
 	customList.closeButton:SetPoint("CENTER", customList.frame, "TOPRIGHT", -8, -8)
@@ -111,6 +112,6 @@ frame:SetScript('OnEvent', function()
 	customList.saveButton:ClearAllPoints()
 	customList.saveButton:SetPoint("BOTTOM", customList.frame, "BOTTOM", 0, 10)
 	
-	
 	customList:Hide()
+	end)
 end)

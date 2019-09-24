@@ -213,7 +213,7 @@ frame:SetScript('OnEvent', function()
 	DB = addon.DB
 	
 	settingsCheckBoxGRP.addonMSG:SetValue(true)
-	
+	C_Timer.After(0.1, function()
 	settingsFrame.closeButton:ClearAllPoints()
 	settingsFrame.closeButton:SetPoint("CENTER", settingsFrame.frame, "TOPRIGHT", -8, -8)
 	
@@ -252,4 +252,5 @@ frame:SetScript('OnEvent', function()
 	settingsFrame.clearDBtimes:SetValue(DB.clearDBtimes)
 	
 	settingsFrame:Hide()
+	end)
 end)

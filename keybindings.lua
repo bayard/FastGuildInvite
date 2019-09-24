@@ -108,7 +108,7 @@ local frame = CreateFrame('Frame')
 frame:RegisterEvent('PLAYER_LOGIN')
 frame:SetScript('OnEvent', function()
 	DB = addon.DB
-	
+	C_Timer.After(0.1, function()
 	keyBindings.closeButton:ClearAllPoints()
 	keyBindings.closeButton:SetPoint("CENTER", keyBindings.frame, "TOPRIGHT", -8, -8)
 	
@@ -128,4 +128,5 @@ frame:SetScript('OnEvent', function()
 	buttonsGRP.nextSearchLabel:SetPoint("BOTTOM", buttonsGRP.keyBind.nextSearch.frame, "TOP", 0, 20)
 	
 	keyBindings:Hide()
+	end)
 end)

@@ -107,7 +107,7 @@ local frame = CreateFrame('Frame')
 frame:RegisterEvent('PLAYER_LOGIN')
 frame:SetScript('OnEvent', function()
 	DB = addon.DB
-	
+	C_Timer.After(0.1, function()
 	chooseInvites.closeButton:ClearAllPoints()
 	chooseInvites.closeButton:SetPoint("CENTER", chooseInvites.frame, "TOPRIGHT", -8, -8)
 	
@@ -121,4 +121,5 @@ frame:SetScript('OnEvent', function()
 	chooseInvites.reject:SetPoint("LEFT", chooseInvites.invite.frame, "RIGHT", 5, 0)
 	
 	chooseInvites:Hide()
+	end)
 end)

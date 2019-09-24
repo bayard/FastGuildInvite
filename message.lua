@@ -202,7 +202,7 @@ frame:SetScript('OnEvent', function()
 	DB = addon.DB
 	
 	defaultValues()
-	
+	C_Timer.After(0.1, function()
 	messageFrame.closeButton:ClearAllPoints()
 	messageFrame.closeButton:SetPoint("CENTER", messageFrame.frame, "TOPRIGHT", -8, -8)
 	
@@ -222,4 +222,5 @@ frame:SetScript('OnEvent', function()
 	messageFrame.curMessage:SetPoint("BOTTOM", messageFrame.frame, "BOTTOM", 0, 20)
 	
 	messageFrame:Hide()
+	end)
 end)
