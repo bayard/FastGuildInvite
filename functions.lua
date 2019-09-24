@@ -91,8 +91,8 @@ function fn:blackListAutoKick()
 	end)
 end
 
-function fn:blackList(name)
-	DB.blackList[name] = L.interface.defaultReason
+function fn:blackList(name, reason)
+	DB.blackList[name] = reason or L.interface.defaultReason
 	print(format("%s%s|r", color.red, format(L.interface["Игрок %s добавлен в черный список."], name)))
 	fn:blacklistKick()
 end
@@ -357,6 +357,7 @@ frame:SetScript('OnEvent', function()
 	-- DB = addon.DB
 	local parent = interface.filtersFrame
 	local list = parent.filterList
+	C_Timer.After(0.1, function()
 	for i=1, #list do
 		local frame = list[i]
 		frame:ClearAllPoints()
@@ -370,6 +371,7 @@ frame:SetScript('OnEvent', function()
 			end
 		end
 	end
+	end)
 end)
 
 local function getSearchDeepLvl(query)
