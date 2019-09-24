@@ -18,7 +18,6 @@ end
 
 interface.keyBindings = GUI:Create("ClearFrame")
 local keyBindings = interface.keyBindings
--- keyBindings:Hide()
 keyBindings:SetTitle("FGI key bindings")
 keyBindings:SetWidth(size.keyBindingsW)
 keyBindings:SetHeight(size.keyBindingsH)
@@ -108,7 +107,13 @@ local frame = CreateFrame('Frame')
 frame:RegisterEvent('PLAYER_LOGIN')
 frame:SetScript('OnEvent', function()
 	DB = addon.DB
-	
+	if DB.keyBindings then
+		interface.keyBindings:ClearAllPoints()
+		interface.keyBindings:SetPoint(DB.keyBindings.point, UIParent, DB.keyBindings.relativePoint, DB.keyBindings.xOfs, DB.keyBindings.yOfs)
+	else
+		interface.keyBindings:SetPoint("CENTER", UIParent)
+	end
+	C_Timer.After(0.1, function()
 	keyBindings.closeButton:ClearAllPoints()
 	keyBindings.closeButton:SetPoint("CENTER", keyBindings.frame, "TOPRIGHT", -8, -8)
 	
@@ -128,4 +133,5 @@ frame:SetScript('OnEvent', function()
 	buttonsGRP.nextSearchLabel:SetPoint("BOTTOM", buttonsGRP.keyBind.nextSearch.frame, "TOP", 0, 20)
 	
 	keyBindings:Hide()
+	end)
 end)

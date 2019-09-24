@@ -25,6 +25,7 @@ local function btnText(frame)
 	text:SetPoint("TOPLEFT", 5, -1)
 	text:SetPoint("BOTTOMRIGHT", -5, 1)
 end
+
 do		--	gratitude
 local FrameBackdrop = {
 	bgFile = "Interface\\FrameGeneral\\UI-Background-Rock",
@@ -39,7 +40,7 @@ gratitudeFrame = interface.gratitudeFrame
 gratitudeFrame.frame:SetBackdrop(FrameBackdrop)
 gratitudeFrame.frame:SetBackdropColor(0, 0, 0, 0.9)
 gratitudeFrame:SetTitle("Fast Guild Invite Gratitude")
-gratitudeFrame:SetWidth(700)
+gratitudeFrame:SetWidth(800)
 gratitudeFrame:SetHeight(500)
 gratitudeFrame:SetLayout("Fill")
 
@@ -61,39 +62,32 @@ gratitudeFrame:AddChild(frame)
 
 
 
-local labelWidth = (interface.gratitudeFrame.frame:GetWidth()-60)/4
+-- local labelWidth = (interface.gratitudeFrame.frame:GetWidth()-60)/4
 gratitudeFrame.Category = GUI:Create("TLabel")
 local frame = gratitudeFrame.Category
 fontSize(frame.label)
-frame:SetWidth(labelWidth)
+frame:SetWidth(110)
 scrollBar:AddChild(frame)
 
 gratitudeFrame.Name = GUI:Create("TLabel")
 local frame = gratitudeFrame.Name
 fontSize(frame.label)
-frame:SetWidth(labelWidth)
+frame:SetWidth(300)
 scrollBar:AddChild(frame)
 
 gratitudeFrame.Contact = GUI:Create("TLabel")
 local frame = gratitudeFrame.Contact
 fontSize(frame.label)
-frame:SetWidth(labelWidth)
+frame:SetWidth(180)
 scrollBar:AddChild(frame)
 
 gratitudeFrame.Donate = GUI:Create("TLabel")
 local frame = gratitudeFrame.Donate
 fontSize(frame.label)
-frame:SetWidth(labelWidth)
+frame:SetWidth(120)
 scrollBar:AddChild(frame)
-
-
-gratitudeFrame.frame:HookScript("OnShow", function()
-	gratitudeFrame.Category:SetWidth(labelWidth)
-	gratitudeFrame.Name:SetWidth(labelWidth)
-	gratitudeFrame.Contact:SetWidth(labelWidth)
-	gratitudeFrame.Donate:SetWidth(labelWidth)
-end)
 end
+
 
 
 
@@ -134,7 +128,7 @@ frame:SetCallback('OnClick', function()
 	interface.mainFrame:Hide()
 end)
 mainFrame:AddChild(frame)
-end
+
 
 
 do		--	inviteTypeGRP
@@ -212,7 +206,7 @@ end
 do		--	mainButtonsGRP
 mainFrame.mainButtonsGRP = GUI:Create("GroupFrame")
 mainButtonsGRP = mainFrame.mainButtonsGRP
-mainButtonsGRP:SetLayout("List")
+mainButtonsGRP:SetLayout("Flow")
 mainButtonsGRP:SetHeight(80)
 mainButtonsGRP:SetWidth(size.mainFrameW-20)
 -- mainButtonsGRP:SetWidth(size.mainButtonsGRP)
@@ -356,7 +350,7 @@ fontSize(frame.label)
 frame:SetWidth(size.wheelHint)
 frame.label:SetJustifyH("CENTER")
 mainFrame:AddChild(frame)
-
+end
 
 
 -- set points
@@ -364,7 +358,16 @@ local frame = CreateFrame('Frame')
 frame:RegisterEvent('PLAYER_LOGIN')
 frame:SetScript('OnEvent', function()
 	DB = addon.DB
+	if DB.mainFrame then
+		interface.mainFrame:ClearAllPoints()
+		interface.mainFrame:SetPoint(DB.mainFrame.point, UIParent, DB.mainFrame.relativePoint, DB.mainFrame.xOfs, DB.mainFrame.yOfs)
+	else
+		interface.mainFrame:SetPoint("CENTER", UIParent)
+	end
+	gratitudeFrame:ClearAllPoints()
+	gratitudeFrame:SetPoint("CENTER", UIParent)
 	
+	C_Timer.After(0.1, function()
 	local cat,name,contact,donate = '','','',''
 	for i=1,#L.Gratitude do
 		local u = L.Gratitude[i]
@@ -464,4 +467,5 @@ frame:SetScript('OnEvent', function()
 	
 	mainFrame:Hide()
 	gratitudeFrame:Hide()
+	end)
 end)

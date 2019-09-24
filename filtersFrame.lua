@@ -66,7 +66,6 @@ local filtersFrame, addfilterFrame
 do		--filtersFrame
 interface.filtersFrame = GUI:Create("ClearFrame")
 filtersFrame = interface.filtersFrame
--- filtersFrame:Hide()
 filtersFrame:SetTitle("FGI Filters")
 filtersFrame:SetWidth(size.filtersFrameW)
 filtersFrame:SetHeight(size.filtersFrameH)
@@ -146,7 +145,6 @@ end
 do		--addfilterFrame
 interface.addfilterFrame = GUI:Create("ClearFrame")
 addfilterFrame = interface.addfilterFrame
--- addfilterFrame:Hide()
 addfilterFrame:SetTitle("FGI add new filter")
 addfilterFrame:SetWidth(size.addfilterFrameW)
 addfilterFrame:SetHeight(size.addfilterFrameH)
@@ -556,6 +554,18 @@ local frame = CreateFrame('Frame')
 frame:RegisterEvent('PLAYER_LOGIN')
 frame:SetScript('OnEvent', function()
 	DB = addon.DB
+	if DB.filtersFrame then
+		interface.filtersFrame:ClearAllPoints()
+		interface.filtersFrame:SetPoint(DB.filtersFrame.point, UIParent, DB.filtersFrame.relativePoint, DB.filtersFrame.xOfs, DB.filtersFrame.yOfs)
+	else
+		interface.filtersFrame:SetPoint("CENTER", UIParent)
+	end
+	if DB.addfilterFrame then
+		interface.addfilterFrame:ClearAllPoints()
+		interface.addfilterFrame:SetPoint(DB.addfilterFrame.point, UIParent, DB.addfilterFrame.relativePoint, DB.addfilterFrame.xOfs, DB.addfilterFrame.yOfs)
+	else
+		interface.addfilterFrame:SetPoint("CENTER", UIParent)
+	end
 	
 	
 	local i = 1
@@ -567,6 +577,7 @@ frame:SetScript('OnEvent', function()
 	end
 	
 	defaultValues()
+	C_Timer.After(0.1, function()
 	filtersFrame.closeButton:ClearAllPoints()
 	filtersFrame.closeButton:SetPoint("CENTER", filtersFrame.frame, "TOPRIGHT", -8, -8)
 	
@@ -603,4 +614,5 @@ frame:SetScript('OnEvent', function()
 	
 	filtersFrame:Hide()
 	addfilterFrame:Hide()
+	end)
 end)

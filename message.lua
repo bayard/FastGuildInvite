@@ -53,7 +53,6 @@ end
 
 interface.messageFrame = GUI:Create("ClearFrame")
 local messageFrame = interface.messageFrame
--- messageFrame:Hide()
 messageFrame:SetTitle("FGI Message")
 messageFrame:SetWidth(size.messageFrameW)
 messageFrame:SetHeight(size.messageFrameH)
@@ -200,9 +199,15 @@ local frame = CreateFrame('Frame')
 frame:RegisterEvent('PLAYER_LOGIN')
 frame:SetScript('OnEvent', function()
 	DB = addon.DB
+	if DB.messageFrame then
+		interface.messageFrame:ClearAllPoints()
+		interface.messageFrame:SetPoint(DB.messageFrame.point, UIParent, DB.messageFrame.relativePoint, DB.messageFrame.xOfs, DB.messageFrame.yOfs)
+	else
+		interface.messageFrame:SetPoint("CENTER", UIParent)
+	end
 	
 	defaultValues()
-	
+	C_Timer.After(0.1, function()
 	messageFrame.closeButton:ClearAllPoints()
 	messageFrame.closeButton:SetPoint("CENTER", messageFrame.frame, "TOPRIGHT", -8, -8)
 	
@@ -222,4 +227,5 @@ frame:SetScript('OnEvent', function()
 	messageFrame.curMessage:SetPoint("BOTTOM", messageFrame.frame, "BOTTOM", 0, 20)
 	
 	messageFrame:Hide()
+	end)
 end)

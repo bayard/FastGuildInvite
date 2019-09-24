@@ -28,7 +28,6 @@ local chooseInvites
 do		--	chooseInvites
 interface.chooseInvites = GUI:Create("ClearFrame")
 chooseInvites = interface.chooseInvites
--- chooseInvites:Hide()
 chooseInvites:SetTitle("FGI Choose Invites")
 chooseInvites:SetWidth(size.chooseInvitesW)
 chooseInvites:SetHeight(size.chooseInvitesH)
@@ -107,7 +106,13 @@ local frame = CreateFrame('Frame')
 frame:RegisterEvent('PLAYER_LOGIN')
 frame:SetScript('OnEvent', function()
 	DB = addon.DB
-	
+	if DB.chooseInvites then
+		interface.chooseInvites:ClearAllPoints()
+		interface.chooseInvites:SetPoint(DB.chooseInvites.point, UIParent, DB.chooseInvites.relativePoint, DB.chooseInvites.xOfs, DB.chooseInvites.yOfs)
+	else
+		interface.chooseInvites:SetPoint("CENTER", UIParent)
+	end
+	C_Timer.After(0.1, function()
 	chooseInvites.closeButton:ClearAllPoints()
 	chooseInvites.closeButton:SetPoint("CENTER", chooseInvites.frame, "TOPRIGHT", -8, -8)
 	
@@ -121,4 +126,5 @@ frame:SetScript('OnEvent', function()
 	chooseInvites.reject:SetPoint("LEFT", chooseInvites.invite.frame, "RIGHT", 5, 0)
 	
 	chooseInvites:Hide()
+	end)
 end)

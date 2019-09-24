@@ -18,7 +18,6 @@ end
 
 interface.settingsFrame = GUI:Create("ClearFrame")
 local settingsFrame = interface.settingsFrame
--- settingsFrame:Hide()
 settingsFrame:SetTitle("FGI Settings")
 settingsFrame:SetWidth(size.settingsFrameW)
 settingsFrame:SetHeight(size.settingsFrameH)
@@ -211,9 +210,15 @@ local frame = CreateFrame('Frame')
 frame:RegisterEvent('PLAYER_LOGIN')
 frame:SetScript('OnEvent', function()
 	DB = addon.DB
+	if DB.settingsFrame then
+		interface.settingsFrame:ClearAllPoints()
+		interface.settingsFrame:SetPoint(DB.settingsFrame.point, UIParent, DB.settingsFrame.relativePoint, DB.settingsFrame.xOfs, DB.settingsFrame.yOfs)
+	else
+		interface.settingsFrame:SetPoint("CENTER", UIParent)
+	end
 	
 	settingsCheckBoxGRP.addonMSG:SetValue(true)
-	
+	C_Timer.After(0.1, function()
 	settingsFrame.closeButton:ClearAllPoints()
 	settingsFrame.closeButton:SetPoint("CENTER", settingsFrame.frame, "TOPRIGHT", -8, -8)
 	
@@ -252,4 +257,5 @@ frame:SetScript('OnEvent', function()
 	settingsFrame.clearDBtimes:SetValue(DB.clearDBtimes)
 	
 	settingsFrame:Hide()
+	end)
 end)

@@ -71,7 +71,6 @@ end
 
 interface.scanFrame = GUI:Create("ClearFrame")
 local scanFrame = interface.scanFrame
-scanFrame:Hide()
 scanFrame:SetTitle("FGI Scan")
 scanFrame:SetWidth(size.scanFrameW)
 scanFrame:SetHeight(size.scanFrameH)
@@ -250,9 +249,14 @@ scanFrame:AddChild(frame)
 local frame = CreateFrame('Frame')
 frame:RegisterEvent('PLAYER_LOGIN')
 frame:SetScript('OnEvent', function()
-	scanFrame:Show()
 	DB = addon.DB
-	
+	if DB.scanFrame then
+		interface.scanFrame:ClearAllPoints()
+		interface.scanFrame:SetPoint(DB.scanFrame.point, UIParent, DB.scanFrame.relativePoint, DB.scanFrame.xOfs, DB.scanFrame.yOfs)
+	else
+		interface.scanFrame:SetPoint("CENTER", UIParent)
+	end
+	C_Timer.After(0.1, function()
 	scanFrame.closeButton:ClearAllPoints()
 	scanFrame.closeButton:SetPoint("CENTER", scanFrame.frame, "TOPRIGHT", -8, -8)
 	
@@ -273,4 +277,5 @@ frame:SetScript('OnEvent', function()
 	
 	
 	scanFrame:Hide()
+	end)
 end)

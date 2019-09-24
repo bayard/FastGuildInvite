@@ -24,7 +24,6 @@ end
 
 interface.customList = GUI:Create("ClearFrame")
 local customList = interface.customList
--- customList:Hide()
 customList:SetTitle("FGI Custom Who List")
 customList:SetWidth(size.customListW)
 customList:SetHeight(size.customListH)
@@ -95,13 +94,19 @@ local frame = CreateFrame('Frame')
 frame:RegisterEvent('PLAYER_LOGIN')
 frame:SetScript('OnEvent', function()
 	DB = addon.DB
+	if DB.customListPos then
+		interface.customList:ClearAllPoints()
+		interface.customList:SetPoint(DB.customListPos.point, UIParent, DB.customListPos.relativePoint, DB.customListPos.xOfs, DB.customListPos.yOfs)
+	else
+		interface.customList:SetPoint("CENTER", UIParent)
+	end
 	
 	local str = ''
 	for i=1,#DB.customWhoList do
 		str = format("%s%s\n", str, DB.customWhoList[i])
 		customList.list:SetText(str)
 	end
-	
+	C_Timer.After(0.1, function()
 	customList.closeButton:ClearAllPoints()
 	customList.closeButton:SetPoint("CENTER", customList.frame, "TOPRIGHT", -8, -8)
 	
@@ -113,4 +118,5 @@ frame:SetScript('OnEvent', function()
 	
 	
 	customList:Hide()
+	end)
 end)
