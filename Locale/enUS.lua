@@ -13,6 +13,16 @@ local L = {
 			["show"] = "/fgi show - Open the main window of the addon",
 			["invite"] = "/fgi invite - Invite the first player from the queue",
 			["nextSearch"] = "/fgi nextSearch - Run next scan",
+			["blacklist"] = "/fgibl <Name> - <Reason> - Add a player to the blacklist",
+			["help2"] = "/fgi help2 - Commands with prefix \"!\"",
+		},
+		["help2"] = {
+			"|cff00ff96Commands prefixed with \"|cffff0000!|r|cff00ff96\" created for officers who do not have an add-on installed, these commands can only be used in the officer channel.|r",
+			"The following commands are available in the officer channel:",
+			"!fgi - list of available commands",
+			"!blacklistAdd <Name> - <Reason> - add a player to the blacklist",
+			"!blacklistDelete <Name> - <Reason> - remove player from blacklist",
+			"!blacklistGetList - get the list of players in the black list",
 		},
 		["error"] = {
 			["Вы не состоите в гильдии или у вас нет прав для приглашения."] = "You are not a member of the guild or you do not have permission to invite.",
