@@ -26,9 +26,18 @@ local function btnText(frame)
 	text:SetPoint("BOTTOMRIGHT", -5, 1)
 end
 do		--	gratitude
+local FrameBackdrop = {
+	bgFile = "Interface\\FrameGeneral\\UI-Background-Rock",
+	edgeFile = "Interface\\DialogFrame\\UI-DialogBox-Border",
+	tile = true, tileSize = 32, edgeSize = 32,
+	insets = { left = 8, right = 8, top = 8, bottom = 8 }
+}
+
 interface.gratitudeFrame = GUI:Create("ClearFrame")
 gratitudeFrame = interface.gratitudeFrame
 -- gratitudeFrame:Hide()
+gratitudeFrame.frame:SetBackdrop(FrameBackdrop)
+gratitudeFrame.frame:SetBackdropColor(0, 0, 0, 0.9)
 gratitudeFrame:SetTitle("Fast Guild Invite Gratitude")
 gratitudeFrame:SetWidth(700)
 gratitudeFrame:SetHeight(500)
