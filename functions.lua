@@ -4,7 +4,6 @@ local L = addon.L
 local CLASS = L.SYSTEM.class
 local interface = addon.interface
 local settings = L.settings
--- local GUI = LibStub("AceKGUI-3.0")
 local GUI = LibStub("AceGUI-3.0")
 local color = addon.color
 local FastGuildInvite = addon.lib
@@ -13,7 +12,8 @@ addon.removeMsgList = {}
 addon.libWho = {}
 local DB
 local debugDB
---LibStub:GetLibrary("LibWho-2.0"):Embed(addon.libWho);
+local nextSearch
+
 addon.searchInfo = {unique = {0}, sended = {0}, invited = {0}, filtered = {0}}
 local mt = {
 	__call = function(self,n)
@@ -145,9 +145,6 @@ function fn:FiltersInit()
 		
 		interface.filtersFrame.filterList[i]:Hide()
 	end
-	--[[for i=1, FGI_FILTERSLIMIT do
-		interface.filtersFrame.filterList[i]:Hide()
-	end]]
 end
 
 function fn:FilterChange(id)
@@ -237,8 +234,7 @@ function fn:FiltersUpdate()
 end
 
 
-local RaceClassCombo 
-RaceClassCombo = {
+local RaceClassCombo = {
 	Orc = {CLASS.Warrior,CLASS.Hunter,CLASS.Rogue,CLASS.Shaman,CLASS.Mage,CLASS.Warlock,CLASS.Monk,CLASS.DeathKnight},
 	Undead = {CLASS.Warrior,CLASS.Hunter,CLASS.Rogue,CLASS.Priest,CLASS.Mage,CLASS.Warlock,CLASS.Monk,CLASS.DeathKnight},
 	Tauren = {CLASS.Warrior,CLASS.Paladin,CLASS.Hunter,CLASS.Priest,CLASS.Shaman,CLASS.Monk,CLASS.Druid,CLASS.DeathKnight},
@@ -248,20 +244,6 @@ RaceClassCombo = {
 	NightElf = {CLASS.Warrior,CLASS.Hunter,CLASS.Rogue,CLASS.Priest,CLASS.Mage,CLASS.Monk,CLASS.Druid,CLASS.DemonHunter,CLASS.DeathKnight},
 	Gnome = {CLASS.Warrior,CLASS.Hunter,CLASS.Rogue,CLASS.Priest,CLASS.Mage,CLASS.Warlock,CLASS.Monk,CLASS.DeathKnight},
 }
-
-local function getEasyWhoList()
-	local min = DB.lowLimit
-	local max = DB.highLimit
-	interval = 1
-	local query = {}
-	
-	for i=min,max,interval do
-		local next = i+ interval-1
-		next = next<=max and next or max
-		table.insert(query, i.."-"..next)
-	end
-	return query
-end
 
 function fn:msgMod(msg)
 	if not msg then return end
@@ -315,7 +297,7 @@ function fn:invitePlayer(noInv)
 	if DB.inviteType == 2 and not noInv then
 		addon.msgQueue[list[1].name] = true
 	elseif DB.inviteType == 3 and not noInv then
-		local msg = DB.messageList[DB.curMessage]
+		local msg = DB.messageList[math.random(1, #DB.messageList)]
 		debug(format("Send whisper: %s %s",list[1].name, msg))
 		fn:sendWhisper(msg, list[1].name)
 	end
@@ -354,7 +336,6 @@ end
 local frame = CreateFrame('Frame')
 frame:RegisterEvent('PLAYER_LOGIN')
 frame:SetScript('OnEvent', function()
-	-- DB = addon.DB
 	local parent = interface.filtersFrame
 	local list = parent.filterList
 	C_Timer.After(0.1, function()
