@@ -71,7 +71,6 @@ end
 
 interface.scanFrame = GUI:Create("ClearFrame")
 local scanFrame = interface.scanFrame
-scanFrame:Hide()
 scanFrame:SetTitle("FGI Scan")
 scanFrame:SetWidth(size.scanFrameW)
 scanFrame:SetHeight(size.scanFrameH)
@@ -114,18 +113,21 @@ local function SetProgress(self, cur)
 		return SecondsToTime(time)
 	end
 	cur = (cur or 70) - self.progressTexture.min
-	local max = self.progressTexture.max - self.progressTexture.min
+	-- local max = self.progressTexture.max - self.progressTexture.min
+	local max = self.progressTexture.max
 	local percent = math.round(math.progress(max, cur))/100
 	self.progressTexture:SetWidth((self.frame:GetWidth()-10)*percent)
 	
-	local time = modTime(math.round(max - cur))
-	self.statustext:SetText(self.statustext.placeholder:format(math.floor(percent*100), (max - cur)<=0 and "<1" or time))
+	-- local time = modTime(math.round(max - cur))
+	local time = math.round(max - cur)
+	-- self.statustext:SetText(self.statustext.placeholder:format(math.floor(percent*100), (max - cur)<=0 and "<1" or time))
+	self.statustext:SetText(self.statustext.placeholder:format(math.floor(percent*100), cur, max))
 end
 
 scanFrame.progressBar = GUI:Create("ProgressBar")
 local frame = scanFrame.progressBar
 frame.SetProgress = SetProgress
-frame:SetPlaceholder("%s%% %s")
+frame:SetPlaceholder("%s%% %s/%s")
 fontSize(frame.statustext)
 frame:SetWidth(scanFrame.frame:GetWidth()-20)
 frame:SetHeight(30)
@@ -162,13 +164,25 @@ frame:SetScript("OnEvent", function(_,_,msg)
 		debug(format(ERR_CHAT_PLAYER_NOT_FOUND_S, name), color.yellow)
 		auto_decline[name] = true
 	elseif type == "invite" then
-		local list = DB.SearchType == 3 and addon.smartSearch.inviteList or addon.search.inviteList
+		local list = addon.search.inviteList
 		local msg = DB.messageList[DB.curMessage]
 		if DB.inviteType == 2 then
 			C_Timer.After(1, function() if not auto_decline[name] and addon.msgQueue[name] then fn:sendWhisper(msg, name); addon.msgQueue[name] = nil end end)
 		end
 	end
 end)
+
+
+scanFrame.pausePlayLabel = GUI:Create("TLabel")
+local frame = scanFrame.pausePlayLabel
+frame:SetWidth(38)
+frame:SetHeight(40)
+frame.label:SetJustifyH("CENTER")
+frame.frame:SetFrameStrata("TOOLTIP")
+frame:SetText('')
+frame.timer = 0
+fontSize(frame.label, nil, 18)
+scanFrame:AddChild(frame)
 
 scanFrame.pausePlay = GUI:Create("Button")
 local frame = scanFrame.pausePlay
@@ -178,22 +192,22 @@ frame.frame.pause = true
 frame.frame:SetNormalTexture("Interface\\Buttons\\UI-SpellbookIcon-NextPage-Up")
 frame:SetCallback("OnClick", function(self)
 	if not fn:inGuildCanInvite() then return print(L.FAQ.error["Вы не состоите в гильдии или у вас нет прав для приглашения."]) end
-	self = self.frame
-	if self.pause then
-		self:SetNormalTexture("Interface\\TimeManager\\PauseButton")
-		if LibDBIcon10_FGI then LibDBIcon10_FGI.icon:SetTexture("Interface\\AddOns\\FastGuildInvite\\img\\minimap\\MiniMapButton-Search") end
-		self.pause = false
-		fn:StartSearch()
-		-- scanFrame.pausePlayFilter:RegisterEvent("CHAT_MSG_SYSTEM")
-	else
-		self:SetNormalTexture("Interface\\Buttons\\UI-SpellbookIcon-NextPage-Up")
-		if LibDBIcon10_FGI then LibDBIcon10_FGI.icon:SetTexture("Interface\\AddOns\\FastGuildInvite\\img\\minimap\\MiniMapButton") end
-		self.pause = true
-		fn:PauseSearch()
-		-- scanFrame.pausePlayFilter:UnregisterEvent("CHAT_MSG_SYSTEM")
-	end
+	scanFrame.pausePlay:SetDisabled(true)
+	scanFrame.pausePlayLabel.timer = FGI_SCANINTERVALTIME
+	scanFrame.pausePlayLabel.frame:SetFrameStrata("TOOLTIP")
+	scanFrame.pausePlayLabel.frame:Show()
+	C_Timer.NewTicker(1, function()
+		local n = scanFrame.pausePlayLabel.timer
+		scanFrame.pausePlayLabel.timer = scanFrame.pausePlayLabel.timer-1
+		scanFrame.pausePlayLabel:SetText(scanFrame.pausePlayLabel.timer)
+		if scanFrame.pausePlayLabel.timer == 0 then scanFrame.pausePlayLabel.frame:Hide() end
+	end, FGI_SCANINTERVALTIME)
+	scanFrame.pausePlayLabel:SetText(scanFrame.pausePlayLabel.timer)
+	fn:nextSearch()
 end)
 scanFrame:AddChild(frame)
+
+
 
 
 
@@ -210,10 +224,6 @@ frame:SetCallback("OnClick", function()
 	local resume = addon.search.state == "start"
 	if resume then
 		scanFrame.pausePlay.frame:Click()
-	else
-		interface.mainFrame.mainCheckBoxGRP.normalSearch:SetDisabled(false)
-		interface.mainFrame.mainCheckBoxGRP.deepSearch:SetDisabled(false)
-		interface.mainFrame.mainCheckBoxGRP.smartSearch:SetDisabled(false)
 	end
 	addon.search.inviteList = {}
 	addon.search.state = "stop"
@@ -221,11 +231,6 @@ frame:SetCallback("OnClick", function()
 	addon.search.timeShift = 0
 	addon.search.tempSendedInvites = {}
 	addon.search.whoQueryList = {}
-	
-	addon.smartSearch.progress = 1
-	addon.smartSearch.whoQueryList = {}
-	addon.smartSearch.inviteList = {}
-	addon.smartSearch.tempSendedInvites = {}
 	
 	scanFrame.progressBar:SetMinMax(0, 1)
 	scanFrame.progressBar:SetProgress(0)
@@ -242,12 +247,16 @@ scanFrame:AddChild(frame)
 
 
 local frame = CreateFrame('Frame')
-frame:RegisterEvent('PLAYER_ENTERING_WORLD')
+frame:RegisterEvent('PLAYER_LOGIN')
 frame:SetScript('OnEvent', function()
-	scanFrame:Show()
 	DB = addon.DB
-	
-C_Timer.NewTicker(0.1,function()
+	if DB.scanFrame then
+		interface.scanFrame:ClearAllPoints()
+		interface.scanFrame:SetPoint(DB.scanFrame.point, UIParent, DB.scanFrame.relativePoint, DB.scanFrame.xOfs, DB.scanFrame.yOfs)
+	else
+		interface.scanFrame:SetPoint("CENTER", UIParent)
+	end
+	C_Timer.After(0.1, function()
 	scanFrame.closeButton:ClearAllPoints()
 	scanFrame.closeButton:SetPoint("CENTER", scanFrame.frame, "TOPRIGHT", -8, -8)
 	
@@ -260,11 +269,13 @@ C_Timer.NewTicker(0.1,function()
 	scanFrame.pausePlay:ClearAllPoints()
 	scanFrame.pausePlay:SetPoint("LEFT", scanFrame.invite.frame, "RIGHT", 2, 0)
 	
+	scanFrame.pausePlayLabel:ClearAllPoints()
+	scanFrame.pausePlayLabel:SetPoint("CENTER", scanFrame.pausePlay.frame, "CENTER", 0, 0)
+	
 	scanFrame.clear:ClearAllPoints()
 	scanFrame.clear:SetPoint("LEFT", scanFrame.pausePlay.frame, "RIGHT", 2, 0)
-end,2)
 	
 	
 	scanFrame:Hide()
-	frame:UnregisterEvent('PLAYER_ENTERING_WORLD')
+	end)
 end)
