@@ -36,7 +36,6 @@ local FrameBackdrop = {
 
 interface.gratitudeFrame = GUI:Create("ClearFrame")
 gratitudeFrame = interface.gratitudeFrame
--- gratitudeFrame:Hide()
 gratitudeFrame.frame:SetBackdrop(FrameBackdrop)
 gratitudeFrame.frame:SetBackdropColor(0, 0, 0, 0.9)
 gratitudeFrame:SetTitle("Fast Guild Invite Gratitude")
@@ -94,7 +93,6 @@ end
 do		--	mainFrame
 interface.mainFrame = GUI:Create("ClearFrame")
 mainFrame = interface.mainFrame
--- mainFrame:Hide()
 mainFrame:SetTitle("Fast Guild Invite")
 mainFrame:SetWidth(size.mainFrameW)
 mainFrame:SetHeight(size.mainFrameH)
