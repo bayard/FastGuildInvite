@@ -313,7 +313,7 @@ function fn:invitePlayer(noInv)
 	if DB.inviteType == 2 and not noInv then
 		addon.msgQueue[list[1].name] = true
 	elseif DB.inviteType == 3 and not noInv then
-		local msg = DB.messageList[DB.curMessage]
+		local msg = DB.messageList[math.random(1, #DB.messageList)]
 		debug(format("Send whisper: %s %s",list[1].name, msg))
 		fn:sendWhisper(msg, list[1].name)
 	end
