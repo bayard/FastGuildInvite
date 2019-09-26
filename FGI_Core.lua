@@ -264,7 +264,7 @@ function FastGuildInvite:OnInitialize()
 	DB.clearDBtimes = DB.clearDBtimes or 3
 	
 	DB.messageList = istable(DB.messageList) and DB.messageList or {}
-	DB.curMessage = DB.curMessage or 0
+	DB.curMessage = math.max(DB.curMessage or 1, 1)
 	
 	DB.alredySended = istable(DB.alredySended) and DB.alredySended or {}
 	DB.filtersList = istable(DB.filtersList) and DB.filtersList or {}
