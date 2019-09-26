@@ -16,7 +16,7 @@ local gratitudeFrame, scrollBar, mainFrame, inviteTypeGRP, mainCheckBoxGRP, sear
 local function fontSize(self, font, size)
 	font = font or settings.Font
 	size = size or settings.FontSize
-	self:SetFont(font, size)
+	-- self:SetFont(font, size)
 end
 
 local function btnText(frame)
