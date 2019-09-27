@@ -201,6 +201,17 @@ frame:SetCallback("OnClick", function()
 end)
 settingsButtonsGRP:AddChild(frame)
 
+settingsButtonsGRP.synchBtn = GUI:Create("Button")
+local frame = settingsButtonsGRP.synchBtn
+frame:SetText(L.interface["Синхронизация"])
+fontSize(frame.text)
+frame:SetWidth(size.synchBtn)
+frame:SetHeight(40)
+frame:SetCallback("OnClick", function()
+	interface.synch:Show()
+end)
+settingsButtonsGRP:AddChild(frame)
+
 
 
 

@@ -308,6 +308,7 @@ function fn:invitePlayer(noInv)
 	if not noInv or DB.rememberAll then
 		fn:rememberPlayer(list[1].name)
 	end
+	C_ChatInfo.SendAddonMessage(FGISYNCH_PREFIX, "REMEMBER|"..list[1].name, "GUILD")
 	if not noInv then
 		addon.searchInfo.sended()
 	end
@@ -354,7 +355,11 @@ frame:SetScript('OnEvent', function()
 	end
 	end)
 end)
-
+local frame = CreateFrame('Frame')
+frame:RegisterEvent('PLAYER_LOGIN')
+frame:SetScript('OnEvent', function()
+	C_ChatInfo.SendAddonMessage(FGISYNCH_PREFIX, "LOGIN|GET_FGI_USERS", "GUILD")
+end)
 local function getSearchDeepLvl(query)
 	local l2 = (("%%d+-%%d+ %s\"%s+"):format(L.SYSTEM["r-"],addon.ruReg)):gsub("-","%%-")
 	local l3 = (("%%d+-%%d+ %s\"%s+%%\" %s"):format(L.SYSTEM["r-"],addon.ruReg,L.SYSTEM["c-"])):gsub("-","%%-")
@@ -609,9 +614,11 @@ end
 local libWho = {whoQuery='', doHide=false, isFGI=false}
 local function GetWho(query)
 	libWho.isFGI = true
-	libWho.doHide = (not WhoFrame:IsShown()) and (not FriendsFrame:IsShown())
+	-- FriendsTabHeader	GuildFrame	RaidFrame
+	libWho.doHide = (not WhoFrame:IsShown()) and (not FriendsFrame:IsShown()) and (not CommunitiesFrame:IsShown())
 	C_FriendList.SetWhoToUi(true)
 	C_FriendList.SendWho(query)
+	WhoFrameEditBox:SetText(query)
 end
 
 local function searchWhoResultCallback(query, results, complete)
@@ -763,30 +770,172 @@ local function hideSysMsg()
 	return true
 end
 
-function fn:StartSearch(timer)
-	ChatFrame_AddMessageEventFilter("CHAT_MSG_WHISPER_INFORM", hideWhisper)
-	if DB.systemMSG then ChatFrame_AddMessageEventFilter("CHAT_MSG_SYSTEM", hideSysMsg) end
-	if addon.search.state == "pause" then
-		local min,max = interface.scanFrame.progressBar:GetMinMax()
-		local shift = addon.search.timeShift>0 and GetTime()-addon.search.timeShift or 0
-		interface.scanFrame.progressBar:SetMinMax(min+shift, max+shift)
-		addon.search.timeShift = 0
+
+--[[----------------------------------------------------------------------------------------------
+									Synch
+]]------------------------------------------------------------------------------------------------
+FGI.ReceiveSynchStr = {[L.interface["Все"]] = {}}
+ReceiveSynchStr = FGI.ReceiveSynchStr
+local writeReceiveData = {
+	blacklist = function(arr)
+		for i=1, #arr do
+			local name, reason = arr[i][1], arr[i][2]
+			if not DB.blackList[name] then
+				interface.blackList:add({name=name, reason=reason})
+			end
+			DB.blackList[name] = reason
+		end
+		interface.blackList:update()
+	end,
+	invitations = function(arr)
+		for i=1, #arr do
+			local name, time = arr[i][1], tonumber(arr[i][2])
+			DB.alredySended[name] = math.max(time, DB.alredySended[name] or 0)
+		end
+	end,
+}
+
+local function readSynchStr(sender, mod)
+--print(str)
+	local str = ReceiveSynchStr[sender][mod]
+	local arr = {}
+	for S in str:gmatch("(.-);") do
+		local n, r = S:match("([^,]+),(.+)")
+		r = r:gsub("~", ',')
+		table.insert(arr, {n,r})
 	end
-	addon.search.state = "start"
-	searchIntervalTimer(true, timer)
-	fn:nextSearch()
-	Searchframe:SetScript("OnUpdate", SearchOnUpdate)
+	
+	if writeReceiveData[mod] then
+		writeReceiveData[mod](arr)
+	else
+		print(color.red.."writeReceiveData WRONG MOD|r")
+	end
+	ReceiveSynchStr[sender][mod] = nil
 end
 
-function fn:PauseSearch()
-	ChatFrame_RemoveMessageEventFilter("CHAT_MSG_WHISPER_INFORM", hideWhisper)
-	ChatFrame_RemoveMessageEventFilter("CHAT_MSG_SYSTEM", hideSysMsg)
-	if addon.search.state == 'start' then
-		addon.search.timeShift = GetTime()
+local function getSynchRequest(requestMSG, sender)
+	requestMSG = L.interface.synchBaseType[requestMSG]
+	if not requestMSG then
+		return C_ChatInfo.SendAddonMessage(FGISYNCH_PREFIX, 'ERROR|'..L.interface.synchState["Ошибка типа синхронизации"], "WHISPER", sender)
 	end
-	addon.search.state = "pause"
-	searchIntervalTimer(false)
-	Searchframe:SetScript("OnUpdate", nil)
-	interface.scanFrame.pausePlay:SetDisabled(true)
-	C_Timer.After(FGI_SCANINTERVALTIME, function() interface.scanFrame.pausePlay:SetDisabled(false) end)
+	C_ChatInfo.SendAddonMessage(FGISYNCH_PREFIX, 'SUCCESS|'..L.interface.synchState["Начало синхронизации"], "WHISPER", sender)
+	
+	local SendSynchStr = ''
+	if requestMSG=='blacklist' then
+		for k,v in pairs(DB.blackList) do
+			SendSynchStr = string.format("%s%s,%s;", SendSynchStr, k, tostring(v):gsub(',','~'))
+		end
+	elseif requestMSG=='invitations' then
+		for k,v in pairs(DB.alredySended) do
+			SendSynchStr = string.format("%s%s,%s;", SendSynchStr, k, tostring(v))
+		end
+	end
+	if SendSynchStr=='' then return end
+	fn.SendSynchArray(SendSynchStr, requestMSG, sender)
+	return
 end
+
+local synchFrame = CreateFrame("Frame")
+synchFrame:RegisterEvent("CHAT_MSG_ADDON")
+synchFrame:SetScript("OnEvent", function(self, event, ...)
+	local prefix, msg, channel, sender = ...
+	msg = tostring(msg)
+	if prefix ~= FGISYNCH_PREFIX then return end
+	-- print(prefix, msg, channel, sender)
+	sender = sender:match("([^-]+)")
+	if sender == UnitName('player') then return end
+	local requestType, requestMSG = msg:match("([^|]+)|(.+)")
+	
+	if channel == "WHISPER" then
+		if requestType == "ERROR" then
+			interface.synch.ticker:responseReceived()
+			return interface.synch.infoLabel:Error(requestMSG)
+		elseif requestType == "SUCCESS" then
+			interface.synch.ticker:responseReceived()
+			return interface.synch.infoLabel:Success(requestMSG)
+		elseif requestType == "GET" then
+			return getSynchRequest(requestMSG, sender)
+		elseif requestType == "LOGIN" and requestMSG == "GET_FGI_USERS" then
+			return interface.synch.rightColumn.synchPlayerReadyDrop:AddItem(3, sender)
+		end
+		
+		interface.synch.timer:Cancel()
+		local Start, End = msg:find("%(.+%)")
+		End = End or 0
+		local s,e,mod = msg:sub(Start, End):match("(%d+)[^%d](%d+);(%w+)")
+		if not mod then return end
+		s, e = tonumber(s), tonumber(e)
+		interface.synch.infoLabel:Success(format(L.interface.synchState["Синхронизация с %s.\n %d/%d"], sender,s,e))
+		if s == 1 then ReceiveSynchStr[sender] = { [mod] = ''} end
+			msg = msg:sub(End+1, -1)
+			ReceiveSynchStr[sender][mod] = ReceiveSynchStr[sender][mod]..msg
+		if s == e then
+			readSynchStr(sender, mod)
+			interface.synch.infoLabel:Success(format(L.interface.synchState["Данные синхронизированы с игроком %s."], sender))
+		end
+		
+	elseif channel == "GUILD" then
+		if requestType == "GET" then
+			getSynchRequest(requestMSG, sender)
+		elseif requestType == "LOGIN" and requestMSG == "GET_FGI_USERS" then
+			interface.synch.rightColumn.synchPlayerReadyDrop:AddItem(3, sender)
+			C_ChatInfo.SendAddonMessage(FGISYNCH_PREFIX, "LOGIN|GET_FGI_USERS", "WHISPER", sender)
+		elseif requestType == "REMEMBER"then
+			fn:rememberPlayer(requestMSG)
+		end
+	end
+end)
+
+
+function fn.SendSynchArray(str, mod, playerName)
+	local arr = {}
+	local i = 0
+	local step = 250-15-mod:len()-1
+	repeat 
+		table.insert(arr, string.format("(%d/%%d;%s)%s", #arr+1, mod or '', str:sub(i+1,i+step)))
+		i=i+step
+	until i>=str:len()
+	
+	local max = #arr
+	C_Timer.NewTicker(0.05, function()
+	-- for i=1, #arr do
+		if not arr[1] then return end
+		C_ChatInfo.SendAddonMessage(FGISYNCH_PREFIX, string.format(arr[1],max), "WHISPER", playerName)
+		table.remove(arr,1)
+	-- end
+	end, max)
+
+	return arr
+end
+
+function fn:sendSynchRequest(player, type)
+	ReceiveSynchStr[player or L.interface["Все"]].start = GetTime()
+	local start = GetTime()
+	interface.synch.ticker = C_Timer.NewTicker(1,function()
+		local time = math.ceil(start+FGI_MAXSYNCHWAIT-GetTime())
+		interface.synch.infoLabel:During(format(L.interface.synchState["Запрос синхронизации у: %s. %d"], player or L.interface["Все"], time))
+		if time == 0 then return interface.synch.infoLabel:Error(L.interface.synchState["Превышен лимит ожидания ответа"]) end
+	end, FGI_MAXSYNCHWAIT)
+	function interface.synch.ticker:responseReceived()
+		interface.synch.ticker:Cancel()
+		interface.synch.timer = C_Timer.NewTimer(FGI_MAXSYNCHWAIT, function()
+			interface.synch.infoLabel:Error(L.interface.synchState["Превышен лимит ожидания ответа"])
+		end)
+	end
+	if not player then
+		player = L.interface["Все"]
+		
+		C_ChatInfo.SendAddonMessage(FGISYNCH_PREFIX, "GET|"..type, "GUILD")
+	else
+		C_ChatInfo.SendAddonMessage(FGISYNCH_PREFIX, "GET|"..type, "WHISPER", player)
+	end
+end
+
+
+
+
+
+
+
+
+FGI.TEST = fn.SendSynchArray

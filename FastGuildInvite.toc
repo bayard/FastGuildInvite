@@ -39,3 +39,4 @@ filtersFrame.lua
 Scan.lua
 blackList.lua
 customList.lua
+synch.lua
