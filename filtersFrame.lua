@@ -9,20 +9,13 @@ local interface = addon.interface
 local GUI = LibStub("AceGUI-3.0")
 local FastGuildInvite = addon.lib
 local DB
+local fontSize = fn.fontSize
 
-local function fontSize(self, font, size)
-	font = font or settings.Font
-	size = size or settings.FontSize
-	self:SetFont(font, size)
-end
+local filtersFrame, addfilterFrame
 
-local function btnText(frame)
-	local text = frame.text
-	text:ClearAllPoints()
-	text:SetPoint("TOPLEFT", 5, -1)
-	text:SetPoint("BOTTOMRIGHT", -5, 1)
-end
-
+--[[-------------------------------------------------------------------------------------
+								UNIQUE FOR CLASSIC VERSION
+]]---------------------------------------------------------------------------------------
 local function defaultValues()
 	local addfilterFrame = interface.addfilterFrame
 	addfilterFrame.classesCheckBoxDruid:SetValue(false)
@@ -60,7 +53,121 @@ local function defaultValues()
 	addfilterFrame.change = false
 end
 
-local filtersFrame, addfilterFrame
+function fn:classIgnoredToggle()
+	local value = addfilterFrame.classesCheckBoxIgnore:GetValue()
+	if not value then
+		addfilterFrame.classesCheckBoxDruid:Show()
+		addfilterFrame.classesCheckBoxHunter:Show()
+		addfilterFrame.classesCheckBoxMage:Show()
+		addfilterFrame.classesCheckBoxPaladin:Show()
+		addfilterFrame.classesCheckBoxPriest:Show()
+		addfilterFrame.classesCheckBoxRogue:Show()
+		addfilterFrame.classesCheckBoxShaman:Show()
+		addfilterFrame.classesCheckBoxWarlock:Show()
+		addfilterFrame.classesCheckBoxWarrior:Show()
+	else
+		addfilterFrame.classesCheckBoxDruid:Hide()
+		addfilterFrame.classesCheckBoxHunter:Hide()
+		addfilterFrame.classesCheckBoxMage:Hide()
+		addfilterFrame.classesCheckBoxPaladin:Hide()
+		addfilterFrame.classesCheckBoxPriest:Hide()
+		addfilterFrame.classesCheckBoxRogue:Hide()
+		addfilterFrame.classesCheckBoxShaman:Hide()
+		addfilterFrame.classesCheckBoxWarlock:Hide()
+		addfilterFrame.classesCheckBoxWarrior:Hide()
+	end
+end
+
+local function getClassFilter()
+	local arr = {
+		[L.SYSTEM.class.Druid] = addfilterFrame.classesCheckBoxDruid:GetValue() or nil,
+		[L.SYSTEM.class.Hunter] = addfilterFrame.classesCheckBoxHunter:GetValue() or nil,
+		[L.SYSTEM.class.Mage] = addfilterFrame.classesCheckBoxMage:GetValue() or nil,
+		[L.SYSTEM.class.Paladin] = addfilterFrame.classesCheckBoxPaladin:GetValue() or nil,
+		[L.SYSTEM.class.Priest] = addfilterFrame.classesCheckBoxPriest:GetValue() or nil,
+		[L.SYSTEM.class.Rogue] = addfilterFrame.classesCheckBoxRogue:GetValue() or nil,
+		[L.SYSTEM.class.Shaman] = addfilterFrame.classesCheckBoxShaman:GetValue() or nil,
+		[L.SYSTEM.class.Warlock] = addfilterFrame.classesCheckBoxWarlock:GetValue() or nil,
+		[L.SYSTEM.class.Warrior] = addfilterFrame.classesCheckBoxWarrior:GetValue() or nil
+	}
+	return arr
+end
+
+local function createClassBoxes()
+addfilterFrame.classesCheckBoxDruid = GUI:Create("TCheckBox")
+local frame = addfilterFrame.classesCheckBoxDruid
+frame:SetWidth(size.Druid)
+frame:SetLabel(L.SYSTEM.class.Druid)
+fontSize(frame.text)
+addfilterFrame:AddChild(frame)
+
+addfilterFrame.classesCheckBoxHunter = GUI:Create("TCheckBox")
+local frame = addfilterFrame.classesCheckBoxHunter
+frame:SetWidth(size.Hunter)
+frame:SetLabel(L.SYSTEM.class.Hunter)
+fontSize(frame.text)
+addfilterFrame:AddChild(frame)
+
+addfilterFrame.classesCheckBoxMage = GUI:Create("TCheckBox")
+local frame = addfilterFrame.classesCheckBoxMage
+frame:SetWidth(size.Mage)
+frame:SetLabel(L.SYSTEM.class.Mage)
+fontSize(frame.text)
+addfilterFrame:AddChild(frame)
+
+addfilterFrame.classesCheckBoxPaladin = GUI:Create("TCheckBox")
+local frame = addfilterFrame.classesCheckBoxPaladin
+frame:SetWidth(size.Paladin)
+frame:SetLabel(L.SYSTEM.class.Paladin)
+fontSize(frame.text)
+addfilterFrame:AddChild(frame)
+
+addfilterFrame.classesCheckBoxPriest = GUI:Create("TCheckBox")
+local frame = addfilterFrame.classesCheckBoxPriest
+frame:SetWidth(size.Priest)
+frame:SetLabel(L.SYSTEM.class.Priest)
+fontSize(frame.text)
+addfilterFrame:AddChild(frame)
+
+addfilterFrame.classesCheckBoxRogue = GUI:Create("TCheckBox")
+local frame = addfilterFrame.classesCheckBoxRogue
+frame:SetWidth(size.Rogue)
+frame:SetLabel(L.SYSTEM.class.Rogue)
+fontSize(frame.text)
+addfilterFrame:AddChild(frame)
+
+addfilterFrame.classesCheckBoxShaman = GUI:Create("TCheckBox")
+local frame = addfilterFrame.classesCheckBoxShaman
+frame:SetWidth(size.Shaman)
+frame:SetLabel(L.SYSTEM.class.Shaman)
+fontSize(frame.text)
+addfilterFrame:AddChild(frame)
+
+addfilterFrame.classesCheckBoxWarlock = GUI:Create("TCheckBox")
+local frame = addfilterFrame.classesCheckBoxWarlock
+frame:SetWidth(size.Warlock)
+frame:SetLabel(L.SYSTEM.class.Warlock)
+fontSize(frame.text)
+addfilterFrame:AddChild(frame)
+
+addfilterFrame.classesCheckBoxWarrior = GUI:Create("TCheckBox")
+local frame = addfilterFrame.classesCheckBoxWarrior
+frame:SetWidth(size.Warrior)
+frame:SetLabel(L.SYSTEM.class.Warrior)
+fontSize(frame.text)
+addfilterFrame:AddChild(frame)
+end
+--[[-------------------------------------------------------------------------------------
+							/	UNIQUE FOR CLASSIC VERSION
+]]---------------------------------------------------------------------------------------
+
+
+local function btnText(frame)
+	local text = frame.text
+	text:ClearAllPoints()
+	text:SetPoint("TOPLEFT", 5, -1)
+	text:SetPoint("BOTTOMRIGHT", -5, 1)
+end
 
 
 do		--filtersFrame
@@ -201,30 +308,6 @@ frame:SetWidth(size.classLabel)
 frame.label:SetJustifyH("CENTER")
 addfilterFrame:AddChild(frame)
 
-function fn:classIgnoredToggle()
-	local value = addfilterFrame.classesCheckBoxIgnore:GetValue()
-	if not value then
-		addfilterFrame.classesCheckBoxDruid:Show()
-		addfilterFrame.classesCheckBoxHunter:Show()
-		addfilterFrame.classesCheckBoxMage:Show()
-		addfilterFrame.classesCheckBoxPaladin:Show()
-		addfilterFrame.classesCheckBoxPriest:Show()
-		addfilterFrame.classesCheckBoxRogue:Show()
-		addfilterFrame.classesCheckBoxShaman:Show()
-		addfilterFrame.classesCheckBoxWarlock:Show()
-		addfilterFrame.classesCheckBoxWarrior:Show()
-	else
-		addfilterFrame.classesCheckBoxDruid:Hide()
-		addfilterFrame.classesCheckBoxHunter:Hide()
-		addfilterFrame.classesCheckBoxMage:Hide()
-		addfilterFrame.classesCheckBoxPaladin:Hide()
-		addfilterFrame.classesCheckBoxPriest:Hide()
-		addfilterFrame.classesCheckBoxRogue:Hide()
-		addfilterFrame.classesCheckBoxShaman:Hide()
-		addfilterFrame.classesCheckBoxWarlock:Hide()
-		addfilterFrame.classesCheckBoxWarrior:Hide()
-	end
-end
 
 addfilterFrame.classesCheckBoxIgnore = GUI:Create("TCheckBox")
 local frame = addfilterFrame.classesCheckBoxIgnore
@@ -235,68 +318,7 @@ frame:SetCallback("OnValueChanged", function() fn:classIgnoredToggle() end)
 addfilterFrame:AddChild(frame)
 
 
-addfilterFrame.classesCheckBoxDruid = GUI:Create("TCheckBox")
-local frame = addfilterFrame.classesCheckBoxDruid
-frame:SetWidth(size.Druid)
-frame:SetLabel(L.SYSTEM.class.Druid)
-fontSize(frame.text)
-addfilterFrame:AddChild(frame)
-
-addfilterFrame.classesCheckBoxHunter = GUI:Create("TCheckBox")
-local frame = addfilterFrame.classesCheckBoxHunter
-frame:SetWidth(size.Hunter)
-frame:SetLabel(L.SYSTEM.class.Hunter)
-fontSize(frame.text)
-addfilterFrame:AddChild(frame)
-
-addfilterFrame.classesCheckBoxMage = GUI:Create("TCheckBox")
-local frame = addfilterFrame.classesCheckBoxMage
-frame:SetWidth(size.Mage)
-frame:SetLabel(L.SYSTEM.class.Mage)
-fontSize(frame.text)
-addfilterFrame:AddChild(frame)
-
-addfilterFrame.classesCheckBoxPaladin = GUI:Create("TCheckBox")
-local frame = addfilterFrame.classesCheckBoxPaladin
-frame:SetWidth(size.Paladin)
-frame:SetLabel(L.SYSTEM.class.Paladin)
-fontSize(frame.text)
-addfilterFrame:AddChild(frame)
-
-addfilterFrame.classesCheckBoxPriest = GUI:Create("TCheckBox")
-local frame = addfilterFrame.classesCheckBoxPriest
-frame:SetWidth(size.Priest)
-frame:SetLabel(L.SYSTEM.class.Priest)
-fontSize(frame.text)
-addfilterFrame:AddChild(frame)
-
-addfilterFrame.classesCheckBoxRogue = GUI:Create("TCheckBox")
-local frame = addfilterFrame.classesCheckBoxRogue
-frame:SetWidth(size.Rogue)
-frame:SetLabel(L.SYSTEM.class.Rogue)
-fontSize(frame.text)
-addfilterFrame:AddChild(frame)
-
-addfilterFrame.classesCheckBoxShaman = GUI:Create("TCheckBox")
-local frame = addfilterFrame.classesCheckBoxShaman
-frame:SetWidth(size.Shaman)
-frame:SetLabel(L.SYSTEM.class.Shaman)
-fontSize(frame.text)
-addfilterFrame:AddChild(frame)
-
-addfilterFrame.classesCheckBoxWarlock = GUI:Create("TCheckBox")
-local frame = addfilterFrame.classesCheckBoxWarlock
-frame:SetWidth(size.Warlock)
-frame:SetLabel(L.SYSTEM.class.Warlock)
-fontSize(frame.text)
-addfilterFrame:AddChild(frame)
-
-addfilterFrame.classesCheckBoxWarrior = GUI:Create("TCheckBox")
-local frame = addfilterFrame.classesCheckBoxWarrior
-frame:SetWidth(size.Warrior)
-frame:SetLabel(L.SYSTEM.class.Warrior)
-fontSize(frame.text)
-addfilterFrame:AddChild(frame)
+createClassBoxes()
 end
 
 
@@ -460,17 +482,7 @@ local function saveFilter()
 	
 	local classFilter = classIgnore
 	if classFilter then
-		classFilter = {
-			[L.SYSTEM.class.Druid] = addfilterFrame.classesCheckBoxDruid:GetValue() or nil,
-			[L.SYSTEM.class.Hunter] = addfilterFrame.classesCheckBoxHunter:GetValue() or nil,
-			[L.SYSTEM.class.Mage] = addfilterFrame.classesCheckBoxMage:GetValue() or nil,
-			[L.SYSTEM.class.Paladin] = addfilterFrame.classesCheckBoxPaladin:GetValue() or nil,
-			[L.SYSTEM.class.Priest] = addfilterFrame.classesCheckBoxPriest:GetValue() or nil,
-			[L.SYSTEM.class.Rogue] = addfilterFrame.classesCheckBoxRogue:GetValue() or nil,
-			[L.SYSTEM.class.Shaman] = addfilterFrame.classesCheckBoxShaman:GetValue() or nil,
-			[L.SYSTEM.class.Warlock] = addfilterFrame.classesCheckBoxWarlock:GetValue() or nil,
-			[L.SYSTEM.class.Warrior] = addfilterFrame.classesCheckBoxWarrior:GetValue() or nil
-		}
+		classFilter = getClassFilter()
 		classFilter = next(classFilter) ~= nil and classFilter or false
 	end
 	

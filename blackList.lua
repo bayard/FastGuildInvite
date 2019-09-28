@@ -8,14 +8,10 @@ local interface = addon.interface
 local GUI = LibStub("AceGUI-3.0")
 local FastGuildInvite = addon.lib
 local DB
+local fontSize = fn.fontSize
 
 local blackList, scrollBar
 
-local function fontSize(self, font, size)
-	font = font or settings.Font
-	size = size or settings.FontSize
-	self:SetFont(font, size)
-end
 
 local function btnText(frame)
 	local text = frame.text
@@ -39,7 +35,7 @@ function blackList:updateList()
 	for k,v in pairs(DB.blackList) do
 		str = format("%s%s\n", str, k)
 	end
-	blackList.list:SetText(str)
+	-- blackList.list:SetText(str)
 end
 
 blackList.title:SetScript('OnMouseUp', function(mover)

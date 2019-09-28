@@ -14,6 +14,7 @@ local DB
 local debugDB
 local nextSearch
 
+
 addon.searchInfo = {unique = {0}, sended = {0}, invited = {0}, filtered = {0}}
 local mt = {
 	__call = function(self,n)
@@ -30,7 +31,79 @@ end});
 local time, next = time, next
 
 
+--[[-------------------------------------------------------------------------------------
+								UNIQUE FOR CLASSIC VERSION
+]]---------------------------------------------------------------------------------------
+local RaceClassCombo = {
+	Orc = {CLASS.Warrior,CLASS.Hunter,CLASS.Rogue,CLASS.Shaman,CLASS.Mage,CLASS.Warlock,CLASS.Monk,CLASS.DeathKnight},
+	Undead = {CLASS.Warrior,CLASS.Hunter,CLASS.Rogue,CLASS.Priest,CLASS.Mage,CLASS.Warlock,CLASS.Monk,CLASS.DeathKnight},
+	Tauren = {CLASS.Warrior,CLASS.Paladin,CLASS.Hunter,CLASS.Priest,CLASS.Shaman,CLASS.Monk,CLASS.Druid,CLASS.DeathKnight},
+	Troll = {CLASS.Warrior,CLASS.Hunter,CLASS.Rogue,CLASS.Priest,CLASS.Shaman,CLASS.Mage,CLASS.Warlock,CLASS.Monk,CLASS.Druid,CLASS.DeathKnight},
+	Human = {CLASS.Warrior,CLASS.Paladin,CLASS.Hunter,CLASS.Rogue,CLASS.Priest,CLASS.Mage,CLASS.Warlock,CLASS.Monk,CLASS.DeathKnight},
+	Dwarf = {CLASS.Warrior,CLASS.Paladin,CLASS.Hunter,CLASS.Rogue,CLASS.Priest,CLASS.Shaman,CLASS.Mage,CLASS.Warlock,CLASS.Monk,CLASS.DeathKnight},
+	NightElf = {CLASS.Warrior,CLASS.Hunter,CLASS.Rogue,CLASS.Priest,CLASS.Mage,CLASS.Monk,CLASS.Druid,CLASS.DemonHunter,CLASS.DeathKnight},
+	Gnome = {CLASS.Warrior,CLASS.Hunter,CLASS.Rogue,CLASS.Priest,CLASS.Mage,CLASS.Warlock,CLASS.Monk,CLASS.DeathKnight},
+}
 
+function fn:FilterChange(id)
+	local filtersFrame = interface.filtersFrame
+	local addfilterFrame = interface.addfilterFrame
+	local filter = FGI.DB.filtersList[id]
+	local class = filter.classFilter
+	local raceFilter = filter.raceFilter
+	
+	filtersFrame:Hide()
+	addfilterFrame:Show()
+	
+	if not class then
+		addfilterFrame.classesCheckBoxIgnore:SetValue(true)
+	else
+		addfilterFrame.classesCheckBoxIgnore:SetValue(false)
+		addfilterFrame.classesCheckBoxDruid:SetValue(class[CLASS.Druid] or false)
+		addfilterFrame.classesCheckBoxHunter:SetValue(class[CLASS.Hunter] or false)
+		addfilterFrame.classesCheckBoxMage:SetValue(class[CLASS.Mage] or false)
+		addfilterFrame.classesCheckBoxPaladin:SetValue(class[CLASS.Paladin] or false)
+		addfilterFrame.classesCheckBoxPriest:SetValue(class[CLASS.Priest] or false)
+		addfilterFrame.classesCheckBoxRogue:SetValue(class[CLASS.Rogue] or false)
+		addfilterFrame.classesCheckBoxShaman:SetValue(class[CLASS.Shaman] or false)
+		addfilterFrame.classesCheckBoxWarlock:SetValue(class[CLASS.Warlock] or false)
+		addfilterFrame.classesCheckBoxWarrior:SetValue(class[CLASS.Warrior] or false)
+	end
+	
+	if not raceFilter then 
+		addfilterFrame.rasesCheckBoxIgnore:SetValue(true)
+	else
+		addfilterFrame.rasesCheckBoxIgnore:SetValue(false)
+		for i=1, #addfilterFrame.rasesCheckBoxRace do
+			local race = addfilterFrame.rasesCheckBoxRace[i]
+			local name = race:GetLabel()
+			race:SetValue(raceFilter[name] and true or false)
+		end
+	end
+	
+	addfilterFrame.filterNameEdit:SetText(id)
+	addfilterFrame.filterNameEdit:SetDisabled(true)
+	addfilterFrame.excludeNameEditBox:SetText(filter.filterByName or "")
+	addfilterFrame.lvlRangeEditBox:SetText(filter.lvlRange or "")
+	addfilterFrame.excludeRepeatEditBox:SetText(filter.letterFilter or "")
+	
+	fn:classIgnoredToggle()
+	fn:racesIgnoredToggle()
+	addfilterFrame.change = true
+end
+
+
+--[[-------------------------------------------------------------------------------------
+							/	UNIQUE FOR CLASSIC VERSION
+]]---------------------------------------------------------------------------------------
+
+
+
+function fn.fontSize(frame, font, size)
+	font = font or settings.Font
+	size = size or settings.FontSize
+	frame:SetFont(font, size)
+end
 
 local frame = CreateFrame("Frame")
 frame:RegisterEvent("CHAT_MSG_SYSTEM")
@@ -46,10 +119,6 @@ frame:SetScript("OnEvent", function(_,_,msg)
 		end
 	end
 end)
-
---ERR_GUILD_INVITE_S,ERR_GUILD_DECLINE_S,ERR_ALREADY_IN_GUILD_S,ERR_ALREADY_INVITED_TO_GUILD_S,ERR_GUILD_DECLINE_AUTO_S,ERR_GUILD_JOIN_S,ERR_GUILD_PLAYER_NOT_FOUND_S,ERR_CHAT_PLAYER_NOT_FOUND_S
---	CanGuildInvite()
--- LOCALIZED_CLASS_NAMES_MALE
 
 function fn:initDB()
 	DB = addon.DB
@@ -147,52 +216,6 @@ function fn:FiltersInit()
 	end
 end
 
-function fn:FilterChange(id)
-	local filtersFrame = interface.filtersFrame
-	local addfilterFrame = interface.addfilterFrame
-	local filter = FGI.DB.filtersList[id]
-	local class = filter.classFilter
-	local raceFilter = filter.raceFilter
-	
-	filtersFrame:Hide()
-	addfilterFrame:Show()
-	
-	if not class then
-		addfilterFrame.classesCheckBoxIgnore:SetValue(true)
-	else
-		addfilterFrame.classesCheckBoxIgnore:SetValue(false)
-		addfilterFrame.classesCheckBoxDruid:SetValue(class[CLASS.Druid] or false)
-		addfilterFrame.classesCheckBoxHunter:SetValue(class[CLASS.Hunter] or false)
-		addfilterFrame.classesCheckBoxMage:SetValue(class[CLASS.Mage] or false)
-		addfilterFrame.classesCheckBoxPaladin:SetValue(class[CLASS.Paladin] or false)
-		addfilterFrame.classesCheckBoxPriest:SetValue(class[CLASS.Priest] or false)
-		addfilterFrame.classesCheckBoxRogue:SetValue(class[CLASS.Rogue] or false)
-		addfilterFrame.classesCheckBoxShaman:SetValue(class[CLASS.Shaman] or false)
-		addfilterFrame.classesCheckBoxWarlock:SetValue(class[CLASS.Warlock] or false)
-		addfilterFrame.classesCheckBoxWarrior:SetValue(class[CLASS.Warrior] or false)
-	end
-	
-	if not raceFilter then 
-		addfilterFrame.rasesCheckBoxIgnore:SetValue(true)
-	else
-		addfilterFrame.rasesCheckBoxIgnore:SetValue(false)
-		for i=1, #addfilterFrame.rasesCheckBoxRace do
-			local race = addfilterFrame.rasesCheckBoxRace[i]
-			local name = race:GetLabel()
-			race:SetValue(raceFilter[name] and true or false)
-		end
-	end
-	
-	addfilterFrame.filterNameEdit:SetText(id)
-	addfilterFrame.filterNameEdit:SetDisabled(true)
-	addfilterFrame.excludeNameEditBox:SetText(filter.filterByName or "")
-	addfilterFrame.lvlRangeEditBox:SetText(filter.lvlRange or "")
-	addfilterFrame.excludeRepeatEditBox:SetText(filter.letterFilter or "")
-	
-	fn:classIgnoredToggle()
-	fn:racesIgnoredToggle()
-	addfilterFrame.change = true
-end
 
 function fn:FiltersUpdate()
 	for i=1, FGI_FILTERSLIMIT do
@@ -234,16 +257,7 @@ function fn:FiltersUpdate()
 end
 
 
-local RaceClassCombo = {
-	Orc = {CLASS.Warrior,CLASS.Hunter,CLASS.Rogue,CLASS.Shaman,CLASS.Mage,CLASS.Warlock,CLASS.Monk,CLASS.DeathKnight},
-	Undead = {CLASS.Warrior,CLASS.Hunter,CLASS.Rogue,CLASS.Priest,CLASS.Mage,CLASS.Warlock,CLASS.Monk,CLASS.DeathKnight},
-	Tauren = {CLASS.Warrior,CLASS.Paladin,CLASS.Hunter,CLASS.Priest,CLASS.Shaman,CLASS.Monk,CLASS.Druid,CLASS.DeathKnight},
-	Troll = {CLASS.Warrior,CLASS.Hunter,CLASS.Rogue,CLASS.Priest,CLASS.Shaman,CLASS.Mage,CLASS.Warlock,CLASS.Monk,CLASS.Druid,CLASS.DeathKnight},
-	Human = {CLASS.Warrior,CLASS.Paladin,CLASS.Hunter,CLASS.Rogue,CLASS.Priest,CLASS.Mage,CLASS.Warlock,CLASS.Monk,CLASS.DeathKnight},
-	Dwarf = {CLASS.Warrior,CLASS.Paladin,CLASS.Hunter,CLASS.Rogue,CLASS.Priest,CLASS.Shaman,CLASS.Mage,CLASS.Warlock,CLASS.Monk,CLASS.DeathKnight},
-	NightElf = {CLASS.Warrior,CLASS.Hunter,CLASS.Rogue,CLASS.Priest,CLASS.Mage,CLASS.Monk,CLASS.Druid,CLASS.DemonHunter,CLASS.DeathKnight},
-	Gnome = {CLASS.Warrior,CLASS.Hunter,CLASS.Rogue,CLASS.Priest,CLASS.Mage,CLASS.Warlock,CLASS.Monk,CLASS.DeathKnight},
-}
+
 
 function fn:msgMod(msg)
 	if not msg then return end
@@ -324,15 +338,6 @@ end
 
 local Searchframe = CreateFrame('Frame')
 
-local function searchIntervalTimer(onOff, timer)
-	if onOff then
-		 addon.search.intervalTimer = C_Timer.NewTicker(timer or FGI_SCANINTERVALTIME, function()fn:nextSearch()end)
-	else
-		if addon.search.intervalTimer then
-			addon.search.intervalTimer:Cancel()
-		end
-	end
-end
 
 local frame = CreateFrame('Frame')
 frame:RegisterEvent('PLAYER_LOGIN')
@@ -355,11 +360,13 @@ frame:SetScript('OnEvent', function()
 	end
 	end)
 end)
+
 local frame = CreateFrame('Frame')
-frame:RegisterEvent('PLAYER_LOGIN')
+frame:RegisterEvent('PLAYER_ENTERING_WORLD')
 frame:SetScript('OnEvent', function()
 	C_ChatInfo.SendAddonMessage(FGISYNCH_PREFIX, "LOGIN|GET_FGI_USERS", "GUILD")
 end)
+
 local function getSearchDeepLvl(query)
 	local l2 = (("%%d+-%%d+ %s\"%s+"):format(L.SYSTEM["r-"],addon.ruReg)):gsub("-","%%-")
 	local l3 = (("%%d+-%%d+ %s\"%s+%%\" %s"):format(L.SYSTEM["r-"],addon.ruReg,L.SYSTEM["c-"])):gsub("-","%%-")
@@ -572,6 +579,7 @@ local function filtered(player)
 	end
 	return false
 end
+
 local function addNewPlayer(t, p)
 	local blackList = false
 	for i=1,#DB.blackList do
@@ -614,27 +622,26 @@ end
 local libWho = {whoQuery='', doHide=false, isFGI=false}
 local function GetWho(query)
 	libWho.isFGI = true
+	libWho.whoQuery = query
 	-- FriendsTabHeader	GuildFrame	RaidFrame
-	libWho.doHide = (not WhoFrame:IsShown()) and (not FriendsFrame:IsShown()) and (not CommunitiesFrame:IsShown())
+	libWho.doHide = (not WhoFrame:IsShown()) and (not FriendsFrame:IsShown()) and (CommunitiesFrame and not CommunitiesFrame:IsShown())
 	C_FriendList.SetWhoToUi(true)
 	C_FriendList.SendWho(query)
 	WhoFrameEditBox:SetText(query)
 end
 
-local function searchWhoResultCallback(query, results, complete)
+local function searchWhoResultCallback(query, results)
+	local searchLvl = getSearchDeepLvl(query)
 	if #results >= FGI_MAXWHORETURN and DB.customWho then
 		print(format(L.FAQ.error["Поиск вернул 50 или более результатов, рекомендуется изменить настройки поиска. Запрос: %s"], query))
+		debug(format("Query (%s) return 50 or more results; SearchLevel-%d", query, searchLvl))
 	end
 	addon.search.progress = addon.search.progress + 1
-	-- print(query, #results)
 	debug(format("Query %s", query))
-	local searchLvl = getSearchDeepLvl(query)
 	if searchLvl == 1 and #results>=FGI_MAXWHORETURN then
 		searchAddWhoList(query,1)
-		debug(format("Query (%s) return 50 or more results; SearchLevel-%d", query, searchLvl))
 	elseif searchLvl == 2 and #results>=FGI_MAXWHORETURN then
 		searchAddWhoList(query,2)
-		debug(format("Query (%s) return 50 or more results; SearchLevel-%d", query, searchLvl))
 	-- 3lvl can't modified
 	end
 	
@@ -666,7 +673,7 @@ function fn:nextSearch()
 end
 
 local function returnWho(result)
-	searchWhoResultCallback(whoQuery, result)
+	searchWhoResultCallback(libWho.whoQuery, result)
 end
 
 local whoFrame = CreateFrame('Frame')
@@ -700,10 +707,6 @@ whoFrame:SetScript("OnEvent", function()
 	C_FriendList.SetWhoToUi(false)
 	returnWho(result)
 end)
-local function test(query)
-	whoQuery = query
-end
-hooksecurefunc(C_FriendList, "SendWho", test);
 
 function dump(t,l)
   local str = '{'
@@ -856,7 +859,7 @@ synchFrame:SetScript("OnEvent", function(self, event, ...)
 		elseif requestType == "GET" then
 			return getSynchRequest(requestMSG, sender)
 		elseif requestType == "LOGIN" and requestMSG == "GET_FGI_USERS" then
-			return interface.synch.rightColumn.synchPlayerReadyDrop:AddItem(3, sender)
+			return interface.synch.rightColumn.synchPlayerReadyDrop:AddItem(sender, sender)
 		end
 		
 		interface.synch.timer:Cancel()
@@ -878,7 +881,7 @@ synchFrame:SetScript("OnEvent", function(self, event, ...)
 		if requestType == "GET" then
 			getSynchRequest(requestMSG, sender)
 		elseif requestType == "LOGIN" and requestMSG == "GET_FGI_USERS" then
-			interface.synch.rightColumn.synchPlayerReadyDrop:AddItem(3, sender)
+			interface.synch.rightColumn.synchPlayerReadyDrop:AddItem(sender, sender)
 			C_ChatInfo.SendAddonMessage(FGISYNCH_PREFIX, "LOGIN|GET_FGI_USERS", "WHISPER", sender)
 		elseif requestType == "REMEMBER"then
 			fn:rememberPlayer(requestMSG)
@@ -930,12 +933,3 @@ function fn:sendSynchRequest(player, type)
 		C_ChatInfo.SendAddonMessage(FGISYNCH_PREFIX, "GET|"..type, "WHISPER", player)
 	end
 end
-
-
-
-
-
-
-
-
-FGI.TEST = fn.SendSynchArray

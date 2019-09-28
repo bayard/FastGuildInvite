@@ -2,21 +2,21 @@ local function GetRaceName(id)
 	return C_CreatureInfo.GetRaceInfo(id) and C_CreatureInfo.GetRaceInfo(id).raceName or nil
 end
 local L = {
-	["FAQ"] = {
-		["help"] = {
-			["factorySettings"] = "/fgi factorySettings - Полный сброс базы данных аддона",
-			["filter"] = "ЛКМ - Включить/Выключить\nПКМ - Изменить\nShift+ЛКМ - Удалить\n\n",
-			["filterTooltip"] = "Имя фильтра: %s\nСостояние:%s\nФильтр имени: %s\nДиапазон уровней: %s\nФильтр повторений в имени:%d:%d\nКлассы: %s\nРасы: %s\nКоличество срабатываний фильтра:%d",
-			["minimap"] = "ЛКМ - пригласить\nПКМ - открыть главное окно\nShift+ЛКМ - пауза/продолжить\n\nОчередь: %d\nПрогресс: %s",
-			["resetDB"] = "/fgi resetDB - Очистить список отправленных приглашений.",
-			["resetWindowsPos"] = "/fgi resetWindowsPos - Сбросить позиции окон.",
-			["show"] = "/fgi show - Открыть главное окно аддона",
-			["invite"] = "/fgi invite - Пригласить первого игрока из очереди",
-			["nextSearch"] = "/fgi nextSearch - Запустить следующее сканирование",
-			["blacklist"] = "/fgibl <Имя> - <Причина> - Добавить игрока в черный список",
-			["help2"] = "/fgi help2 - Команды с префиксом \"!\"",
+	FAQ = {
+		help = {
+			factorySettings = "/fgi factorySettings - Полный сброс базы данных аддона",
+			filter = "ЛКМ - Включить/Выключить\nПКМ - Изменить\nShift+ЛКМ - Удалить\n\n",
+			filterTooltip = "Имя фильтра: %s\nСостояние:%s\nФильтр имени: %s\nДиапазон уровней: %s\nФильтр повторений в имени:%d:%d\nКлассы: %s\nРасы: %s\nКоличество срабатываний фильтра:%d",
+			minimap = "ЛКМ - пригласить\nПКМ - открыть главное окно\nShift+ЛКМ - пауза/продолжить\n\nОчередь: %d\nПрогресс: %s",
+			resetDB = "/fgi resetDB - Очистить список отправленных приглашений.",
+			resetWindowsPos = "/fgi resetWindowsPos - Сбросить позиции окон.",
+			show = "/fgi show - Открыть главное окно аддона",
+			invite = "/fgi invite - Пригласить первого игрока из очереди",
+			nextSearch = "/fgi nextSearch - Запустить следующее сканирование",
+			blacklist = "/fgibl <Имя> - <Причина> - Добавить игрока в черный список",
+			help2 = "/fgi help2 - Команды с префиксом \"!\"",
 		},
-		["help2"] = {
+		help2 = {
 			"|cff00ff96Команды с префиксом \"|cffff0000!|r|cff00ff96\" созданы для офицеров у которых не установлен аддон, эти команды могут быть использованы только в офицерском канале.|r",
 			"В офицерском канале доступны следующие команды:",
 			"!fgi - список доступных команд",
@@ -24,7 +24,7 @@ local L = {
 			"!blacklistDelete <Имя> - <Причина> - удалить игрока из черного списка",
 			"!blacklistGetList - получить список игроков в черным списке",
 		},
-		["error"] = {
+		error = {
 			["Вы не состоите в гильдии или у вас нет прав для приглашения."] = "Вы не состоите в гильдии или у вас нет прав для приглашения.",
 			["Выберите сообщение"] = "Выберите сообщение",
 			["Максимальное количество фильтров %s. Пожалуйста измените или удалите имеющийся фильтр."] = "Максимальное количество фильтров %s. Пожалуйста измените или удалите имеющийся фильтр.",
@@ -35,7 +35,7 @@ local L = {
 			["Превышен лимит символов. Максимальная длина сообщения 255 символов. Длина сообщения превышена на %d"] = "Превышен лимит символов. Максимальная длина сообщения 255 символов. Длина сообщения превышена на %d",
 		}
 	},
-	["interface"] = {
+	interface = {
 		["Игрок не добавлен в список исключений."] = "Игрок не добавлен в список исключений.",
 		defaultReason = "no reason",
 		["Игрок %s добавлен в черный список."] = "Игрок %s добавлен в черный список.",
@@ -102,7 +102,7 @@ local L = {
 		["Отправить запрос"] = "Отправить запрос",
 		["Синхронизация"] = "Синхронизация",
 		["Все"] = "Все",
-		["tooltip"] = {
+		tooltip = {
 			["Автоматическое увеличение детализации поиска"] = "Автоматическое увеличение детализации поиска",
 			["Введите диапазон уровней для фильтра.\nНапример: %s55%s:%s58%s\nбудут подходить только те игроки, уровень\nкоторых варьируется от %s55%s до %s58%s (включительно)"] = "Введите диапазон уровней для фильтра.\nНапример: %s55%s:%s58%s\nбудут подходить только те игроки, уровень\nкоторых варьируется от %s55%s до %s58%s (включительно)",
 			["Введите максимальное количество последовательных\nгласных и согласных, которое может содержать имя игрока.\nНапример: %s3%s:%s5%s\nБудет означать, что игроки с более чем %s3%s гласными подряд\nили более %s5%s согласными подряд не будут добавлены в очередь."] = "Введите максимальное количество последовательных\nгласных и согласных, которое может содержать имя игрока.\nНапример: %s3%s:%s5%s\nБудет означать, что игроки с более чем %s3%s гласными подряд\nили более %s5%s согласными подряд не будут добавлены в очередь.",
@@ -120,16 +120,16 @@ local L = {
 			["Записывать игрока в базу данных даже если приглашение не было отправлено"] = "Записывать игрока в базу данных даже если приглашение не было отправлено",
 			["Использовать пользовательский список запросов"] = "Использовать пользовательский список запросов",
 		},
-		["invType"] = {
+		invType = {
 			["Отправить сообщение и пригласить"] = "Отправить сообщение и пригласить",
 			["Только пригласить"] = "Только пригласить",
 			["Только сообщение"] = "Только сообщение",
 		},
-		["synchType"] = {
+		synchType = {
 			["Черный список"] = "Черный список",
 			["Список приглашенных"] = "Список приглашенных",
 		},
-		["synchState"] = {
+		synchState = {
 			["Игрок для синхронизации не выбран"] = "Игрок для синхронизации не выбран",
 			["Данные для синхронизации не выбраны"] = "Данные для синхронизации не выбраны",
 			["Запрос синхронизации у: %s. %d"] = "Запрос синхронизации у: %s. %d",
@@ -139,7 +139,7 @@ local L = {
 			["Синхронизация с %s.\n %d/%d"] = "Синхронизация с %s.\n %d/%d",
 			["Превышен лимит ожидания ответа"] = "Превышен лимит ожидания ответа",
 		},
-		["clearDBtimes"] = {
+		clearDBtimes = {
 			["Отключить"] = "Отключить",
 			["1 день"] = "1 день",
 			["1 неделя"] = "1 неделя",
@@ -148,75 +148,35 @@ local L = {
 			["Время запоминания игрока"] = "Время запоминания игрока",
 		}
 	},
-	["SYSTEM"] = {
+	SYSTEM = {
 		["c-"] = "к-",
 		["r-"] = "р-",
-		["class"] = {
-			["DeathKnight"] = LOCALIZED_CLASS_NAMES_MALE.DEATHKNIGHT,
-			["DemonHunter"] = LOCALIZED_CLASS_NAMES_MALE.DEMONHUNTER,
-			["Druid"] = LOCALIZED_CLASS_NAMES_MALE.DRUID,
-			["Hunter"] = LOCALIZED_CLASS_NAMES_MALE.HUNTER,
-			["Mage"] = LOCALIZED_CLASS_NAMES_MALE.MAGE,
-			["Monk"] = LOCALIZED_CLASS_NAMES_MALE.MONK,
-			["Paladin"] = LOCALIZED_CLASS_NAMES_MALE.PALADIN,
-			["Priest"] = LOCALIZED_CLASS_NAMES_MALE.PRIEST,
-			["Rogue"] = LOCALIZED_CLASS_NAMES_MALE.ROGUE,
-			["Shaman"] = LOCALIZED_CLASS_NAMES_MALE.SHAMAN,
-			["Warlock"] = LOCALIZED_CLASS_NAMES_MALE.WARLOCK,
-			["Warrior"] = LOCALIZED_CLASS_NAMES_MALE.WARRIOR,
-		},
-		["femaleClass"] = {},
-		["race"] = {
-			["Horde"] = {
-				["Orc"] = GetRaceName(2),	--	"Орк"
-				["Tauren"] = GetRaceName(6),	--	"Таурен"
-				["Troll"] = GetRaceName(8),	--	"Тролль"
-				["Undead"] = GetRaceName(5),	--	"Нежить"
-				-- ["BloodElf"] = GetRaceName(10),	--	"Эльф крови"
-				-- ["Goblin"] = GetRaceName(9),	--	"Гоблин"
-				-- ["HightmountainTauren"] = GetRaceName(28),	--	"Таурен Крутогорья"
-				-- ["MagharOrc"] = GetRaceName(36),	--	"Маг'хар"
-				-- ["Nightborne"] = GetRaceName(27),	--	"Ночнорожденный"
-				-- ["Pandaren"] = GetRaceName(26),	--	"Пандарен"
-				-- ["ZandalariTroll"] = GetRaceName(31),	--	"Зандалар"
-			},
-			["Alliance"] = {
-				["Dwarf"] = GetRaceName(3),	--	"Дворф"
-				["Gnome"] = GetRaceName(7),	--	"Гном"
-				["Human"] = GetRaceName(1),	--	"Человек"
-				["NightElf"] = GetRaceName(4),	--	"Ночной эльф"
-				-- ["DarkIronDwarf"] = GetRaceName(34),	--	"Дворф из клана Черного Железа"
-				-- ["Draenei"] = GetRaceName(11),	--	"Дреней"
-				-- ["LightforgedDraenei"] = GetRaceName(30),	--	"Озаренный дреней"
-				-- ["Pandaren"] = GetRaceName(25),	--	"Пандарен"
-				-- ["VoidElf"] = GetRaceName(29),	--	"Эльф Бездны"
-				-- ["Worgen"] = GetRaceName(22),	--	"Ворген"
-				-- ["KulTiran"] = GetRaceName(32),	--	"Култирасец"
-			},
-		},
-		["femaleRace"] = {
-			-- ["BloodElf"] = "Эльфийка крови",
-			-- ["HightmountainTauren"] = "Тауренка Крутогорья",
-			-- ["MagharOrc"] = "Маг'харка",
-			-- ["Nightborne"] = "Ночнорожденная",
-			["Orc"] = "Орчиха",
-			-- ["Pandaren"] = "Пандаренка",
-			["Tauren"] = "Тауренка",
-			-- ["ZandalariTroll"] = "Зандаларка",
-			-- ["DarkIronDwarf"] = "Дворфийка из клана Черного Железа",
-			-- ["Draenei"] = "Дренейка",
-			["Dwarf"] = "Дворфийка",
-			["Gnome"] = "Гномка",
-			-- ["LightforgedDraenei"] = "Озаренная дренейка",
-			["NightElf"] = "Ночная эльфийка",
-			-- ["Pandaren"] = "Пандаренка",
-			-- ["VoidElf"] = "Эльфийка Бездны",
-			-- ["KulTiran"] = "Култираска",
+		class = {},
+		femaleClass = {},
+		race = {},
+		femaleRace = {
+			Orc = "Орчиха",
+			Tauren = "Тауренка",
+			Dwarf = "Дворфийка",
+			Gnome = "Гномка",
+			NightElf = "Ночная эльфийка",
+			BloodElf = "Эльфийка крови",
+			HightmountainTauren = "Тауренка Крутогорья",
+			MagharOrc = "Маг'харка",
+			Nightborne = "Ночнорожденная",
+			Pandaren = "Пандаренка",
+			ZandalariTroll = "Зандаларка",
+			DarkIronDwarf = "Дворфийка из клана Черного Железа",
+			Draenei = "Дренейка",
+			LightforgedDraenei = "Озаренная дренейка",
+			Pandaren = "Пандаренка",
+			VoidElf = "Эльфийка Бездны",
+			KulTiran = "Култираска",
 		},
 	}
 }
 
-L.interface["synchBaseType"] = {--		WARNING
+L.interface.synchBaseType = {--		WARNING
 	[L.interface.synchType["Черный список"]] = "blacklist",
 	[L.interface.synchType["Список приглашенных"]] = "invitations",
 }
@@ -281,7 +241,7 @@ L.settings = {
 		customListH = 360,
 		customListBtn = 200,
 		synchFrameW = 450,
-		synchFrameH = 400,
+		synchFrameH = 250,
 		sendRequest = 150,
 		synchBtn = 200,
 		
@@ -294,10 +254,10 @@ L.settings = {
 		Mage = 50,
 		Monk = 70,
 		Paladin = 80,
-		Priest = 60,
+		Priest = 65,
 		Rogue = 95,
 		Shaman = 70,
-		Warlock = 120,
+		Warlock = 125,
 		Warrior = 60,
 		
 		raceLabel = 60,
@@ -354,4 +314,36 @@ L.Gratitude = {
 }
 
 
-FGI.L["ruRU"] = L
+--[[-------------------------------------------------------------------------------------
+								UNIQUE FOR CLASSIC VERSION
+]]---------------------------------------------------------------------------------------
+L.SYSTEM.class = {
+	["Druid"] = LOCALIZED_CLASS_NAMES_MALE.DRUID,
+	["Hunter"] = LOCALIZED_CLASS_NAMES_MALE.HUNTER,
+	["Mage"] = LOCALIZED_CLASS_NAMES_MALE.MAGE,
+	["Paladin"] = LOCALIZED_CLASS_NAMES_MALE.PALADIN,
+	["Priest"] = LOCALIZED_CLASS_NAMES_MALE.PRIEST,
+	["Rogue"] = LOCALIZED_CLASS_NAMES_MALE.ROGUE,
+	["Shaman"] = LOCALIZED_CLASS_NAMES_MALE.SHAMAN,
+	["Warlock"] = LOCALIZED_CLASS_NAMES_MALE.WARLOCK,
+	["Warrior"] = LOCALIZED_CLASS_NAMES_MALE.WARRIOR,
+}
+L.SYSTEM.race = {
+	Horde = {
+		Orc = GetRaceName(2),	--	"Орк"
+		Tauren = GetRaceName(6),	--	"Таурен"
+		Troll = GetRaceName(8),	--	"Тролль"
+		Undead = GetRaceName(5),	--	"Нежить"
+	},
+	Alliance = {
+		Dwarf = GetRaceName(3),	--	"Дворф"
+		Gnome = GetRaceName(7),	--	"Гном"
+		Human = GetRaceName(1),	--	"Человек"
+		NightElf = GetRaceName(4),	--	"Ночной эльф"
+	},
+}
+--[[-------------------------------------------------------------------------------------
+							/	UNIQUE FOR CLASSIC VERSION
+]]---------------------------------------------------------------------------------------
+
+FGI.L.ruRU = L

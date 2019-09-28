@@ -9,17 +9,13 @@ local interface = addon.interface
 local GUI = LibStub("AceGUI-3.0")
 local FastGuildInvite = addon.lib
 local DB
+local fontSize = fn.fontSize
 local debug = fn.debug
 
 local auto_decline = {}
 addon.msgQueue = {}
 
 
-local function fontSize(self, font, size)
-	font = font or settings.Font
-	size = size or settings.FontSize
-	self:SetFont(font, size)
-end
 
 local function btnText(frame)
 	local text = frame.text

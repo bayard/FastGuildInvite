@@ -44,18 +44,12 @@ local function MenuButtons(self)
 	local button = self.value;
 	if (button == "BLACKLIST") then
 		local dropdownFrame = UIDROPDOWNMENU_INIT_MENU;
-		local unit = dropdownFrame.unit;
 		local name = dropdownFrame.name;
 		local server = dropdownFrame.server;
-		local fullname = name;
 		
-		if ( server and ((not unit and GetNormalizedRealmName() ~= server) or (unit and UnitRealmRelationship(unit) ~= LE_REALM_RELATION_SAME)) ) then
-			fullname = name.."-"..server;
-		end
-		
-		fn:blackList(fullname)
-		-- interface.blackList:updateList()
-		StaticPopup_Show("FGI_BLACKLIST_CHANGE", _,_,  {name = fullname})
+		fn:blackList(name)
+		interface.blackList:updateList()
+		StaticPopup_Show("FGI_BLACKLIST_CHANGE", _,_,  {name = name})
 		
 	elseif (button == "GUILD_INVITE") then
 		local dropdownFrame = UIDROPDOWNMENU_INIT_MENU;
@@ -67,13 +61,13 @@ local function MenuButtons(self)
 end
 
 local FGIBlackList = CreateFrame("Frame","FGIMenuButtons")
-FGIBlackList:SetScript("OnEvent", function() hooksecurefunc("UnitPopup_OnClick", MenuButtons) end)
+-- FGIBlackList:SetScript("OnEvent", function() hooksecurefunc("UnitPopup_OnClick", MenuButtons) end)
 FGIBlackList:RegisterEvent("PLAYER_LOGIN")
 
 local PopupUnits = {}
 
-UnitPopupButtons["BLACKLIST"] = { text = "FGI - Black List",}
-UnitPopupButtons["GUILD_INVITE"] = { text = "FGI - Guild Invite",}
+UnitPopupButtons["BLACKLIST"] = { text = "FGI - Black List"}
+UnitPopupButtons["GUILD_INVITE"] = { text = "FGI - Guild Invite"}
 
 for i,UPMenus in pairs(UnitPopupMenus) do
 	for j=1, #UPMenus do
@@ -86,6 +80,7 @@ for i,UPMenus in pairs(UnitPopupMenus) do
 		end
 	end
 end
+
 local frame = CreateFrame("Frame")
 frame:RegisterEvent("CHAT_MSG_SYSTEM")
 frame:SetScript("OnEvent", function(...)
@@ -225,36 +220,45 @@ function FastGuildInvite:OnInitialize()
 	table.insert(debugDB, {})
 	addon.debugDB = debugDB[#debugDB]
 	
+--	mainFrame settings
 	DB.inviteType = DB.inviteType or 1
-	
 	DB.lowLimit = DB.lowLimit or FGI_MINLVL
 	DB.highLimit = DB.highLimit or FGI_MAXLVL
-	DB.raceFilterVal = DB.raceFilterVal or FGI_DEFAULT_RACEFILTERSTART
-	DB.classFilterVal = DB.classFilterVal or FGI_DEFAULT_CLASSFILTERSTART
-	DB.searchInterval = DB.searchInterval or FGI_DEFAULT_SEARCHINTERVAL
-	
-	DB.backgroundRun = DB.backgroundRun or false
+		-- DB.raceFilterVal = DB.raceFilterVal or FGI_DEFAULT_RACEFILTERSTART
+		-- DB.classFilterVal = DB.classFilterVal or FGI_DEFAULT_CLASSFILTERSTART
+		-- DB.searchInterval = DB.searchInterval or FGI_DEFAULT_SEARCHINTERVAL
+		-- DB.backgroundRun = DB.backgroundRun or false
 	DB.enableFilters = DB.enableFilters or false
 	DB.customWho = DB.customWho or false
-	
+--	mainFrame settings
+
+--	settings
 	DB.addonMSG = DB.addonMSG or false
 	DB.systemMSG = DB.systemMSG or false
 	DB.sendMSG = DB.sendMSG or false
 	DB.keyBind = istable(DB.keyBind) and DB.keyBind or {invite = false, nextSearch = false}
 	DB.rememberAll = DB.rememberAll or false
 	DB.clearDBtimes = DB.clearDBtimes or 3
-	
+--	settings
+
+--	message
 	DB.messageList = istable(DB.messageList) and DB.messageList or {}
 	if DB.messageList[0] then table.insert(DB.messageList, DB.messageList[0]);DB.messageList[0] = nil end
 	DB.curMessage = math.max(DB.curMessage or 1, 1)
+--	message
 	
+-- DATA
 	DB.alredySended = istable(DB.alredySended) and DB.alredySended or {}
 	DB.filtersList = istable(DB.filtersList) and DB.filtersList or {}
 	DB.blackList = istable(DB.blackList) and DB.blackList or {}
 	DB.leave = istable(DB.leave) and DB.leave or {}
 	DB.customWhoList = istable(DB.customWhoList) and DB.customWhoList or {"1-15 c-\"Class\" r-\"Race\""}
 	
+	DB.minimap = istable(DB.minimap) and DB.minimap or {}
+	DB.minimap.hide = DB.minimap.hide or false
+	
 	DB.debug = DB.debug or false
+-- DATA
 	
 	if DB.clearDBtimes>1 then
 		for k,v in pairs(DB.alredySended) do	-- delete player from sended DB after "FGI_RESETSENDDBTIME"
@@ -264,8 +268,6 @@ function FastGuildInvite:OnInitialize()
 		end
 	end
 
-	DB.minimap = istable(DB.minimap) and DB.minimap or {}
-	DB.minimap.hide = DB.minimap.hide or false
 	
 	icon:Register("FGI", addon.dataBroker, DB.minimap)
 	fn:initDB()
@@ -315,7 +317,6 @@ function Console:FGIdebugHelp()
 	if not addon.debug then return end
 	print("/fgidebug show - show debug frame")
 	print("/fgidebug load - load current debug info")
-	-- print("")
 end
 
 function Console:FGIInput(str)
@@ -330,7 +331,7 @@ function Console:FGIInput(str)
 		toggleDebug()
 	elseif str == 'resetDB' then DB.alredySended = {}
 	elseif str == 'resetWindowsPos' then
-		
+		fn:resetWindowsPos()
 		interface.mainFrame:ClearAllPoints()
 		interface.gratitudeFrame:ClearAllPoints()
 		interface.scanFrame:ClearAllPoints()

@@ -8,14 +8,10 @@ local interface = addon.interface
 local GUI = LibStub("AceGUI-3.0")
 local FastGuildInvite = addon.lib
 local DB
+local fontSize = fn.fontSize
 
 local synch, leftColumn, rightColumn
 
-local function fontSize(self, font, size)
-	font = font or settings.Font
-	size = size or settings.FontSize
-	self:SetFont(font, size)
-end
 
 local function btnText(frame)
 	local text = frame.text
@@ -159,20 +155,6 @@ end)
 synch:AddChild(frame)
 
 
-synch.saveButton = GUI:Create("Button")
-local frame = synch.saveButton
-frame:SetText(L.interface["Сохранить"])
-fontSize(frame.text)
-btnText(frame)
-frame:SetWidth(size.saveButton)
-frame:SetHeight(40)
-frame:SetCallback("OnClick", function()
-	
-	interface.synch:Hide()
-end)
-synch:AddChild(frame)
-
-
 
 -- set points
 local frame = CreateFrame('Frame')
@@ -197,8 +179,8 @@ frame:SetScript('OnEvent', function()
 	synch.rightColumn:ClearAllPoints()
 	synch.rightColumn:SetPoint("TOPRIGHT", synch.frame, "TOPRIGHT", -10, -30)
 	
-	synch.saveButton:ClearAllPoints()
-	synch.saveButton:SetPoint("BOTTOM", synch.frame, "BOTTOM", 0, 10)
+	synch.sendRequest:ClearAllPoints()
+	synch.sendRequest:SetPoint("BOTTOM", synch.frame, "BOTTOM", 0, 10)
 	
 	
 	synch:Hide()
