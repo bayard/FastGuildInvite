@@ -9,16 +9,10 @@ local interface = addon.interface
 local GUI = LibStub("AceGUI-3.0")
 local FastGuildInvite = addon.lib
 local DB
-
-local function fontSize(self, font, size)
-	font = font or settings.Font
-	size = size or settings.FontSize
-	-- self:SetFont(font, size)
-end
+local fontSize = fn.fontSize
 
 interface.settingsFrame = GUI:Create("ClearFrame")
 local settingsFrame = interface.settingsFrame
--- settingsFrame:Hide()
 settingsFrame:SetTitle("FGI Settings")
 settingsFrame:SetWidth(size.settingsFrameW)
 settingsFrame:SetHeight(size.settingsFrameH)
@@ -202,6 +196,17 @@ frame:SetCallback("OnClick", function()
 end)
 settingsButtonsGRP:AddChild(frame)
 
+settingsButtonsGRP.synchBtn = GUI:Create("Button")
+local frame = settingsButtonsGRP.synchBtn
+frame:SetText(L.interface["Синхронизация"])
+fontSize(frame.text)
+frame:SetWidth(size.synchBtn)
+frame:SetHeight(40)
+frame:SetCallback("OnClick", function()
+	interface.synch:Show()
+end)
+settingsButtonsGRP:AddChild(frame)
+
 
 
 
@@ -211,6 +216,12 @@ local frame = CreateFrame('Frame')
 frame:RegisterEvent('PLAYER_LOGIN')
 frame:SetScript('OnEvent', function()
 	DB = addon.DB
+	if DB.settingsFrame then
+		interface.settingsFrame:ClearAllPoints()
+		interface.settingsFrame:SetPoint(DB.settingsFrame.point, UIParent, DB.settingsFrame.relativePoint, DB.settingsFrame.xOfs, DB.settingsFrame.yOfs)
+	else
+		interface.settingsFrame:SetPoint("CENTER", UIParent)
+	end
 	
 	settingsCheckBoxGRP.addonMSG:SetValue(true)
 	C_Timer.After(0.1, function()

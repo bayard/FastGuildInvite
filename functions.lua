@@ -14,6 +14,7 @@ local DB
 local debugDB
 local nextSearch
 
+
 addon.searchInfo = {unique = {0}, sended = {0}, invited = {0}, filtered = {0}}
 local mt = {
 	__call = function(self,n)
@@ -29,6 +30,91 @@ end});
 
 local time, next = time, next
 
+--[[-------------------------------------------------------------------------------------
+								UNIQUE FOR RETAIL VERSION
+]]---------------------------------------------------------------------------------------
+local RaceClassCombo = {
+	Orc = {CLASS.Warrior,CLASS.Hunter,CLASS.Rogue,CLASS.Shaman,CLASS.Mage,CLASS.Warlock,CLASS.Monk,CLASS.DeathKnight},
+	Undead = {CLASS.Warrior,CLASS.Hunter,CLASS.Rogue,CLASS.Priest,CLASS.Mage,CLASS.Warlock,CLASS.Monk,CLASS.DeathKnight},
+	Tauren = {CLASS.Warrior,CLASS.Paladin,CLASS.Hunter,CLASS.Priest,CLASS.Shaman,CLASS.Monk,CLASS.Druid,CLASS.DeathKnight},
+	Troll = {CLASS.Warrior,CLASS.Hunter,CLASS.Rogue,CLASS.Priest,CLASS.Shaman,CLASS.Mage,CLASS.Warlock,CLASS.Monk,CLASS.Druid,CLASS.DeathKnight},
+	Human = {CLASS.Warrior,CLASS.Paladin,CLASS.Hunter,CLASS.Rogue,CLASS.Priest,CLASS.Mage,CLASS.Warlock,CLASS.Monk,CLASS.DeathKnight},
+	Dwarf = {CLASS.Warrior,CLASS.Paladin,CLASS.Hunter,CLASS.Rogue,CLASS.Priest,CLASS.Shaman,CLASS.Mage,CLASS.Warlock,CLASS.Monk,CLASS.DeathKnight},
+	NightElf = {CLASS.Warrior,CLASS.Hunter,CLASS.Rogue,CLASS.Priest,CLASS.Mage,CLASS.Monk,CLASS.Druid,CLASS.DemonHunter,CLASS.DeathKnight},
+	Gnome = {CLASS.Warrior,CLASS.Hunter,CLASS.Rogue,CLASS.Priest,CLASS.Mage,CLASS.Warlock,CLASS.Monk,CLASS.DeathKnight},
+	BloodElf = {CLASS.Warrior,CLASS.Paladin,CLASS.Hunter,CLASS.Priest,CLASS.Mage,CLASS.Warlock,CLASS.Monk,CLASS.DemonHunter,CLASS.DeathKnight},
+	Goblin = {CLASS.Warrior,CLASS.Hunter,CLASS.Rogue,CLASS.Priest,CLASS.Shaman,CLASS.Mage,CLASS.Warlock,CLASS.DeathKnight},
+	Nightborne = {CLASS.Warrior,CLASS.Hunter,CLASS.Rogue,CLASS.Priest,CLASS.Mage,CLASS.Warlock,CLASS.Monk},
+	HightmountainTauren = {CLASS.Warrior,CLASS.Hunter,CLASS.Shaman,CLASS.Monk,CLASS.Druid},
+	MagharOrc = {CLASS.Warrior,CLASS.Hunter,CLASS.Rogue,CLASS.Priest,CLASS.Shaman,CLASS.Mage,CLASS.Monk},
+	Pandaren = {CLASS.Warrior,CLASS.Hunter,CLASS.Rogue,CLASS.Priest,CLASS.Shaman,CLASS.Mage,CLASS.Monk},
+	Draenei = {CLASS.Warrior,CLASS.Paladin,CLASS.Hunter,CLASS.Priest,CLASS.Shaman,CLASS.Mage,CLASS.Monk,CLASS.DeathKnight},
+	Worgen = {CLASS.Warrior,CLASS.Hunter,CLASS.Rogue,CLASS.Priest,CLASS.Mage,CLASS.Warlock,CLASS.Druid,CLASS.DeathKnight},
+	VoidElf = {CLASS.Warrior,CLASS.Hunter,CLASS.Rogue,CLASS.Priest,CLASS.Mage,CLASS.Warlock,CLASS.Monk},
+	LightforgedDraenei = {CLASS.Warrior,CLASS.Paladin,CLASS.Hunter,CLASS.Priest,CLASS.Mage},
+	DarkIronDwarf = {CLASS.Warrior,CLASS.Paladin,CLASS.Hunter,CLASS.Rogue,CLASS.Priest,CLASS.Shaman,CLASS.Mage,CLASS.Warlock,CLASS.Monk},
+	KulTiran = {CLASS.Warrior,CLASS.Hunter,CLASS.Rogue,CLASS.Priest,CLASS.Shaman,CLASS.Mage,CLASS.Monk,CLASS.Druid,},
+	ZandalariTroll = {CLASS.Warrior,CLASS.Paladin,CLASS.Hunter,CLASS.Rogue,CLASS.Priest,CLASS.Shaman,CLASS.Mage,CLASS.Monk,CLASS.Druid,},	
+}
+
+function fn:FilterChange(id)
+	local filtersFrame = interface.filtersFrame
+	local addfilterFrame = interface.addfilterFrame
+	local filter = FGI.DB.filtersList[id]
+	local class = filter.classFilter
+	local raceFilter = filter.raceFilter
+	
+	filtersFrame:Hide()
+	addfilterFrame:Show()
+	
+	if not class then
+		addfilterFrame.classesCheckBoxIgnore:SetValue(true)
+	else
+		addfilterFrame.classesCheckBoxIgnore:SetValue(false)
+		addfilterFrame.classesCheckBoxDruid:SetValue(class[CLASS.Druid] or false)
+		addfilterFrame.classesCheckBoxHunter:SetValue(class[CLASS.Hunter] or false)
+		addfilterFrame.classesCheckBoxMage:SetValue(class[CLASS.Mage] or false)
+		addfilterFrame.classesCheckBoxPaladin:SetValue(class[CLASS.Paladin] or false)
+		addfilterFrame.classesCheckBoxPriest:SetValue(class[CLASS.Priest] or false)
+		addfilterFrame.classesCheckBoxRogue:SetValue(class[CLASS.Rogue] or false)
+		addfilterFrame.classesCheckBoxShaman:SetValue(class[CLASS.Shaman] or false)
+		addfilterFrame.classesCheckBoxWarlock:SetValue(class[CLASS.Warlock] or false)
+		addfilterFrame.classesCheckBoxWarrior:SetValue(class[CLASS.Warrior] or false)
+		addfilterFrame.classesCheckBoxDeathKnight:SetValue(class[CLASS.DeathKnight] or false)
+		addfilterFrame.classesCheckBoxDemonHunter:SetValue(class[CLASS.DemonHunter] or false)
+		addfilterFrame.classesCheckBoxMonk:SetValue(class[CLASS.Monk] or false)
+	end
+	
+	if not raceFilter then 
+		addfilterFrame.rasesCheckBoxIgnore:SetValue(true)
+	else
+		addfilterFrame.rasesCheckBoxIgnore:SetValue(false)
+		for i=1, #addfilterFrame.rasesCheckBoxRace do
+			local race = addfilterFrame.rasesCheckBoxRace[i]
+			local name = race:GetLabel()
+			race:SetValue(raceFilter[name] and true or false)
+		end
+	end
+	
+	addfilterFrame.filterNameEdit:SetText(id)
+	addfilterFrame.filterNameEdit:SetDisabled(true)
+	addfilterFrame.excludeNameEditBox:SetText(filter.filterByName or "")
+	addfilterFrame.lvlRangeEditBox:SetText(filter.lvlRange or "")
+	addfilterFrame.excludeRepeatEditBox:SetText(filter.letterFilter or "")
+	
+	fn:classIgnoredToggle()
+	fn:racesIgnoredToggle()
+	addfilterFrame.change = true
+end
+
+function fn.fontSize(frame, font, size)
+	font = font or settings.Font
+	size = size or settings.FontSize
+	-- frame:SetFont(font, size)
+end
+--[[-------------------------------------------------------------------------------------
+								UNIQUE FOR RETAIL VERSION
+]]---------------------------------------------------------------------------------------
 
 
 
@@ -46,10 +132,6 @@ frame:SetScript("OnEvent", function(_,_,msg)
 		end
 	end
 end)
-
---ERR_GUILD_INVITE_S,ERR_GUILD_DECLINE_S,ERR_ALREADY_IN_GUILD_S,ERR_ALREADY_INVITED_TO_GUILD_S,ERR_GUILD_DECLINE_AUTO_S,ERR_GUILD_JOIN_S,ERR_GUILD_PLAYER_NOT_FOUND_S,ERR_CHAT_PLAYER_NOT_FOUND_S
---	CanGuildInvite()
--- LOCALIZED_CLASS_NAMES_MALE
 
 function fn:initDB()
 	DB = addon.DB
@@ -91,8 +173,8 @@ function fn:blackListAutoKick()
 	end)
 end
 
-function fn:blackList(name)
-	DB.blackList[name] = L.interface.defaultReason
+function fn:blackList(name, reason)
+	DB.blackList[name] = reason or L.interface.defaultReason
 	print(format("%s%s|r", color.red, format(L.interface["Игрок %s добавлен в черный список."], name)))
 	fn:blacklistKick()
 end
@@ -147,55 +229,6 @@ function fn:FiltersInit()
 	end
 end
 
-function fn:FilterChange(id)
-	local filtersFrame = interface.filtersFrame
-	local addfilterFrame = interface.addfilterFrame
-	local filter = FGI.DB.filtersList[id]
-	local class = filter.classFilter
-	local raceFilter = filter.raceFilter
-	
-	filtersFrame:Hide()
-	addfilterFrame:Show()
-	
-	if not class then
-		addfilterFrame.classesCheckBoxIgnore:SetValue(true)
-	else
-		addfilterFrame.classesCheckBoxIgnore:SetValue(false)
-		addfilterFrame.classesCheckBoxDruid:SetValue(class[CLASS.Druid] or false)
-		addfilterFrame.classesCheckBoxHunter:SetValue(class[CLASS.Hunter] or false)
-		addfilterFrame.classesCheckBoxMage:SetValue(class[CLASS.Mage] or false)
-		addfilterFrame.classesCheckBoxPaladin:SetValue(class[CLASS.Paladin] or false)
-		addfilterFrame.classesCheckBoxPriest:SetValue(class[CLASS.Priest] or false)
-		addfilterFrame.classesCheckBoxRogue:SetValue(class[CLASS.Rogue] or false)
-		addfilterFrame.classesCheckBoxShaman:SetValue(class[CLASS.Shaman] or false)
-		addfilterFrame.classesCheckBoxWarlock:SetValue(class[CLASS.Warlock] or false)
-		addfilterFrame.classesCheckBoxWarrior:SetValue(class[CLASS.Warrior] or false)
-		addfilterFrame.classesCheckBoxDeathKnight:SetValue(class[CLASS.DeathKnight] or false)
-		addfilterFrame.classesCheckBoxDemonHunter:SetValue(class[CLASS.DemonHunter] or false)
-		addfilterFrame.classesCheckBoxMonk:SetValue(class[CLASS.Monk] or false)
-	end
-	
-	if not raceFilter then 
-		addfilterFrame.rasesCheckBoxIgnore:SetValue(true)
-	else
-		addfilterFrame.rasesCheckBoxIgnore:SetValue(false)
-		for i=1, #addfilterFrame.rasesCheckBoxRace do
-			local race = addfilterFrame.rasesCheckBoxRace[i]
-			local name = race:GetLabel()
-			race:SetValue(raceFilter[name] and true or false)
-		end
-	end
-	
-	addfilterFrame.filterNameEdit:SetText(id)
-	addfilterFrame.filterNameEdit:SetDisabled(true)
-	addfilterFrame.excludeNameEditBox:SetText(filter.filterByName or "")
-	addfilterFrame.lvlRangeEditBox:SetText(filter.lvlRange or "")
-	addfilterFrame.excludeRepeatEditBox:SetText(filter.letterFilter or "")
-	
-	fn:classIgnoredToggle()
-	fn:racesIgnoredToggle()
-	addfilterFrame.change = true
-end
 
 function fn:FiltersUpdate()
 	for i=1, FGI_FILTERSLIMIT do
@@ -237,30 +270,7 @@ function fn:FiltersUpdate()
 end
 
 
-local RaceClassCombo = {
-	Orc = {CLASS.Warrior,CLASS.Hunter,CLASS.Rogue,CLASS.Shaman,CLASS.Mage,CLASS.Warlock,CLASS.Monk,CLASS.DeathKnight},
-	Undead = {CLASS.Warrior,CLASS.Hunter,CLASS.Rogue,CLASS.Priest,CLASS.Mage,CLASS.Warlock,CLASS.Monk,CLASS.DeathKnight},
-	Tauren = {CLASS.Warrior,CLASS.Paladin,CLASS.Hunter,CLASS.Priest,CLASS.Shaman,CLASS.Monk,CLASS.Druid,CLASS.DeathKnight},
-	Troll = {CLASS.Warrior,CLASS.Hunter,CLASS.Rogue,CLASS.Priest,CLASS.Shaman,CLASS.Mage,CLASS.Warlock,CLASS.Monk,CLASS.Druid,CLASS.DeathKnight},
-	Human = {CLASS.Warrior,CLASS.Paladin,CLASS.Hunter,CLASS.Rogue,CLASS.Priest,CLASS.Mage,CLASS.Warlock,CLASS.Monk,CLASS.DeathKnight},
-	Dwarf = {CLASS.Warrior,CLASS.Paladin,CLASS.Hunter,CLASS.Rogue,CLASS.Priest,CLASS.Shaman,CLASS.Mage,CLASS.Warlock,CLASS.Monk,CLASS.DeathKnight},
-	NightElf = {CLASS.Warrior,CLASS.Hunter,CLASS.Rogue,CLASS.Priest,CLASS.Mage,CLASS.Monk,CLASS.Druid,CLASS.DemonHunter,CLASS.DeathKnight},
-	Gnome = {CLASS.Warrior,CLASS.Hunter,CLASS.Rogue,CLASS.Priest,CLASS.Mage,CLASS.Warlock,CLASS.Monk,CLASS.DeathKnight},
-	BloodElf = {CLASS.Warrior,CLASS.Paladin,CLASS.Hunter,CLASS.Priest,CLASS.Mage,CLASS.Warlock,CLASS.Monk,CLASS.DemonHunter,CLASS.DeathKnight},
-	Goblin = {CLASS.Warrior,CLASS.Hunter,CLASS.Rogue,CLASS.Priest,CLASS.Shaman,CLASS.Mage,CLASS.Warlock,CLASS.DeathKnight},
-	Nightborne = {CLASS.Warrior,CLASS.Hunter,CLASS.Rogue,CLASS.Priest,CLASS.Mage,CLASS.Warlock,CLASS.Monk},
-	HightmountainTauren = {CLASS.Warrior,CLASS.Hunter,CLASS.Shaman,CLASS.Monk,CLASS.Druid},
-	MagharOrc = {CLASS.Warrior,CLASS.Hunter,CLASS.Rogue,CLASS.Priest,CLASS.Shaman,CLASS.Mage,CLASS.Monk},
-	Pandaren = {CLASS.Warrior,CLASS.Hunter,CLASS.Rogue,CLASS.Priest,CLASS.Shaman,CLASS.Mage,CLASS.Monk},
-	Draenei = {CLASS.Warrior,CLASS.Paladin,CLASS.Hunter,CLASS.Priest,CLASS.Shaman,CLASS.Mage,CLASS.Monk,CLASS.DeathKnight},
-	Worgen = {CLASS.Warrior,CLASS.Hunter,CLASS.Rogue,CLASS.Priest,CLASS.Mage,CLASS.Warlock,CLASS.Druid,CLASS.DeathKnight},
-	VoidElf = {CLASS.Warrior,CLASS.Hunter,CLASS.Rogue,CLASS.Priest,CLASS.Mage,CLASS.Warlock,CLASS.Monk},
-	LightforgedDraenei = {CLASS.Warrior,CLASS.Paladin,CLASS.Hunter,CLASS.Priest,CLASS.Mage},
-	DarkIronDwarf = {CLASS.Warrior,CLASS.Paladin,CLASS.Hunter,CLASS.Rogue,CLASS.Priest,CLASS.Shaman,CLASS.Mage,CLASS.Warlock,CLASS.Monk},
-	KulTiran = {CLASS.Warrior,CLASS.Hunter,CLASS.Rogue,CLASS.Priest,CLASS.Shaman,CLASS.Mage,CLASS.Monk,CLASS.Druid,},
-	ZandalariTroll = {CLASS.Warrior,CLASS.Paladin,CLASS.Hunter,CLASS.Rogue,CLASS.Priest,CLASS.Shaman,CLASS.Mage,CLASS.Monk,CLASS.Druid,},
-	
-}
+
 
 function fn:msgMod(msg)
 	if not msg then return end
@@ -304,6 +314,7 @@ end
 
 function fn:rememberPlayer(name)
 	DB.alredySended[name] = time({year = date("%Y"), month = date("%m"), day = date("%d")})
+	addon.search.tempSendedInvites[name] = nil
 	debug(format("Remember: %s",name))
 end
 
@@ -313,7 +324,7 @@ function fn:invitePlayer(noInv)
 	if DB.inviteType == 2 and not noInv then
 		addon.msgQueue[list[1].name] = true
 	elseif DB.inviteType == 3 and not noInv then
-		local msg = DB.messageList[math.random(1, math.max(#DB.messageList, 1))]
+		local msg = DB.messageList[math.random(1, #DB.messageList)]
 		debug(format("Send whisper: %s %s",list[1].name, msg))
 		fn:sendWhisper(msg, list[1].name)
 	end
@@ -324,6 +335,7 @@ function fn:invitePlayer(noInv)
 	if not noInv or DB.rememberAll then
 		fn:rememberPlayer(list[1].name)
 	end
+	C_ChatInfo.SendAddonMessage(FGISYNCH_PREFIX, "REMEMBER|"..list[1].name, "GUILD")
 	if not noInv then
 		addon.searchInfo.sended()
 	end
@@ -339,15 +351,6 @@ end
 
 local Searchframe = CreateFrame('Frame')
 
-local function searchIntervalTimer(onOff, timer)
-	if onOff then
-		 addon.search.intervalTimer = C_Timer.NewTicker(timer or FGI_SCANINTERVALTIME, function()nextSearch()end)
-	else
-		if addon.search.intervalTimer then
-			addon.search.intervalTimer:Cancel()
-		end
-	end
-end
 
 local frame = CreateFrame('Frame')
 frame:RegisterEvent('PLAYER_LOGIN')
@@ -369,6 +372,12 @@ frame:SetScript('OnEvent', function()
 		end
 	end
 	end)
+end)
+
+local frame = CreateFrame('Frame')
+frame:RegisterEvent('PLAYER_ENTERING_WORLD')
+frame:SetScript('OnEvent', function()
+	C_ChatInfo.SendAddonMessage(FGISYNCH_PREFIX, "LOGIN|GET_FGI_USERS", "GUILD")
 end)
 
 local function getSearchDeepLvl(query)
@@ -583,6 +592,7 @@ local function filtered(player)
 	end
 	return false
 end
+
 local function addNewPlayer(t, p)
 	local blackList = false
 	for i=1,#DB.blackList do
@@ -625,25 +635,26 @@ end
 local libWho = {whoQuery='', doHide=false, isFGI=false}
 local function GetWho(query)
 	libWho.isFGI = true
+	libWho.whoQuery = query
+	-- FriendsTabHeader	GuildFrame	RaidFrame
 	libWho.doHide = (not WhoFrame:IsShown()) and (not FriendsFrame:IsShown())
 	C_FriendList.SetWhoToUi(true)
 	C_FriendList.SendWho(query)
+	WhoFrameEditBox:SetText(query)
 end
 
-local function searchWhoResultCallback(query, results, complete)
+local function searchWhoResultCallback(query, results)
+	local searchLvl = getSearchDeepLvl(query)
 	if #results >= FGI_MAXWHORETURN and DB.customWho then
 		print(format(L.FAQ.error["Поиск вернул 50 или более результатов, рекомендуется изменить настройки поиска. Запрос: %s"], query))
+		debug(format("Query (%s) return 50 or more results; SearchLevel-%d", query, searchLvl))
 	end
 	addon.search.progress = addon.search.progress + 1
-	-- print(query, #results)
 	debug(format("Query %s", query))
-	local searchLvl = getSearchDeepLvl(query)
 	if searchLvl == 1 and #results>=FGI_MAXWHORETURN then
 		searchAddWhoList(query,1)
-		debug(format("Query (%s) return 50 or more results; SearchLevel-%d", query, searchLvl))
 	elseif searchLvl == 2 and #results>=FGI_MAXWHORETURN then
 		searchAddWhoList(query,2)
-		debug(format("Query (%s) return 50 or more results; SearchLevel-%d", query, searchLvl))
 	-- 3lvl can't modified
 	end
 	
@@ -675,7 +686,7 @@ function fn:nextSearch()
 end
 
 local function returnWho(result)
-	searchWhoResultCallback(whoQuery, result)
+	searchWhoResultCallback(libWho.whoQuery, result)
 end
 
 local whoFrame = CreateFrame('Frame')
@@ -709,10 +720,6 @@ whoFrame:SetScript("OnEvent", function()
 	C_FriendList.SetWhoToUi(false)
 	returnWho(result)
 end)
-local function test(query)
-	whoQuery = query
-end
-hooksecurefunc(C_FriendList, "SendWho", test);
 
 function dump(t,l)
   local str = '{'
@@ -779,30 +786,163 @@ local function hideSysMsg()
 	return true
 end
 
-function fn:StartSearch(timer)
-	ChatFrame_AddMessageEventFilter("CHAT_MSG_WHISPER_INFORM", hideWhisper)
-	if DB.systemMSG then ChatFrame_AddMessageEventFilter("CHAT_MSG_SYSTEM", hideSysMsg) end
-	if addon.search.state == "pause" then
-		local min,max = interface.scanFrame.progressBar:GetMinMax()
-		local shift = addon.search.timeShift>0 and GetTime()-addon.search.timeShift or 0
-		interface.scanFrame.progressBar:SetMinMax(min+shift, max+shift)
-		addon.search.timeShift = 0
+
+--[[----------------------------------------------------------------------------------------------
+									Synch
+]]------------------------------------------------------------------------------------------------
+FGI.ReceiveSynchStr = {[L.interface["Все"]] = {}}
+ReceiveSynchStr = FGI.ReceiveSynchStr
+local writeReceiveData = {
+	blacklist = function(arr)
+		for i=1, #arr do
+			local name, reason = arr[i][1], arr[i][2]
+			if not DB.blackList[name] then
+				interface.blackList:add({name=name, reason=reason})
+			end
+			DB.blackList[name] = reason
+		end
+		interface.blackList:update()
+	end,
+	invitations = function(arr)
+		for i=1, #arr do
+			local name, time = arr[i][1], tonumber(arr[i][2])
+			DB.alredySended[name] = math.max(time, DB.alredySended[name] or 0)
+		end
+	end,
+}
+
+local function readSynchStr(sender, mod)
+--print(str)
+	local str = ReceiveSynchStr[sender][mod]
+	local arr = {}
+	for S in str:gmatch("(.-);") do
+		local n, r = S:match("([^,]+),(.+)")
+		r = r:gsub("~", ',')
+		table.insert(arr, {n,r})
 	end
-	addon.search.state = "start"
-	searchIntervalTimer(true, timer)
-	fn:nextSearch()
-	Searchframe:SetScript("OnUpdate", SearchOnUpdate)
+	
+	if writeReceiveData[mod] then
+		writeReceiveData[mod](arr)
+	else
+		print(color.red.."writeReceiveData WRONG MOD|r")
+	end
+	ReceiveSynchStr[sender][mod] = nil
 end
 
-function fn:PauseSearch()
-	ChatFrame_RemoveMessageEventFilter("CHAT_MSG_WHISPER_INFORM", hideWhisper)
-	ChatFrame_RemoveMessageEventFilter("CHAT_MSG_SYSTEM", hideSysMsg)
-	if addon.search.state == 'start' then
-		addon.search.timeShift = GetTime()
+local function getSynchRequest(requestMSG, sender)
+	requestMSG = L.interface.synchBaseType[requestMSG]
+	if not requestMSG then
+		return C_ChatInfo.SendAddonMessage(FGISYNCH_PREFIX, 'ERROR|'..L.interface.synchState["Ошибка типа синхронизации"], "WHISPER", sender)
 	end
-	addon.search.state = "pause"
-	searchIntervalTimer(false)
-	Searchframe:SetScript("OnUpdate", nil)
-	interface.scanFrame.pausePlay:SetDisabled(true)
-	C_Timer.After(FGI_SCANINTERVALTIME, function() interface.scanFrame.pausePlay:SetDisabled(false) end)
+	C_ChatInfo.SendAddonMessage(FGISYNCH_PREFIX, 'SUCCESS|'..L.interface.synchState["Начало синхронизации"], "WHISPER", sender)
+	
+	local SendSynchStr = ''
+	if requestMSG=='blacklist' then
+		for k,v in pairs(DB.blackList) do
+			SendSynchStr = string.format("%s%s,%s;", SendSynchStr, k, tostring(v):gsub(',','~'))
+		end
+	elseif requestMSG=='invitations' then
+		for k,v in pairs(DB.alredySended) do
+			SendSynchStr = string.format("%s%s,%s;", SendSynchStr, k, tostring(v))
+		end
+	end
+	if SendSynchStr=='' then return end
+	fn.SendSynchArray(SendSynchStr, requestMSG, sender)
+	return
+end
+
+local synchFrame = CreateFrame("Frame")
+synchFrame:RegisterEvent("CHAT_MSG_ADDON")
+synchFrame:SetScript("OnEvent", function(self, event, ...)
+	local prefix, msg, channel, sender = ...
+	msg = tostring(msg)
+	if prefix ~= FGISYNCH_PREFIX then return end
+	-- print(prefix, msg, channel, sender)
+	sender = sender:match("([^-]+)")
+	if sender == UnitName('player') then return end
+	local requestType, requestMSG = msg:match("([^|]+)|(.+)")
+	
+	if channel == "WHISPER" then
+		if requestType == "ERROR" then
+			interface.synch.ticker:responseReceived()
+			return interface.synch.infoLabel:Error(requestMSG)
+		elseif requestType == "SUCCESS" then
+			interface.synch.ticker:responseReceived()
+			return interface.synch.infoLabel:Success(requestMSG)
+		elseif requestType == "GET" then
+			return getSynchRequest(requestMSG, sender)
+		elseif requestType == "LOGIN" and requestMSG == "GET_FGI_USERS" then
+			return interface.synch.rightColumn.synchPlayerReadyDrop:AddItem(sender, sender)
+		end
+		
+		interface.synch.timer:Cancel()
+		local Start, End = msg:find("%(.+%)")
+		End = End or 0
+		local s,e,mod = msg:sub(Start, End):match("(%d+)[^%d](%d+);(%w+)")
+		if not mod then return end
+		s, e = tonumber(s), tonumber(e)
+		interface.synch.infoLabel:Success(format(L.interface.synchState["Синхронизация с %s.\n %d/%d"], sender,s,e))
+		if s == 1 then ReceiveSynchStr[sender] = { [mod] = ''} end
+			msg = msg:sub(End+1, -1)
+			ReceiveSynchStr[sender][mod] = ReceiveSynchStr[sender][mod]..msg
+		if s == e then
+			readSynchStr(sender, mod)
+			interface.synch.infoLabel:Success(format(L.interface.synchState["Данные синхронизированы с игроком %s."], sender))
+		end
+		
+	elseif channel == "GUILD" then
+		if requestType == "GET" then
+			getSynchRequest(requestMSG, sender)
+		elseif requestType == "LOGIN" and requestMSG == "GET_FGI_USERS" then
+			interface.synch.rightColumn.synchPlayerReadyDrop:AddItem(sender, sender)
+			C_ChatInfo.SendAddonMessage(FGISYNCH_PREFIX, "LOGIN|GET_FGI_USERS", "WHISPER", sender)
+		elseif requestType == "REMEMBER"then
+			fn:rememberPlayer(requestMSG)
+		end
+	end
+end)
+
+
+function fn.SendSynchArray(str, mod, playerName)
+	local arr = {}
+	local i = 0
+	local step = 250-15-mod:len()-1
+	repeat 
+		table.insert(arr, string.format("(%d/%%d;%s)%s", #arr+1, mod or '', str:sub(i+1,i+step)))
+		i=i+step
+	until i>=str:len()
+	
+	local max = #arr
+	C_Timer.NewTicker(0.05, function()
+	-- for i=1, #arr do
+		if not arr[1] then return end
+		C_ChatInfo.SendAddonMessage(FGISYNCH_PREFIX, string.format(arr[1],max), "WHISPER", playerName)
+		table.remove(arr,1)
+	-- end
+	end, max)
+
+	return arr
+end
+
+function fn:sendSynchRequest(player, type)
+	ReceiveSynchStr[player or L.interface["Все"]].start = GetTime()
+	local start = GetTime()
+	interface.synch.ticker = C_Timer.NewTicker(1,function()
+		local time = math.ceil(start+FGI_MAXSYNCHWAIT-GetTime())
+		interface.synch.infoLabel:During(format(L.interface.synchState["Запрос синхронизации у: %s. %d"], player or L.interface["Все"], time))
+		if time == 0 then return interface.synch.infoLabel:Error(L.interface.synchState["Превышен лимит ожидания ответа"]) end
+	end, FGI_MAXSYNCHWAIT)
+	function interface.synch.ticker:responseReceived()
+		interface.synch.ticker:Cancel()
+		interface.synch.timer = C_Timer.NewTimer(FGI_MAXSYNCHWAIT, function()
+			interface.synch.infoLabel:Error(L.interface.synchState["Превышен лимит ожидания ответа"])
+		end)
+	end
+	if not player then
+		player = L.interface["Все"]
+		
+		C_ChatInfo.SendAddonMessage(FGISYNCH_PREFIX, "GET|"..type, "GUILD")
+	else
+		C_ChatInfo.SendAddonMessage(FGISYNCH_PREFIX, "GET|"..type, "WHISPER", player)
+	end
 end

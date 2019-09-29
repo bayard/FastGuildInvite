@@ -13,6 +13,16 @@ local L = {
 			["show"] = "/fgi show - Open the main window of the addon",
 			["invite"] = "/fgi invite - Invite the first player from the queue",
 			["nextSearch"] = "/fgi nextSearch - Run next scan",
+			["blacklist"] = "/fgibl <Name> - <Reason> - Add a player to the blacklist",
+			["help2"] = "/fgi help2 - Commands with prefix \"!\"",
+		},
+		["help2"] = {
+			"|cff00ff96Commands prefixed with \"|cffff0000!|r|cff00ff96\" created for officers who do not have an add-on installed, these commands can only be used in the officer channel.|r",
+			"The following commands are available in the officer channel:",
+			"!fgi - list of available commands",
+			"!blacklistAdd <Name> - <Reason> - add a player to the blacklist",
+			"!blacklistDelete <Name> - <Reason> - remove player from blacklist",
+			"!blacklistGetList - get the list of players in the black list",
 		},
 		["error"] = {
 			["Вы не состоите в гильдии или у вас нет прав для приглашения."] = "You are not a member of the guild or you do not have permission to invite.",
@@ -86,6 +96,11 @@ local L = {
 		["Чтобы быть отфильтрованным, игрок должен соответствовать критериям ВСЕХ фильтров"] = "To be filtered, the player must meet the criteria of all filters",
 		["Запоминать всех игроков"] = "Remember all players",
 		["Игрок %s найденный в черном списке, находится в вашей гильдии!"] = "Blacklisted %s player is in your guild!",
+		["Данные для синхронизации"] = "Data to sync",
+		["Игрок для синхронизации"] = "Player to sync",
+		["Отправить запрос"] = "Send request",
+		["Синхронизация"] = "Synchronization",
+		["Все"] = "All",
 		["tooltip"] = {
 			["Автоматическое увеличение детализации поиска"] = "Automatically increase search details.",
 			["Введите диапазон уровней для фильтра.\nНапример: %s55%s:%s58%s\nбудут подходить только те игроки, уровень\nкоторых варьируется от %s55%s до %s58%s (включительно)"] = "Enter a range of levels for the filter.\nfor Example:%s55%s:%s58%s\nwill be approached only by those players, the level\nwhich varies from%s55%s to %s58%s (inclusive)",
@@ -109,6 +124,20 @@ local L = {
 			["Только пригласить"] = "Only invite",
 			["Только сообщение"] = "Message only",
 		},
+		["synchType"] = {
+			["Черный список"] = "Black list",
+			["Список приглашенных"] = "Invite list",
+		},
+		["synchState"] = {
+			["Игрок для синхронизации не выбран"] = "No sync player selected",
+			["Данные для синхронизации не выбраны"] = "No sync data selected",
+			["Запрос синхронизации у: %s. %d"] = "Sync Request: %s. %d",
+			["Ошибка типа синхронизации"] = "Sync type error",
+			["Начало синхронизации"] = "Start Sync",
+			["Данные синхронизированы с игроком %s."] = "Данные синхронизированы с игроком %s.",
+			["Синхронизация с %s.\n %d/%d"] = "Sync with %s.\n %d/%d",
+			["Превышен лимит ожидания ответа"] = "Response timeout limit exceeded",
+		},
 		["clearDBtimes"] = {
 			["Отключить"] = "Disable",
 			["1 день"] = "1 day",
@@ -122,6 +151,12 @@ local L = {
 		["c-"] = "c-",
 		["r-"] = "r-",
 	}
+}
+
+
+L.interface["synchBaseType"] = {--		WARNING
+	[L.interface.synchType["Черный список"]] = "blacklist",
+	[L.interface.synchType["Список приглашенных"]] = "invitations",
 }
 
 
