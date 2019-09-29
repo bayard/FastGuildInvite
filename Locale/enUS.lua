@@ -2,21 +2,21 @@
   -- return
 -- end
 local L = {
-	["FAQ"] = {
-		["help"] = {
-			["factorySettings"] = "/fgi factorySettings - Full reset of the addon database",
-			["filter"] = "LMB-enable/disable\nRMB-change\nShift+LMB-delete\n\n",
-			["filterTooltip"] = "Filter Name:%s\nstatus:%s\nfilter by Name:%s\nlevel range:%s\nrepeat filter in name:%d:%d\nclasses:%s\nrace:%s\nnumber of filter triggers:%d",
-			["minimap"] = "LMB-invite\nRMB-Open main window\nShift+:LMB-Pause/continue\n\nQueue:%d\nprogress:%s",
-			["resetDB"] = "/fgi resetDB - Clear the list of sent invitations.",
-			["resetWindowsPos"] = "/fgi resetWindowsPos - Reset the position of the window(s).",
-			["show"] = "/fgi show - Open the main window of the addon",
-			["invite"] = "/fgi invite - Invite the first player from the queue",
-			["nextSearch"] = "/fgi nextSearch - Run next scan",
-			["blacklist"] = "/fgibl <Name> - <Reason> - Add a player to the blacklist",
-			["help2"] = "/fgi help2 - Commands with prefix \"!\"",
+	FAQ = {
+		help = {
+			factorySettings = "/fgi factorySettings - Full reset of the addon database",
+			filter = "LMB-enable/disable\nRMB-change\nShift+LMB-delete\n\n",
+			filterTooltip = "Filter Name:%s\nstatus:%s\nfilter by Name:%s\nlevel range:%s\nrepeat filter in name:%d:%d\nclasses:%s\nrace:%s\nnumber of filter triggers:%d",
+			minimap = "LMB-invite\nRMB-Open main window\nShift+:LMB-Pause/continue\n\nQueue:%d\nprogress:%s",
+			resetDB = "/fgi resetDB - Clear the list of sent invitations.",
+			resetWindowsPos = "/fgi resetWindowsPos - Reset the position of the window(s).",
+			show = "/fgi show - Open the main window of the addon",
+			invite = "/fgi invite - Invite the first player from the queue",
+			nextSearch = "/fgi nextSearch - Run next scan",
+			blacklist = "/fgibl <Name> - <Reason> - Add a player to the blacklist",
+			help2 = "/fgi help2 - Commands with prefix \"!\"",
 		},
-		["help2"] = {
+		help2 = {
 			"|cff00ff96Commands prefixed with \"|cffff0000!|r|cff00ff96\" created for officers who do not have an add-on installed, these commands can only be used in the officer channel.|r",
 			"The following commands are available in the officer channel:",
 			"!fgi - list of available commands",
@@ -24,7 +24,7 @@ local L = {
 			"!blacklistDelete <Name> - <Reason> - remove player from blacklist",
 			"!blacklistGetList - get the list of players in the black list",
 		},
-		["error"] = {
+		error = {
 			["Вы не состоите в гильдии или у вас нет прав для приглашения."] = "You are not a member of the guild or you do not have permission to invite.",
 			["Выберите сообщение"] = "Select message",
 			["Максимальное количество фильтров %s. Пожалуйста измените или удалите имеющийся фильтр."] = "The maximum number of filters %s. Please change or remove existing filter.",
@@ -35,7 +35,7 @@ local L = {
 			["Сочетание клавиш уже занято"] = "Keyboard shortcut busy",
 		}
 	},
-	["interface"] = {
+	interface = {
 		["Игрок %s добавлен в черный список."] = "Player %s has been blacklisted.",
 		["Причина"] = "Reason",
 		["Включен"] = "Included",
@@ -101,7 +101,7 @@ local L = {
 		["Отправить запрос"] = "Send request",
 		["Синхронизация"] = "Synchronization",
 		["Все"] = "All",
-		["tooltip"] = {
+		tooltip = {
 			["Автоматическое увеличение детализации поиска"] = "Automatically increase search details.",
 			["Введите диапазон уровней для фильтра.\nНапример: %s55%s:%s58%s\nбудут подходить только те игроки, уровень\nкоторых варьируется от %s55%s до %s58%s (включительно)"] = "Enter a range of levels for the filter.\nfor Example:%s55%s:%s58%s\nwill be approached only by those players, the level\nwhich varies from%s55%s to %s58%s (inclusive)",
 			["Введите максимальное количество последовательных\nгласных и согласных, которое может содержать имя игрока.\nНапример: %s3%s:%s5%s\nБудет означать, что игроки с более чем %s3%s гласными подряд\nили более %s5%s согласными подряд не будут добавлены в очередь."] = "Enter the maximum number of consecutive\nvowels and consonants that may contain the player's name.\nfor Example:%s3%s:%s5%s\nwill mean that players with more than%s3%s vowels in a row\nor more%s5%s consonants will not be added to Queue.",
@@ -119,16 +119,16 @@ local L = {
 			["Записывать игрока в базу данных даже если приглашение не было отправлено"] = "Write a player to the database even if the invitation has not been sent",
 			["Использовать пользовательский список запросов"] = "Use custom query list",
 		},
-		["invType"] = {
+		invType = {
 			["Отправить сообщение и пригласить"] = "Send a message and invite",
 			["Только пригласить"] = "Only invite",
 			["Только сообщение"] = "Message only",
 		},
-		["synchType"] = {
-			["Черный список"] = "Black list",
-			["Список приглашенных"] = "Invite list",
+		synchType = {
+			"Black list",
+			"Invite list",
 		},
-		["synchState"] = {
+		synchState = {
 			["Игрок для синхронизации не выбран"] = "No sync player selected",
 			["Данные для синхронизации не выбраны"] = "No sync data selected",
 			["Запрос синхронизации у: %s. %d"] = "Sync Request: %s. %d",
@@ -138,7 +138,7 @@ local L = {
 			["Синхронизация с %s.\n %d/%d"] = "Sync with %s.\n %d/%d",
 			["Превышен лимит ожидания ответа"] = "Response timeout limit exceeded",
 		},
-		["clearDBtimes"] = {
+		clearDBtimes = {
 			["Отключить"] = "Disable",
 			["1 день"] = "1 day",
 			["1 неделя"] = "1 week",
@@ -147,16 +147,16 @@ local L = {
 			["Время запоминания игрока"] = "Player memorization time",
 		}
 	},
-	["SYSTEM"] = {
+	SYSTEM = {
 		["c-"] = "c-",
 		["r-"] = "r-",
 	}
 }
 
 
-L.interface["synchBaseType"] = {--		WARNING
-	[L.interface.synchType["Черный список"]] = "blacklist",
-	[L.interface.synchType["Список приглашенных"]] = "invitations",
+L.interface.synchBaseType = {--		WARNING
+	"blacklist",
+	"invitations",
 }
 
 

@@ -925,7 +925,8 @@ function fn.SendSynchArray(str, mod, playerName)
 end
 
 function fn:sendSynchRequest(player, type)
-	ReceiveSynchStr[player or L.interface["Все"]].start = GetTime()
+	ReceiveSynchStr[player] = ReceiveSynchStr[player] or {}
+	ReceiveSynchStr[player].start = GetTime()
 	local start = GetTime()
 	interface.synch.ticker = C_Timer.NewTicker(1,function()
 		local time = math.ceil(start+FGI_MAXSYNCHWAIT-GetTime())
@@ -938,9 +939,7 @@ function fn:sendSynchRequest(player, type)
 			interface.synch.infoLabel:Error(L.interface.synchState["Превышен лимит ожидания ответа"])
 		end)
 	end
-	if not player then
-		player = L.interface["Все"]
-		
+	if player == L.interface["Все"] then
 		C_ChatInfo.SendAddonMessage(FGISYNCH_PREFIX, "GET|"..type, "GUILD")
 	else
 		C_ChatInfo.SendAddonMessage(FGISYNCH_PREFIX, "GET|"..type, "WHISPER", player)
