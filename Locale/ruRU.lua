@@ -126,8 +126,8 @@ local L = {
 			["Только сообщение"] = "Только сообщение",
 		},
 		synchType = {
-			["Черный список"] = "Черный список",
-			["Список приглашенных"] = "Список приглашенных",
+			"Черный список",
+			"Список приглашенных",
 		},
 		synchState = {
 			["Игрок для синхронизации не выбран"] = "Игрок для синхронизации не выбран",
@@ -177,8 +177,8 @@ local L = {
 }
 
 L.interface.synchBaseType = {--		WARNING
-	[L.interface.synchType["Черный список"]] = "blacklist",
-	[L.interface.synchType["Список приглашенных"]] = "invitations",
+	"blacklist",
+	"invitations",
 }
 
 for k,v in pairs(L.SYSTEM.class) do

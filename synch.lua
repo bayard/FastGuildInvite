@@ -76,7 +76,7 @@ leftColumn:AddChild(frame)
 leftColumn.synchTypeDrop = GUI:Create("Dropdown")
 local frame = leftColumn.synchTypeDrop
 frame:SetWidth(leftColumn.frame:GetWidth()-20)
-frame:SetList({L.interface.synchType["Черный список"], L.interface.synchType["Список приглашенных"],})
+frame:SetList({L.interface.synchType[1], L.interface.synchType[2],})
 frame:SetValue(1)
 leftColumn:AddChild(frame)
 end
@@ -133,7 +133,8 @@ frame:SetWidth(size.sendRequest)
 frame:SetHeight(40)
 frame:SetCallback("OnClick", function()
 	synch.infoLabel:SetText('')
-	local type = leftColumn.synchTypeDrop.list[leftColumn.synchTypeDrop:GetValue()]
+	-- local type = leftColumn.synchTypeDrop.list[leftColumn.synchTypeDrop:GetValue()]
+	local type = leftColumn.synchTypeDrop:GetValue()
 	local player = rightColumn.synchPlayerReadyDrop--:GetValue()==1 and (not true) or rightColumn.synchPlayerReadyDrop.list[rightColumn.synchPlayerReadyDrop:GetValue()]
 	local playerName = player.list[player:GetValue()]
 	if type == nil or L.interface.synchType[type] == nil then
@@ -146,11 +147,7 @@ frame:SetCallback("OnClick", function()
 	end
 	synch.infoLabel:During(format(L.interface.synchState["Запрос синхронизации у: %s. %d"], playerName, FGI_MAXSYNCHWAIT))
 	
-	if player:GetValue() == 1 then
-		fn:sendSynchRequest(false, type)
-	else
-		fn:sendSynchRequest(playerName, type)
-	end
+	fn:sendSynchRequest(playerName, type)
 end)
 synch:AddChild(frame)
 
