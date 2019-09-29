@@ -9,22 +9,13 @@ local interface = addon.interface
 local GUI = LibStub("AceGUI-3.0")
 local FastGuildInvite = addon.lib
 local DB
+local fontSize = fn.fontSize
 
 local filtersFrame, addfilterFrame
 
-local function fontSize(self, font, size)
-	font = font or settings.Font
-	size = size or settings.FontSize
-	-- self:SetFont(font, size)
-end
-
-local function btnText(frame)
-	local text = frame.text
-	text:ClearAllPoints()
-	text:SetPoint("TOPLEFT", 5, -1)
-	text:SetPoint("BOTTOMRIGHT", -5, 1)
-end
-
+--[[-------------------------------------------------------------------------------------
+								UNIQUE FOR RETAIL VERSION
+]]---------------------------------------------------------------------------------------
 local function defaultValues()
 	local addfilterFrame = interface.addfilterFrame
 	
@@ -69,149 +60,6 @@ local function defaultValues()
 	addfilterFrame.change = false
 end
 
-do		--filtersFrame
-interface.filtersFrame = GUI:Create("ClearFrame")
-filtersFrame = interface.filtersFrame
--- filtersFrame:Hide()
-filtersFrame:SetTitle("FGI Filters")
-filtersFrame:SetWidth(size.filtersFrameW)
-filtersFrame:SetHeight(size.filtersFrameH)
-filtersFrame:SetLayout("Flow")
-
-filtersFrame.title:SetScript('OnMouseUp', function(mover)
-	local frame = mover:GetParent()
-	frame:StopMovingOrSizing()
-	local self = frame.obj
-	local status = self.status or self.localstatus
-	status.width = frame:GetWidth()
-	status.height = frame:GetHeight()
-	status.top = frame:GetTop()
-	status.left = frame:GetLeft()
-	
-	local point, relativeTo,relativePoint, xOfs, yOfs = filtersFrame.frame:GetPoint(1)
-	DB.filtersFrame = {}
-	DB.filtersFrame.point=point
-	DB.filtersFrame.relativeTo=relativeTo
-	DB.filtersFrame.relativePoint=relativePoint
-	DB.filtersFrame.xOfs=xOfs
-	DB.filtersFrame.yOfs=yOfs
-end)
-
-filtersFrame.closeButton = GUI:Create('Button')
-local frame = filtersFrame.closeButton
-frame:SetText('X')
-frame:SetWidth(frame.frame:GetHeight())
-fn:closeBtn(frame)
-frame:SetCallback('OnClick', function()
-	interface.filtersFrame:Hide()
-	interface.settingsFrame:Show()
-end)
-filtersFrame:AddChild(frame)
-
-
-
-
-filtersFrame.head = GUI:Create("TLabel")
-local frame = filtersFrame.head
-frame:SetText(L.interface["Нажмите на фильтр для изменения состояния"])
-fontSize(frame.label)
-frame:SetWidth(filtersFrame.frame:GetWidth())
-frame.label:SetJustifyH("CENTER")
-filtersFrame:AddChild(frame)
-
-
-
-filtersFrame.filterList = {}
-
-
-
-filtersFrame.addFilter = GUI:Create("Button")
-local frame = filtersFrame.addFilter
-frame:SetText(L.interface["Добавить фильтр"])
-fontSize(frame.text)
-btnText(frame)
-frame:SetWidth(size.addFilter)
-frame:SetHeight(40)
-frame:SetCallback("OnClick", function()
-	local filters = 0
-	for k,v in pairs(DB.filtersList) do
-		filters = filters + 1
-	end
-	if filters >= FGI_FILTERSLIMIT then
-		BasicMessageDialog:SetFrameStrata("TOOLTIP")
-		return message(format(L.FAQ.error["Максимальное количество фильтров %s. Пожалуйста измените или удалите имеющийся фильтр."], FGI_FILTERSLIMIT))
-	end
-	interface.addfilterFrame:Show()
-	interface.filtersFrame:Hide()
-end)
-filtersFrame:AddChild(frame)
-end
-
-
-
-
-
-
-do		--addfilterFrame
-interface.addfilterFrame = GUI:Create("ClearFrame")
-addfilterFrame = interface.addfilterFrame
--- addfilterFrame:Hide()
-addfilterFrame:SetTitle("FGI add new filter")
-addfilterFrame:SetWidth(size.addfilterFrameW)
-addfilterFrame:SetHeight(size.addfilterFrameH)
-
-addfilterFrame.title:SetScript('OnMouseUp', function(mover)
-	local frame = mover:GetParent()
-	frame:StopMovingOrSizing()
-	local self = frame.obj
-	local status = self.status or self.localstatus
-	status.width = frame:GetWidth()
-	status.height = frame:GetHeight()
-	status.top = frame:GetTop()
-	status.left = frame:GetLeft()
-	
-	local point, relativeTo,relativePoint, xOfs, yOfs = addfilterFrame.frame:GetPoint(1)
-	DB.addfilterFrame = {}
-	DB.addfilterFrame.point=point
-	DB.addfilterFrame.relativeTo=relativeTo
-	DB.addfilterFrame.relativePoint=relativePoint
-	DB.addfilterFrame.xOfs=xOfs
-	DB.addfilterFrame.yOfs=yOfs
-end)
-
-addfilterFrame.closeButton = GUI:Create('Button')
-local frame = addfilterFrame.closeButton
-frame:SetText('X')
-frame:SetWidth(frame.frame:GetHeight())
-fn:closeBtn(frame)
-frame:SetCallback('OnClick', function()
-	interface.addfilterFrame:Hide()
-	interface.filtersFrame:Show()
-end)
-addfilterFrame:AddChild(frame)
-
-
-
-
-addfilterFrame.topHint = GUI:Create("TLabel")
-local frame = addfilterFrame.topHint
-frame:SetText(L.interface["Обязательное поле \"Имя фильтра\", пустые текстовые поля не используются при фильтрации."])
-fontSize(frame.label)
-frame:SetWidth(addfilterFrame.frame:GetWidth()-20)
-frame.label:SetJustifyH("CENTER")
-addfilterFrame:AddChild(frame)
-
-
-
-do		--class
-addfilterFrame.classLabel = GUI:Create("TLabel")
-local frame = addfilterFrame.classLabel
-frame:SetText(L.interface["Классы:"])
-fontSize(frame.label)
-frame:SetWidth(size.classLabel)
-frame.label:SetJustifyH("CENTER")
-addfilterFrame:AddChild(frame)
-
 function fn:classIgnoredToggle()
 	local value = addfilterFrame.classesCheckBoxIgnore:GetValue()
 	if not value then
@@ -243,15 +91,25 @@ function fn:classIgnoredToggle()
 	end
 end
 
-addfilterFrame.classesCheckBoxIgnore = GUI:Create("TCheckBox")
-local frame = addfilterFrame.classesCheckBoxIgnore
-frame:SetWidth(size.Ignore)
-frame:SetLabel(L.interface["Игнорировать"])
-fontSize(frame.text)
-frame:SetCallback("OnValueChanged", function() fn:classIgnoredToggle() end)
-addfilterFrame:AddChild(frame)
+local function classFilter()
+	arr = {
+		[L.SYSTEM.class.DeathKnight] = addfilterFrame.classesCheckBoxDeathKnight:GetValue() or nil,
+		[L.SYSTEM.class.DemonHunter] = addfilterFrame.classesCheckBoxDemonHunter:GetValue() or nil,
+		[L.SYSTEM.class.Monk] = addfilterFrame.classesCheckBoxMonk:GetValue() or nil,
+		[L.SYSTEM.class.Druid] = addfilterFrame.classesCheckBoxDruid:GetValue() or nil,
+		[L.SYSTEM.class.Hunter] = addfilterFrame.classesCheckBoxHunter:GetValue() or nil,
+		[L.SYSTEM.class.Mage] = addfilterFrame.classesCheckBoxMage:GetValue() or nil,
+		[L.SYSTEM.class.Paladin] = addfilterFrame.classesCheckBoxPaladin:GetValue() or nil,
+		[L.SYSTEM.class.Priest] = addfilterFrame.classesCheckBoxPriest:GetValue() or nil,
+		[L.SYSTEM.class.Rogue] = addfilterFrame.classesCheckBoxRogue:GetValue() or nil,
+		[L.SYSTEM.class.Shaman] = addfilterFrame.classesCheckBoxShaman:GetValue() or nil,
+		[L.SYSTEM.class.Warlock] = addfilterFrame.classesCheckBoxWarlock:GetValue() or nil,
+		[L.SYSTEM.class.Warrior] = addfilterFrame.classesCheckBoxWarrior:GetValue() or nil
+	}
+	return arr
+end
 
-
+local function createClassBoxes()
 addfilterFrame.classesCheckBoxDeathKnight = GUI:Create("TCheckBox")
 local frame = addfilterFrame.classesCheckBoxDeathKnight
 frame:SetWidth(size.DeathKnight)
@@ -338,6 +196,168 @@ frame:SetLabel(L.SYSTEM.class.Warrior)
 fontSize(frame.text)
 addfilterFrame:AddChild(frame)
 end
+--[[-------------------------------------------------------------------------------------
+							/	UNIQUE FOR RETAIL VERSION
+]]---------------------------------------------------------------------------------------
+
+local function btnText(frame)
+	local text = frame.text
+	text:ClearAllPoints()
+	text:SetPoint("TOPLEFT", 5, -1)
+	text:SetPoint("BOTTOMRIGHT", -5, 1)
+end
+
+
+do		--filtersFrame
+interface.filtersFrame = GUI:Create("ClearFrame")
+filtersFrame = interface.filtersFrame
+filtersFrame:SetTitle("FGI Filters")
+filtersFrame:SetWidth(size.filtersFrameW)
+filtersFrame:SetHeight(size.filtersFrameH)
+filtersFrame:SetLayout("Flow")
+
+filtersFrame.title:SetScript('OnMouseUp', function(mover)
+	local frame = mover:GetParent()
+	frame:StopMovingOrSizing()
+	local self = frame.obj
+	local status = self.status or self.localstatus
+	status.width = frame:GetWidth()
+	status.height = frame:GetHeight()
+	status.top = frame:GetTop()
+	status.left = frame:GetLeft()
+	
+	local point, relativeTo,relativePoint, xOfs, yOfs = filtersFrame.frame:GetPoint(1)
+	DB.filtersFrame = {}
+	DB.filtersFrame.point=point
+	DB.filtersFrame.relativeTo=relativeTo
+	DB.filtersFrame.relativePoint=relativePoint
+	DB.filtersFrame.xOfs=xOfs
+	DB.filtersFrame.yOfs=yOfs
+end)
+
+filtersFrame.closeButton = GUI:Create('Button')
+local frame = filtersFrame.closeButton
+frame:SetText('X')
+frame:SetWidth(frame.frame:GetHeight())
+fn:closeBtn(frame)
+frame:SetCallback('OnClick', function()
+	interface.filtersFrame:Hide()
+	interface.settingsFrame:Show()
+end)
+filtersFrame:AddChild(frame)
+
+
+
+
+filtersFrame.head = GUI:Create("TLabel")
+local frame = filtersFrame.head
+frame:SetText(L.interface["Нажмите на фильтр для изменения состояния"])
+fontSize(frame.label)
+frame:SetWidth(filtersFrame.frame:GetWidth())
+frame.label:SetJustifyH("CENTER")
+filtersFrame:AddChild(frame)
+
+
+
+filtersFrame.filterList = {}
+
+
+
+filtersFrame.addFilter = GUI:Create("Button")
+local frame = filtersFrame.addFilter
+frame:SetText(L.interface["Добавить фильтр"])
+fontSize(frame.text)
+btnText(frame)
+frame:SetWidth(size.addFilter)
+frame:SetHeight(40)
+frame:SetCallback("OnClick", function()
+	local filters = 0
+	for k,v in pairs(DB.filtersList) do
+		filters = filters + 1
+	end
+	if filters >= FGI_FILTERSLIMIT then
+		BasicMessageDialog:SetFrameStrata("TOOLTIP")
+		return message(format(L.FAQ.error["Максимальное количество фильтров %s. Пожалуйста измените или удалите имеющийся фильтр."], FGI_FILTERSLIMIT))
+	end
+	interface.addfilterFrame:Show()
+	interface.filtersFrame:Hide()
+end)
+filtersFrame:AddChild(frame)
+end
+
+
+
+do		--addfilterFrame
+interface.addfilterFrame = GUI:Create("ClearFrame")
+addfilterFrame = interface.addfilterFrame
+addfilterFrame:SetTitle("FGI add new filter")
+addfilterFrame:SetWidth(size.addfilterFrameW)
+addfilterFrame:SetHeight(size.addfilterFrameH)
+
+addfilterFrame.title:SetScript('OnMouseUp', function(mover)
+	local frame = mover:GetParent()
+	frame:StopMovingOrSizing()
+	local self = frame.obj
+	local status = self.status or self.localstatus
+	status.width = frame:GetWidth()
+	status.height = frame:GetHeight()
+	status.top = frame:GetTop()
+	status.left = frame:GetLeft()
+	
+	local point, relativeTo,relativePoint, xOfs, yOfs = addfilterFrame.frame:GetPoint(1)
+	DB.addfilterFrame = {}
+	DB.addfilterFrame.point=point
+	DB.addfilterFrame.relativeTo=relativeTo
+	DB.addfilterFrame.relativePoint=relativePoint
+	DB.addfilterFrame.xOfs=xOfs
+	DB.addfilterFrame.yOfs=yOfs
+end)
+
+addfilterFrame.closeButton = GUI:Create('Button')
+local frame = addfilterFrame.closeButton
+frame:SetText('X')
+frame:SetWidth(frame.frame:GetHeight())
+fn:closeBtn(frame)
+frame:SetCallback('OnClick', function()
+	interface.addfilterFrame:Hide()
+	interface.filtersFrame:Show()
+end)
+addfilterFrame:AddChild(frame)
+
+
+
+
+addfilterFrame.topHint = GUI:Create("TLabel")
+local frame = addfilterFrame.topHint
+frame:SetText(L.interface["Обязательное поле \"Имя фильтра\", пустые текстовые поля не используются при фильтрации."])
+fontSize(frame.label)
+frame:SetWidth(addfilterFrame.frame:GetWidth()-20)
+frame.label:SetJustifyH("CENTER")
+addfilterFrame:AddChild(frame)
+
+
+
+do		--class
+addfilterFrame.classLabel = GUI:Create("TLabel")
+local frame = addfilterFrame.classLabel
+frame:SetText(L.interface["Классы:"])
+fontSize(frame.label)
+frame:SetWidth(size.classLabel)
+frame.label:SetJustifyH("CENTER")
+addfilterFrame:AddChild(frame)
+
+
+addfilterFrame.classesCheckBoxIgnore = GUI:Create("TCheckBox")
+local frame = addfilterFrame.classesCheckBoxIgnore
+frame:SetWidth(size.Ignore)
+frame:SetLabel(L.interface["Игнорировать"])
+fontSize(frame.text)
+frame:SetCallback("OnValueChanged", function() fn:classIgnoredToggle() end)
+addfilterFrame:AddChild(frame)
+
+
+createClassBoxes()
+end
 
 
 
@@ -368,6 +388,7 @@ frame:SetLabel(L.interface["Игнорировать"])
 fontSize(frame.text)
 frame:SetCallback("OnValueChanged", function() fn:racesIgnoredToggle() end)
 addfilterFrame:AddChild(frame)
+
 
 addfilterFrame.rasesCheckBoxRace = {}
 for k,v in pairs(L.SYSTEM.race) do
@@ -499,20 +520,7 @@ local function saveFilter()
 	
 	local classFilter = classIgnore
 	if classFilter then
-		classFilter = {
-			[L.SYSTEM.class.DeathKnight] = addfilterFrame.classesCheckBoxDeathKnight:GetValue() or nil,
-			[L.SYSTEM.class.DemonHunter] = addfilterFrame.classesCheckBoxDemonHunter:GetValue() or nil,
-			[L.SYSTEM.class.Monk] = addfilterFrame.classesCheckBoxMonk:GetValue() or nil,
-			[L.SYSTEM.class.Druid] = addfilterFrame.classesCheckBoxDruid:GetValue() or nil,
-			[L.SYSTEM.class.Hunter] = addfilterFrame.classesCheckBoxHunter:GetValue() or nil,
-			[L.SYSTEM.class.Mage] = addfilterFrame.classesCheckBoxMage:GetValue() or nil,
-			[L.SYSTEM.class.Paladin] = addfilterFrame.classesCheckBoxPaladin:GetValue() or nil,
-			[L.SYSTEM.class.Priest] = addfilterFrame.classesCheckBoxPriest:GetValue() or nil,
-			[L.SYSTEM.class.Rogue] = addfilterFrame.classesCheckBoxRogue:GetValue() or nil,
-			[L.SYSTEM.class.Shaman] = addfilterFrame.classesCheckBoxShaman:GetValue() or nil,
-			[L.SYSTEM.class.Warlock] = addfilterFrame.classesCheckBoxWarlock:GetValue() or nil,
-			[L.SYSTEM.class.Warrior] = addfilterFrame.classesCheckBoxWarrior:GetValue() or nil
-		}
+		classFilter = getClassFilter()
 		classFilter = next(classFilter) ~= nil and classFilter or false
 	end
 	
@@ -596,6 +604,19 @@ local frame = CreateFrame('Frame')
 frame:RegisterEvent('PLAYER_LOGIN')
 frame:SetScript('OnEvent', function()
 	DB = addon.DB
+	if DB.filtersFrame then
+		interface.filtersFrame:ClearAllPoints()
+		interface.filtersFrame:SetPoint(DB.filtersFrame.point, UIParent, DB.filtersFrame.relativePoint, DB.filtersFrame.xOfs, DB.filtersFrame.yOfs)
+	else
+		interface.filtersFrame:SetPoint("CENTER", UIParent)
+	end
+	if DB.addfilterFrame then
+		interface.addfilterFrame:ClearAllPoints()
+		interface.addfilterFrame:SetPoint(DB.addfilterFrame.point, UIParent, DB.addfilterFrame.relativePoint, DB.addfilterFrame.xOfs, DB.addfilterFrame.yOfs)
+	else
+		interface.addfilterFrame:SetPoint("CENTER", UIParent)
+	end
+	
 	
 	local i = 1
 	for k,v in pairs(L.SYSTEM.race) do
@@ -632,7 +653,6 @@ frame:SetScript('OnEvent', function()
 	addfilterFrame.raceLabel:SetPoint("LEFT", addfilterFrame.classLabel.frame, "RIGHT", size.raceShift, 0)
 	
 	addfilterFrame.filterNameLabel:ClearAllPoints()
-	-- addfilterFrame.filterNameLabel:SetPoint("LEFT", addfilterFrame.raceLabel.frame, "RIGHT", size.filterNameShift, 0)
 	addfilterFrame.filterNameLabel:SetPoint("RIGHT", addfilterFrame.frame, "RIGHT", -15, 150)
 	
 	addfilterFrame.saveButton:ClearAllPoints()
@@ -640,7 +660,8 @@ frame:SetScript('OnEvent', function()
 	
 	addfilterFrame.bottomHint:ClearAllPoints()
 	addfilterFrame.bottomHint:SetPoint("BOTTOM", addfilterFrame.saveButton.frame, "TOP", 0, 40)
-
+	
+	
 	filtersFrame:Hide()
 	addfilterFrame:Hide()
 	end)

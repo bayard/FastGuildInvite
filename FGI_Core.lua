@@ -44,18 +44,12 @@ local function MenuButtons(self)
 	local button = self.value;
 	if (button == "BLACKLIST") then
 		local dropdownFrame = UIDROPDOWNMENU_INIT_MENU;
-		local unit = dropdownFrame.unit;
 		local name = dropdownFrame.name;
 		local server = dropdownFrame.server;
-		local fullname = name;
 		
-		if ( server and ((not unit and GetNormalizedRealmName() ~= server) or (unit and UnitRealmRelationship(unit) ~= LE_REALM_RELATION_SAME)) ) then
-			fullname = name.."-"..server;
-		end
-		
-		fn:blackList(fullname)
-		-- interface.blackList:updateList()
-		StaticPopup_Show("FGI_BLACKLIST_CHANGE", _,_,  {name = fullname})
+		fn:blackList(name)
+		interface.blackList:updateList()
+		StaticPopup_Show("FGI_BLACKLIST_CHANGE", _,_,  {name = name})
 		
 	elseif (button == "GUILD_INVITE") then
 		local dropdownFrame = UIDROPDOWNMENU_INIT_MENU;
@@ -67,13 +61,13 @@ local function MenuButtons(self)
 end
 
 local FGIBlackList = CreateFrame("Frame","FGIMenuButtons")
-FGIBlackList:SetScript("OnEvent", function() hooksecurefunc("UnitPopup_OnClick", MenuButtons) end)
+-- FGIBlackList:SetScript("OnEvent", function() hooksecurefunc("UnitPopup_OnClick", MenuButtons) end)
 FGIBlackList:RegisterEvent("PLAYER_LOGIN")
 
 local PopupUnits = {}
 
-UnitPopupButtons["BLACKLIST"] = { text = "FGI - Black List",}
-UnitPopupButtons["GUILD_INVITE"] = { text = "FGI - Guild Invite",}
+UnitPopupButtons["BLACKLIST"] = { text = "FGI - Black List"}
+UnitPopupButtons["GUILD_INVITE"] = { text = "FGI - Guild Invite"}
 
 for i,UPMenus in pairs(UnitPopupMenus) do
 	for j=1, #UPMenus do
@@ -86,6 +80,7 @@ for i,UPMenus in pairs(UnitPopupMenus) do
 		end
 	end
 end
+
 local frame = CreateFrame("Frame")
 frame:RegisterEvent("CHAT_MSG_SYSTEM")
 frame:SetScript("OnEvent", function(...)
@@ -100,6 +95,43 @@ frame:SetScript("OnEvent", function(...)
 		end
 	end
 end)
+
+local frame = CreateFrame("Frame")
+frame:RegisterEvent("CHAT_MSG_OFFICER")
+frame:SetScript("OnEvent", function(_,_, msg,_,_,_,name,...)
+	local function isCorrect(str)
+		local n,r = str:match("([^-%s]+)[%s]*-[%s]*([^-]+)")
+		if n==nil then 
+			n = msg
+		end
+		-- if n==nil then return false end
+		return true, n, r
+	end
+	
+	if name == UnitName("Player") then print("player -> return")end
+	if not msg:find("^!") then return end
+	if msg:find("^!fgi") then
+		for i=4,#L.FAQ.help2 do
+			SendChatMessage(" "..L.FAQ.help2[i] , "OFFICER",  GetDefaultLanguage("player"))
+		end
+	elseif msg:find("^!blacklistAdd") then
+		msg = msg:gsub("!blacklistAdd ", '')
+		local b,n,r = isCorrect(msg)
+		if r==nil then return end
+		print("add",b,n,r)
+	elseif msg:find("^!blacklistDelete") then
+		msg = msg:gsub("!blacklistDelete ", '')
+		local b,n,r = isCorrect(msg)
+		print("delete",b,n,r)
+	elseif msg:find("^!blacklistGetList") then
+		for k,v in pairs(DB.blackList) do
+			SendChatMessage(format("%s - %s", k, v) , "OFFICER",  GetDefaultLanguage("player"))
+		end
+	end
+end)
+
+
+
 
 function addon.dataBroker.OnTooltipShow(GameTooltip)
 	local search = addon.search
@@ -159,75 +191,19 @@ function FastGuildInvite:OnEnable()
 	fn:SetKeybind(DB.keyBind.nextSearch, "nextSearch")
 	
 	
-	if DB.mainFrame then
-		interface.mainFrame:ClearAllPoints()
-		interface.mainFrame:SetPoint(DB.mainFrame.point, UIParent, DB.mainFrame.relativePoint, DB.mainFrame.xOfs, DB.mainFrame.yOfs)
-	else
-		interface.mainFrame:SetPoint("CENTER", UIParent)
-	end
-	if DB.scanFrame then
-		interface.scanFrame:ClearAllPoints()
-		interface.scanFrame:SetPoint(DB.scanFrame.point, UIParent, DB.scanFrame.relativePoint, DB.scanFrame.xOfs, DB.scanFrame.yOfs)
-	else
-		interface.scanFrame:SetPoint("CENTER", UIParent)
-	end
-	if DB.settingsFrame then
-		interface.settingsFrame:ClearAllPoints()
-		interface.settingsFrame:SetPoint(DB.settingsFrame.point, UIParent, DB.settingsFrame.relativePoint, DB.settingsFrame.xOfs, DB.settingsFrame.yOfs)
-	else
-		interface.settingsFrame:SetPoint("CENTER", UIParent)
-	end
-	if DB.filtersFrame then
-		interface.filtersFrame:ClearAllPoints()
-		interface.filtersFrame:SetPoint(DB.filtersFrame.point, UIParent, DB.filtersFrame.relativePoint, DB.filtersFrame.xOfs, DB.filtersFrame.yOfs)
-	else
-		interface.filtersFrame:SetPoint("CENTER", UIParent)
-	end
-	if DB.addfilterFrame then
-		interface.addfilterFrame:ClearAllPoints()
-		interface.addfilterFrame:SetPoint(DB.addfilterFrame.point, UIParent, DB.addfilterFrame.relativePoint, DB.addfilterFrame.xOfs, DB.addfilterFrame.yOfs)
-	else
-		interface.addfilterFrame:SetPoint("CENTER", UIParent)
-	end
-	if DB.messageFrame then
-		interface.messageFrame:ClearAllPoints()
-		interface.messageFrame:SetPoint(DB.messageFrame.point, UIParent, DB.messageFrame.relativePoint, DB.messageFrame.xOfs, DB.messageFrame.yOfs)
-	else
-		interface.messageFrame:SetPoint("CENTER", UIParent)
-	end
-	if DB.chooseInvites then
-		interface.chooseInvites:ClearAllPoints()
-		interface.chooseInvites:SetPoint(DB.chooseInvites.point, UIParent, DB.chooseInvites.relativePoint, DB.chooseInvites.xOfs, DB.chooseInvites.yOfs)
-	else
-		interface.chooseInvites:SetPoint("CENTER", UIParent)
-	end
-	if DB.blackListPos then
-		interface.blackList:ClearAllPoints()
-		interface.blackList:SetPoint(DB.blackListPos.point, UIParent, DB.blackListPos.relativePoint, DB.blackListPos.xOfs, DB.blackListPos.yOfs)
-	else
-		interface.blackList:SetPoint("CENTER", UIParent)
-	end
-	if DB.keyBindings then
-		interface.keyBindings:ClearAllPoints()
-		interface.keyBindings:SetPoint(DB.keyBindings.point, UIParent, DB.keyBindings.relativePoint, DB.keyBindings.xOfs, DB.keyBindings.yOfs)
-	else
-		interface.keyBindings:SetPoint("CENTER", UIParent)
-	end
-	if DB.customListPos then
-		interface.customList:ClearAllPoints()
-		interface.customList:SetPoint(DB.customListPos.point, UIParent, DB.customListPos.relativePoint, DB.customListPos.xOfs, DB.customListPos.yOfs)
-	else
-		interface.customList:SetPoint("CENTER", UIParent)
-	end
+	
+	
+	
+	
 	interface.debugFrame:ClearAllPoints()
 	interface.debugFrame:SetPoint("TOPLEFT", UIParent, "TOPLEFT", 0, 0)
 	
-	interface.gratitudeFrame:ClearAllPoints()
-	interface.gratitudeFrame:SetPoint("CENTER", UIParent)
+	
 	
 	Console:RegisterChatCommand('fgi', 'FGIInput')
-	Console:RegisterChatCommand('fgidebug', 'FGIdebug')
 	Console:RegisterChatCommand('FastGuildInvite', 'FGIInput')
+	Console:RegisterChatCommand('fgibl', 'FGIAddBlackList')
+	Console:RegisterChatCommand('fgidebug', 'FGIdebug')
 end
 
 function FastGuildInvite:OnInitialize()
@@ -244,36 +220,45 @@ function FastGuildInvite:OnInitialize()
 	table.insert(debugDB, {})
 	addon.debugDB = debugDB[#debugDB]
 	
+--	mainFrame settings
 	DB.inviteType = DB.inviteType or 1
-	
 	DB.lowLimit = DB.lowLimit or FGI_MINLVL
 	DB.highLimit = DB.highLimit or FGI_MAXLVL
-	DB.raceFilterVal = DB.raceFilterVal or FGI_DEFAULT_RACEFILTERSTART
-	DB.classFilterVal = DB.classFilterVal or FGI_DEFAULT_CLASSFILTERSTART
-	DB.searchInterval = DB.searchInterval or FGI_DEFAULT_SEARCHINTERVAL
-	
-	DB.backgroundRun = DB.backgroundRun or false
+		-- DB.raceFilterVal = DB.raceFilterVal or FGI_DEFAULT_RACEFILTERSTART
+		-- DB.classFilterVal = DB.classFilterVal or FGI_DEFAULT_CLASSFILTERSTART
+		-- DB.searchInterval = DB.searchInterval or FGI_DEFAULT_SEARCHINTERVAL
+		-- DB.backgroundRun = DB.backgroundRun or false
 	DB.enableFilters = DB.enableFilters or false
 	DB.customWho = DB.customWho or false
-	
+--	mainFrame settings
+
+--	settings
 	DB.addonMSG = DB.addonMSG or false
 	DB.systemMSG = DB.systemMSG or false
 	DB.sendMSG = DB.sendMSG or false
 	DB.keyBind = istable(DB.keyBind) and DB.keyBind or {invite = false, nextSearch = false}
 	DB.rememberAll = DB.rememberAll or false
 	DB.clearDBtimes = DB.clearDBtimes or 3
-	
+--	settings
+
+--	message
 	DB.messageList = istable(DB.messageList) and DB.messageList or {}
 	if DB.messageList[0] then table.insert(DB.messageList, DB.messageList[0]);DB.messageList[0] = nil end
 	DB.curMessage = math.max(DB.curMessage or 1, 1)
+--	message
 	
+-- DATA
 	DB.alredySended = istable(DB.alredySended) and DB.alredySended or {}
 	DB.filtersList = istable(DB.filtersList) and DB.filtersList or {}
 	DB.blackList = istable(DB.blackList) and DB.blackList or {}
 	DB.leave = istable(DB.leave) and DB.leave or {}
 	DB.customWhoList = istable(DB.customWhoList) and DB.customWhoList or {"1-15 c-\"Class\" r-\"Race\""}
 	
+	DB.minimap = istable(DB.minimap) and DB.minimap or {}
+	DB.minimap.hide = DB.minimap.hide or false
+	
 	DB.debug = DB.debug or false
+-- DATA
 	
 	if DB.clearDBtimes>1 then
 		for k,v in pairs(DB.alredySended) do	-- delete player from sended DB after "FGI_RESETSENDDBTIME"
@@ -283,8 +268,6 @@ function FastGuildInvite:OnInitialize()
 		end
 	end
 
-	DB.minimap = istable(DB.minimap) and DB.minimap or {}
-	DB.minimap.hide = DB.minimap.hide or false
 	
 	icon:Register("FGI", addon.dataBroker, DB.minimap)
 	fn:initDB()
@@ -312,15 +295,33 @@ function Console:FGIdebug(str)
 	end
 end
 
+function isCorrect(str)
+  local n,r = str:match("([^-%s]+)[%s]*-[%s]*([^-]+)")
+  if n==nil or r==nil then return false end
+  r = (r:len()>2) and r or false
+  return (n and r) and true or false, n, r
+end
+
+function Console:FGIAddBlackList(str)
+	if str == '' then return
+	else
+		local b, n, r = isCorrect(str)
+		if not b then return end
+		fn:blackList(n,r)
+		interface.blackList:add({name=n,reason=r})
+		SendChatMessage(format("%s %s - %s", format(L.interface["Игрок %s добавлен в черный список."], n), L.interface["Причина"], r) , "OFFICER",  GetDefaultLanguage("player"))
+	end
+end
+
 function Console:FGIdebugHelp()
 	if not addon.debug then return end
 	print("/fgidebug show - show debug frame")
 	print("/fgidebug load - load current debug info")
-	-- print("")
 end
 
 function Console:FGIInput(str)
-	if str == '' then return Console:FGIHelp()
+	if str == '' or str == 'help' then return Console:FGIHelp()
+	elseif str == 'help2' then return Console:FGIHelp2()
 	elseif str == 'show' then return interface.mainFrame:Show()
 	elseif str == "invite" then
 		fn:invitePlayer()
@@ -330,7 +331,7 @@ function Console:FGIInput(str)
 		toggleDebug()
 	elseif str == 'resetDB' then DB.alredySended = {}
 	elseif str == 'resetWindowsPos' then
-		
+		fn:resetWindowsPos()
 		interface.mainFrame:ClearAllPoints()
 		interface.gratitudeFrame:ClearAllPoints()
 		interface.scanFrame:ClearAllPoints()
@@ -373,7 +374,7 @@ function Console:FGIInput(str)
 		DB.chooseInvites = {point=point, relativeTo=relativeTo, relativePoint=relativePoint, xOfs=xOfs, yOfs=yOfs,}
 		
 		point, relativeTo,relativePoint, xOfs, yOfs = interface.blackList.frame:GetPoint(1)
-		DB.blackList = {point=point, relativeTo=relativeTo, relativePoint=relativePoint, xOfs=xOfs, yOfs=yOfs,}
+		DB.blackListPos = {point=point, relativeTo=relativeTo, relativePoint=relativePoint, xOfs=xOfs, yOfs=yOfs,}
 		
 		C_UI.Reload()
 	elseif str == "factorySettings" then
@@ -382,10 +383,20 @@ function Console:FGIInput(str)
 end
 
 function Console:FGIHelp()
+	print("|cffffff00<|r|cff16ABB5FGI|r|cffffff00>|r Help")
 	print(L.FAQ.help.show)
 	print(L.FAQ.help.resetDB)
 	print(L.FAQ.help.factorySettings)
 	print(L.FAQ.help.resetWindowsPos)
 	print(L.FAQ.help.invite)
 	print(L.FAQ.help.nextSearch)
+	print(L.FAQ.help.blacklist)
+	print(L.FAQ.help.help2)
+end
+
+function Console:FGIHelp2()
+	print("|cffffff00<|r|cff16ABB5FGI|r|cffffff00>|r Help2")
+	for i=1, #L.FAQ.help2 do
+		print(L.FAQ.help2[i])
+	end
 end

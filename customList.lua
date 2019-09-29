@@ -8,12 +8,7 @@ local interface = addon.interface
 local GUI = LibStub("AceGUI-3.0")
 local FastGuildInvite = addon.lib
 local DB
-
-local function fontSize(self, font, size)
-	font = font or settings.Font
-	size = size or settings.FontSize
-	-- self:SetFont(font, size)
-end
+local fontSize = fn.fontSize
 
 local function btnText(frame)
 	local text = frame.text
@@ -24,7 +19,6 @@ end
 
 interface.customList = GUI:Create("ClearFrame")
 local customList = interface.customList
--- customList:Hide()
 customList:SetTitle("FGI Custom Who List")
 customList:SetWidth(size.customListW)
 customList:SetHeight(size.customListH)
@@ -95,6 +89,12 @@ local frame = CreateFrame('Frame')
 frame:RegisterEvent('PLAYER_LOGIN')
 frame:SetScript('OnEvent', function()
 	DB = addon.DB
+	if DB.customListPos then
+		interface.customList:ClearAllPoints()
+		interface.customList:SetPoint(DB.customListPos.point, UIParent, DB.customListPos.relativePoint, DB.customListPos.xOfs, DB.customListPos.yOfs)
+	else
+		interface.customList:SetPoint("CENTER", UIParent)
+	end
 	
 	local str = ''
 	for i=1,#DB.customWhoList do
@@ -102,7 +102,6 @@ frame:SetScript('OnEvent', function()
 		customList.list:SetText(str)
 	end
 	C_Timer.After(0.1, function()
-	
 	customList.closeButton:ClearAllPoints()
 	customList.closeButton:SetPoint("CENTER", customList.frame, "TOPRIGHT", -8, -8)
 	
@@ -111,6 +110,7 @@ frame:SetScript('OnEvent', function()
 	
 	customList.saveButton:ClearAllPoints()
 	customList.saveButton:SetPoint("BOTTOM", customList.frame, "BOTTOM", 0, 10)
+	
 	
 	customList:Hide()
 	end)

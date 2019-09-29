@@ -1482,3 +1482,5 @@ end
 
 AceGUI:RegisterWidgetType(Type, Constructor, Version)
 end
+
+

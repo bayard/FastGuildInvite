@@ -8,14 +8,10 @@ local interface = addon.interface
 local GUI = LibStub("AceGUI-3.0")
 local FastGuildInvite = addon.lib
 local DB
+local fontSize = fn.fontSize
 
 local blackList, scrollBar
 
-local function fontSize(self, font, size)
-	font = font or settings.Font
-	size = size or settings.FontSize
-	-- self:SetFont(font, size)
-end
 
 local function btnText(frame)
 	local text = frame.text
@@ -29,7 +25,6 @@ end
 
 interface.blackList = GUI:Create("ClearFrame")
 blackList = interface.blackList
--- blackList:Hide()
 blackList:SetTitle("FGI Blacklist")
 blackList:SetWidth(size.blackListW)
 blackList:SetHeight(size.blackListH)
@@ -40,7 +35,7 @@ function blackList:updateList()
 	for k,v in pairs(DB.blackList) do
 		str = format("%s%s\n", str, k)
 	end
-	blackList.list:SetText(str)
+	-- blackList.list:SetText(str)
 end
 
 blackList.title:SetScript('OnMouseUp', function(mover)
@@ -124,20 +119,22 @@ local function AddHookClick(frame, parent)
 			DB.blackList[frame.label:GetText()] = nil
 			blackList:update()
 		end},
+		{text = "", isTitle = true},
+		{text = "Cancel", func = function()end},
 		--[[{ text = "More Options", hasArrow = true,
 			menuList = {
 				{ text = "Option 3", func = function() print("You've chosen option 3"); end }
 			} 
 		}]]
 	}
-	local menuFrame = CreateFrame("Frame", "ExampleMenuFrame", UIParent, "UIDropDownMenuTemplate")
+	local menuFrame = CreateFrame("Frame", nil, UIParent, "UIDropDownMenuTemplate")
 	frame.frame:HookScript("OnMouseDown",function(self, button,...)
 		if button == "RightButton" then
 			EasyMenu(menu, menuFrame, "cursor", 0 , 0, "MENU");
 		end
 	end)
 end
-local help = "RBM - change\nRBM - change"
+local help = "RBM - change"
 function blackList:add(data)
 	scrollBar.items[#scrollBar.items+1] = GUI:Create("SimpleGroup")
 	local frame = scrollBar.items[#scrollBar.items]
@@ -171,41 +168,6 @@ function blackList:update()
 		scrollBar.items[i].frame:Hide()
 	end
 end
-
---[[blackList.list = GUI:Create("MultiLineEditBox")
-local frame = blackList.list
-frame:SetLabel("")
-frame:SetWidth(size.blackListW-40)
-frame:DisableButton(true)
-blackList:AddChild(frame)
-frame:SetHeight(size.blackListH-60-40)
-
-
-
-blackList.saveButton = GUI:Create("Button")
-local frame = blackList.saveButton
-frame:SetText(L.interface["Сохранить"])
-fontSize(frame.text)
-btnText(frame)
-frame:SetWidth(size.saveButton)
-frame:SetHeight(40)
-frame:SetCallback("OnClick", function()
-	DB.blackList = {}
-	for k,v in pairs(table.pack(fn:split(blackList.list:GetText(),"\n"))) do
-		if v~="" then
-			DB.blackList[v] = true
-		end
-	end
-	interface.blackList:Hide()
-end)
-blackList:AddChild(frame)
-
-
-blackList.frame:HookScript("OnShow", function()
-	blackList:updateList()
-end)
-
-]]
 
 local function showNext()
 	local data = StaticPopupDialogs["FGI_BLACKLIST"].data
@@ -246,6 +208,12 @@ local frame = CreateFrame('Frame')
 frame:RegisterEvent('PLAYER_LOGIN')
 frame:SetScript('OnEvent', function()
 	DB = addon.DB
+	if DB.blackListPos then
+		interface.blackList:ClearAllPoints()
+		interface.blackList:SetPoint(DB.blackListPos.point, UIParent, DB.blackListPos.relativePoint, DB.blackListPos.xOfs, DB.blackListPos.yOfs)
+	else
+		interface.blackList:SetPoint("CENTER", UIParent)
+	end
 	C_Timer.After(0.1, function()
 	blackList.closeButton:ClearAllPoints()
 	blackList.closeButton:SetPoint("CENTER", blackList.frame, "TOPRIGHT", -8, -8)

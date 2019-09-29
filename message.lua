@@ -9,12 +9,7 @@ local interface = addon.interface
 local GUI = LibStub("AceGUI-3.0")
 local FastGuildInvite = addon.lib
 local DB
-
-local function fontSize(self, font, size)
-	font = font or settings.Font
-	size = size or settings.FontSize
-	-- self:SetFont(font, size)
-end
+local fontSize = fn.fontSize
 
 local function defaultValues()
 	local messageFrame = interface.messageFrame
@@ -53,7 +48,6 @@ end
 
 interface.messageFrame = GUI:Create("ClearFrame")
 local messageFrame = interface.messageFrame
--- messageFrame:Hide()
 messageFrame:SetTitle("FGI Message")
 messageFrame:SetWidth(size.messageFrameW)
 messageFrame:SetHeight(size.messageFrameH)
@@ -200,6 +194,12 @@ local frame = CreateFrame('Frame')
 frame:RegisterEvent('PLAYER_LOGIN')
 frame:SetScript('OnEvent', function()
 	DB = addon.DB
+	if DB.messageFrame then
+		interface.messageFrame:ClearAllPoints()
+		interface.messageFrame:SetPoint(DB.messageFrame.point, UIParent, DB.messageFrame.relativePoint, DB.messageFrame.xOfs, DB.messageFrame.yOfs)
+	else
+		interface.messageFrame:SetPoint("CENTER", UIParent)
+	end
 	
 	defaultValues()
 	C_Timer.After(0.1, function()

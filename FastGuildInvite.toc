@@ -1,8 +1,8 @@
-## Interface: 80200
-## Author: Призер - Галакронд RU
+## Interface: 80205
+## Author: Knoot
 ## Title: |cffffff00<|r|cff16ABB5FGI|r|cffffff00>|r |cff16ABB5FastGuildInvite|r
 ## Version: 2.0.*
-## SavedVariables: FGI_DB
+## SavedVariables: FGI_DB, FGI_DEBUG
 ## DefaultState: enabled
 
 FGI_Constants.lua
@@ -27,7 +27,6 @@ init.lua
 
 
 
-
 functions.lua
 FGI_Core.lua
 chooseInvites.lua
@@ -39,3 +38,4 @@ filtersFrame.lua
 Scan.lua
 blackList.lua
 customList.lua
+synch.lua

@@ -9,16 +9,10 @@ local interface = addon.interface
 local GUI = LibStub("AceGUI-3.0")
 local FastGuildInvite = addon.lib
 local DB
-
-local function fontSize(self, font, size)
-	font = font or settings.Font
-	size = size or settings.FontSize
-	-- self:SetFont(font, size)
-end
+local fontSize = fn.fontSize
 
 interface.keyBindings = GUI:Create("ClearFrame")
 local keyBindings = interface.keyBindings
--- keyBindings:Hide()
 keyBindings:SetTitle("FGI key bindings")
 keyBindings:SetWidth(size.keyBindingsW)
 keyBindings:SetHeight(size.keyBindingsH)
@@ -108,6 +102,12 @@ local frame = CreateFrame('Frame')
 frame:RegisterEvent('PLAYER_LOGIN')
 frame:SetScript('OnEvent', function()
 	DB = addon.DB
+	if DB.keyBindings then
+		interface.keyBindings:ClearAllPoints()
+		interface.keyBindings:SetPoint(DB.keyBindings.point, UIParent, DB.keyBindings.relativePoint, DB.keyBindings.xOfs, DB.keyBindings.yOfs)
+	else
+		interface.keyBindings:SetPoint("CENTER", UIParent)
+	end
 	C_Timer.After(0.1, function()
 	keyBindings.closeButton:ClearAllPoints()
 	keyBindings.closeButton:SetPoint("CENTER", keyBindings.frame, "TOPRIGHT", -8, -8)
