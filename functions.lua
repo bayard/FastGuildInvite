@@ -624,7 +624,7 @@ local function GetWho(query)
 	libWho.isFGI = true
 	libWho.whoQuery = query
 	-- FriendsTabHeader	GuildFrame	RaidFrame
-	libWho.doHide = (not WhoFrame:IsShown()) and (not FriendsFrame:IsShown()) and (CommunitiesFrame and not CommunitiesFrame:IsShown())
+	libWho.doHide = (not WhoFrame:IsShown()) and (not FriendsFrame:IsShown())
 	C_FriendList.SetWhoToUi(true)
 	C_FriendList.SendWho(query)
 	WhoFrameEditBox:SetText(query)
