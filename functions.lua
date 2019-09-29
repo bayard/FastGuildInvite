@@ -92,6 +92,11 @@ function fn:FilterChange(id)
 	addfilterFrame.change = true
 end
 
+function fn.fontSize(frame, font, size)
+	font = font or settings.Font
+	size = size or settings.FontSize
+	frame:SetFont(font, size)
+end
 
 --[[-------------------------------------------------------------------------------------
 							/	UNIQUE FOR CLASSIC VERSION
@@ -99,11 +104,6 @@ end
 
 
 
-function fn.fontSize(frame, font, size)
-	font = font or settings.Font
-	size = size or settings.FontSize
-	frame:SetFont(font, size)
-end
 
 local frame = CreateFrame("Frame")
 frame:RegisterEvent("CHAT_MSG_SYSTEM")
