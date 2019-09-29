@@ -1,5 +1,5 @@
 ## Interface: 11302
-## Author: Призер - Галакронд RU
+## Author: Knoot
 ## Title: |cffffff00<|r|cff16ABB5FGI|r|cffffff00>|r |cff16ABB5FastGuildInvite|r
 ## Version: 2.0.*
 ## SavedVariables: FGI_DB, FGI_DEBUG
