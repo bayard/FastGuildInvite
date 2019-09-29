@@ -61,7 +61,7 @@ local function MenuButtons(self)
 end
 
 local FGIBlackList = CreateFrame("Frame","FGIMenuButtons")
--- FGIBlackList:SetScript("OnEvent", function() hooksecurefunc("UnitPopup_OnClick", MenuButtons) end)
+FGIBlackList:SetScript("OnEvent", function() hooksecurefunc("UnitPopup_OnClick", MenuButtons) end)
 FGIBlackList:RegisterEvent("PLAYER_LOGIN")
 
 local PopupUnits = {}
