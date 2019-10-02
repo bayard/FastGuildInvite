@@ -5,7 +5,6 @@ local settings = L.settings
 local size = settings.size
 local color = addon.color
 local interface = addon.interface
--- local GUI = LibStub("AceKGUI-3.0")
 local GUI = LibStub("AceGUI-3.0")
 local FastGuildInvite = addon.lib
 local DB
@@ -21,7 +20,7 @@ local function btnText(frame)
 	text:SetPoint("TOPLEFT", 5, -1)
 	text:SetPoint("BOTTOMRIGHT", -5, 1)
 end
-
+--[[
 do		--	gratitude
 local FrameBackdrop = {
 	bgFile = "Interface\\FrameGeneral\\UI-Background-Rock",
@@ -82,7 +81,7 @@ fontSize(frame.label)
 frame:SetWidth(120)
 scrollBar:AddChild(frame)
 end
-
+]]
 
 
 
@@ -242,7 +241,10 @@ btnText(frame)
 frame:SetWidth(size.settingsBtn)
 frame:SetHeight(mainButtonsGRP.startScan.frame:GetHeight())
 frame.frame:SetScript("OnClick", function()
-	interface.settingsFrame:Show()
+	--interface.settingsFrame:Show()
+	InterfaceOptionsFrame_OpenToCategory(interface.settings)
+	InterfaceOptionsFrame_OpenToCategory(interface.settings.profile)
+	InterfaceOptionsFrame_OpenToCategory(interface.settings)
 	interface.mainFrame:Hide()
 end)
 mainButtonsGRP:AddChild(frame)
@@ -358,10 +360,10 @@ frame:SetScript('OnEvent', function()
 	else
 		interface.mainFrame:SetPoint("CENTER", UIParent)
 	end
-	gratitudeFrame:ClearAllPoints()
+	--[[gratitudeFrame:ClearAllPoints()
 	gratitudeFrame:SetPoint("CENTER", UIParent)
 	
-	C_Timer.After(0.1, function()
+	
 	local cat,name,contact,donate = '','','',''
 	for i=1,#L.Gratitude do
 		local u = L.Gratitude[i]
@@ -372,9 +374,9 @@ frame:SetScript('OnEvent', function()
 	gratitudeFrame.Name:SetText(name)
 	gratitudeFrame.Contact:SetText(contact)
 	gratitudeFrame.Donate:SetText(donate)
-	scrollBar.content:SetHeight(gratitudeFrame.Category.frame:GetHeight())
+	scrollBar.content:SetHeight(gratitudeFrame.Category.frame:GetHeight())]]
 	
-	
+	C_Timer.After(0.1, function()
 	inviteTypeGRP.drop:SetValue(DB.inviteType)
 	
 	mainCheckBoxGRP.customList:SetValue(DB.customWho or false)
@@ -384,7 +386,7 @@ frame:SetScript('OnEvent', function()
 	searchRangeGRP.lvlRangeMin:SetText(DB.lowLimit)
 	searchRangeGRP.lvlRangeMax:SetText(DB.highLimit)
 	
-	gratitudeFrame:ClearAllPoints()
+	--[[gratitudeFrame:ClearAllPoints()
 	gratitudeFrame:SetPoint("CENTER", UIParent, "CENTER", 0, 0)
 	
 	gratitudeFrame.closeButton:ClearAllPoints()
@@ -400,7 +402,7 @@ frame:SetScript('OnEvent', function()
 	gratitudeFrame.Contact:SetPoint("TOPLEFT", gratitudeFrame.Name.frame, "TOPRIGHT", 0, 0)
 	
 	gratitudeFrame.Donate:ClearAllPoints()
-	gratitudeFrame.Donate:SetPoint("TOPLEFT", gratitudeFrame.Contact.frame, "TOPRIGHT", 0, 0)
+	gratitudeFrame.Donate:SetPoint("TOPLEFT", gratitudeFrame.Contact.frame, "TOPRIGHT", 0, 0)]]
 	
 	
 	
@@ -460,6 +462,6 @@ frame:SetScript('OnEvent', function()
 	
 	
 	mainFrame:Hide()
-	gratitudeFrame:Hide()
+	-- gratitudeFrame:Hide()
 	end)
 end)

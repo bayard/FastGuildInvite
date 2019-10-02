@@ -134,7 +134,7 @@ Constructor
 -------------------------------------------------------------------------------]]
 local function Constructor()
 	local name = "AceGUI30Button" .. AceGUI:GetNextWidgetNum(Type)
-	local frame = CreateFrame("Button", name, FGI.interface.filtersFrame.frame)
+	local frame = CreateFrame("Button", name, FGI.interface.settings.filters.content.filtersFrame.frame)
 	frame:Hide()
 	
 	frame.tooltip = ''

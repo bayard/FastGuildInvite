@@ -20,42 +20,14 @@ local function btnText(frame)
 	text:SetPoint("BOTTOMRIGHT", -5, 1)
 end
 
-interface.synch = GUI:Create("ClearFrame")
-synch = interface.synch
-synch:SetTitle("FGI Synchronization")
-synch:SetWidth(size.synchFrameW)
-synch:SetHeight(size.synchFrameH)
-synch:SetLayout("Flow")
-
-synch.title:SetScript('OnMouseUp', function(mover)
-	local DB = addon.DB
-	local frame = mover:GetParent()
-	frame:StopMovingOrSizing()
-	local self = frame.obj
-	local status = self.status or self.localstatus
-	status.width = frame:GetWidth()
-	status.height = frame:GetHeight()
-	status.top = frame:GetTop()
-	status.left = frame:GetLeft()
-	
-	local point, relativeTo,relativePoint, xOfs, yOfs = synch.frame:GetPoint(1)
-	DB.synchPos = {}
-	DB.synchPos.point=point
-	DB.synchPos.relativeTo=relativeTo
-	DB.synchPos.relativePoint=relativePoint
-	DB.synchPos.xOfs=xOfs
-	DB.synchPos.yOfs=yOfs
-end)
-
-synch.closeButton = GUI:Create('Button')
-local frame = synch.closeButton
-frame:SetText('X')
-frame:SetWidth(frame.frame:GetHeight())
-fn:closeBtn(frame)
-frame:SetCallback('OnClick', function()
-	interface.synch:Hide()
-end)
-synch:AddChild(frame)
+local w,h = 623, 568
+interface.settings.Synchronization.content = GUI:Create("SimpleGroup")
+synch = interface.settings.Synchronization.content
+synch:SetWidth(w-20)
+synch:SetHeight(h-20)
+synch.frame:SetParent(interface.settings.Synchronization)
+synch:SetLayout("NIL")
+synch:SetPoint("TOPLEFT", interface.settings.Synchronization, "TOPLEFT", 10, -10)
 
 do		-- left col
 synch.leftColumn = GUI:Create("SimpleGroup")
@@ -63,6 +35,7 @@ leftColumn = synch.leftColumn
 leftColumn:SetWidth((size.synchFrameW-20)/2)
 leftColumn:SetHeight(100)
 leftColumn:SetLayout("List")
+leftColumn:SetPoint("TOPLEFT", synch.frame, "TOPLEFT", 0, 0)
 synch:AddChild(leftColumn)
 
 leftColumn.synchTypeLabel = GUI:Create("TLabel")
@@ -87,6 +60,7 @@ rightColumn = synch.rightColumn
 rightColumn:SetWidth((size.synchFrameW-20)/2)
 rightColumn:SetHeight(100)
 rightColumn:SetLayout("List")
+rightColumn:SetPoint("TOPRIGHT", synch.frame, "TOPRIGHT", 0, 0)
 synch:AddChild(rightColumn)
 
 rightColumn.synchPlayerReadyLabel = GUI:Create("TLabel")
@@ -103,24 +77,6 @@ frame:SetWidth(rightColumn.frame:GetWidth()-20)
 frame:SetList({L.interface["Все"]})
 frame:SetValue(1)
 rightColumn:AddChild(frame)
-end
-
-synch.infoLabel = GUI:Create("TLabel")
-local frame = synch.infoLabel
-frame:SetText(L.interface["Отправить запрос"])
-fontSize(frame.label)
-frame.label:SetJustifyH("CENTER")
-frame:SetWidth(synch.frame:GetWidth()-20)
-synch:AddChild(frame)
-
-function frame.Error(self, text)
-	self:SetText(format("%s%s|r",color.red, text))
-end
-function frame.During(self, text)
-	self:SetText(format("%s%s|r",color.yellow, text))
-end
-function frame.Success(self, text)
-	self:SetText(format("%s%s|r",color.green, text))
 end
 
 
@@ -149,16 +105,35 @@ frame:SetCallback("OnClick", function()
 	
 	fn:sendSynchRequest(playerName, type)
 end)
+frame:SetPoint("TOP", synch.frame, "TOP", 0, -(rightColumn.frame:GetHeight()+20))
 synch:AddChild(frame)
 
 
+synch.infoLabel = GUI:Create("TLabel")
+local frame = synch.infoLabel
+-- frame:SetText(L.interface["Отправить запрос"])
+fontSize(frame.label)
+frame.label:SetJustifyH("CENTER")
+frame:SetWidth(synch.frame:GetWidth()-20)
+frame:SetPoint("TOP", synch.sendRequest.frame, "BOTTOM", 0, -5)
+synch:AddChild(frame)
+
+function frame.Error(self, text)
+	self:SetText(format("%s%s|r",color.red, text))
+end
+function frame.During(self, text)
+	self:SetText(format("%s%s|r",color.yellow, text))
+end
+function frame.Success(self, text)
+	self:SetText(format("%s%s|r",color.green, text))
+end
 
 -- set points
 local frame = CreateFrame('Frame')
 frame:RegisterEvent('PLAYER_LOGIN')
 frame:SetScript('OnEvent', function()
 	DB = addon.DB
-	if DB.synchPos then
+	--[[if DB.synchPos then
 		interface.synch:ClearAllPoints()
 		interface.synch:SetPoint(DB.synchPos.point, UIParent, DB.synchPos.relativePoint, DB.synchPos.xOfs, DB.synchPos.yOfs)
 	else
@@ -181,5 +156,5 @@ frame:SetScript('OnEvent', function()
 	
 	
 	synch:Hide()
-	end)
+	end)]]
 end)

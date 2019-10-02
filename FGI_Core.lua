@@ -48,7 +48,7 @@ local function MenuButtons(self)
 		local server = dropdownFrame.server;
 		
 		fn:blackList(name)
-		interface.blackList:updateList()
+		interface.settings.Blacklist.content:updateList()
 		StaticPopup_Show("FGI_BLACKLIST_CHANGE", _,_,  {name = name})
 		
 	elseif (button == "GUILD_INVITE") then
@@ -141,9 +141,26 @@ end
 
 function FastGuildInvite:OnEnable()
 	addon.debug = DB.debug
-	fn:FiltersInit()
-	fn:FiltersUpdate()
 	fn:blackListAutoKick()
+	local parent = interface.settings.filters.content.filtersFrame
+	local list = parent.filterList
+	fn:FiltersInit()
+	C_Timer.After(0.1, function()
+	for i=1, #list do
+		local frame = list[i]
+		frame:ClearAllPoints()
+		if i == 1 then
+			frame:SetPoint("TOPLEFT", parent.frame, "TOPLEFT", 15, -50)
+		else
+			if mod(i-1,7) == 0 then
+				frame:SetPoint("TOP", list[7*math.floor(i/7)+1-7].frame, "BOTTOM", 0, -10)
+			else
+				frame:SetPoint("LEFT", list[i-1].frame, "RIGHT", 5, 0)
+			end
+		end
+	end
+	end)
+	fn:FiltersUpdate()
 		
 	interface.debugFrame = GUI:Create("ClearFrame")
 	local debugFrame = interface.debugFrame

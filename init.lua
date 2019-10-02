@@ -2,7 +2,8 @@ local addon = FGI
 
 addon.lib = LibStub("AceAddon-3.0"):NewAddon("FastGuildInvite")
 LibStub("AceEvent-3.0"):Embed(addon.lib)
-
+local GUI = LibStub("AceGUI-3.0")
+GUI:RegisterLayout("NIL", function(content, children)  end)
 
 addon.DB = {}
 addon.ruReg = "[%aабвгдеёжзийклмнопрстуфхцчшщъьыэюяАБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЬЫЭЮЯ'%s]"

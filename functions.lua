@@ -46,14 +46,14 @@ local RaceClassCombo = {
 }
 
 function fn:FilterChange(id)
-	local filtersFrame = interface.filtersFrame
-	local addfilterFrame = interface.addfilterFrame
+	local filtersFrame = interface.settings.filters.content.filtersFrame
+	local addfilterFrame = interface.settings.filters.content.addfilterFrame
 	local filter = FGI.DB.filtersList[id]
 	local class = filter.classFilter
 	local raceFilter = filter.raceFilter
 	
-	filtersFrame:Hide()
-	addfilterFrame:Show()
+	filtersFrame.frame:Hide()
+	addfilterFrame.frame:Show()
 	
 	if not class then
 		addfilterFrame.classesCheckBoxIgnore:SetValue(true)
@@ -197,36 +197,36 @@ function fn:SetKeybind(key, keyType)
 		DBkey[keyType] = false
 	end
 	
-	interface.keyBindings.buttonsGRP.keyBind.invite:SetLabel(format(L.interface["Назначить кнопку (%s)"], DBkey.invite or "none"))
-	interface.keyBindings.buttonsGRP.keyBind.invite:SetKey(DBkey.invite)
-	interface.keyBindings.buttonsGRP.keyBind.nextSearch:SetLabel(format(L.interface["Назначить кнопку (%s)"], DBkey.nextSearch or "none"))
-	interface.keyBindings.buttonsGRP.keyBind.nextSearch:SetKey(DBkey.nextSearch)
+	interface.settings.KeyBind.content.invite:SetLabel(format(L.interface["Назначить кнопку (%s)"], DBkey.invite or "none"))
+	interface.settings.KeyBind.content.invite:SetKey(DBkey.invite)
+	interface.settings.KeyBind.content.nextSearch:SetLabel(format(L.interface["Назначить кнопку (%s)"], DBkey.nextSearch or "none"))
+	interface.settings.KeyBind.content.nextSearch:SetKey(DBkey.nextSearch)
 end
 
 function fn:FiltersInit()
-	local parent = interface.filtersFrame
+	local parent = interface.settings.filters.content.filtersFrame
 	local list = parent.filterList
 	for i=1, FGI_FILTERSLIMIT do
 		local frame = GUI:Create("FilterButton")
-		interface.filtersFrame:AddChild(frame)
+		frame:Hide()
+		parent:AddChild(frame)
 		
 		table.insert(list, frame)
 		
-		interface.filtersFrame.filterList[i]:Hide()
 	end
 end
 
 
 function fn:FiltersUpdate()
+	local list = interface.settings.filters.content.filtersFrame.filterList
 	for i=1, FGI_FILTERSLIMIT do
-		interface.filtersFrame.filterList[i]:Hide()
+		list[i]:Hide()
 	end
-	local parent = interface.filtersFrame
-	local list = parent.filterList
 	local i = 1
-	for name,v in pairs(FGI.DB.filtersList) do
-		local filter = FGI.DB.filtersList[name]
+	for name,v in pairs(DB.filtersList) do
+		local filter = DB.filtersList[name]
 		local frame = list[i]
+		frame:Show()
 		frame:SetID(name)
 		frame:SetText(name)
 		local state = filter.filterOn and L.interface["Включен"]:upper() or L.interface["Выключен"]:upper()
@@ -342,23 +342,7 @@ local Searchframe = CreateFrame('Frame')
 local frame = CreateFrame('Frame')
 frame:RegisterEvent('PLAYER_LOGIN')
 frame:SetScript('OnEvent', function()
-	local parent = interface.filtersFrame
-	local list = parent.filterList
-	C_Timer.After(0.1, function()
-	for i=1, #list do
-		local frame = list[i]
-		frame:ClearAllPoints()
-		if i == 1 then
-			frame:SetPoint("TOPLEFT", parent.frame, "TOPLEFT", 15, -50)
-		else
-			if mod(i-1,7) == 0 then
-				frame:SetPoint("TOP", list[7*math.floor(i/7)+1-7].frame, "BOTTOM", 0, -10)
-			else
-				frame:SetPoint("LEFT", list[i-1].frame, "RIGHT", 5, 0)
-			end
-		end
-	end
-	end)
+	
 end)
 
 local frame = CreateFrame('Frame')
@@ -581,10 +565,7 @@ local function filtered(player)
 end
 
 local function addNewPlayer(t, p)
-	local blackList = false
-	for i=1,#DB.blackList do
-		if DB.blackList[i] == p.Name then blackList = true;break; end
-	end
+	local blackList = DB.blackList[p.Name] and true or false
 	local playerInfoStr = format("%s - lvl:%d; race:%s; class:%s; Guild: \"%s\"", p.Name, p.Level, p.Race, p.Class, p.Guild)
 	if p.Guild == "" then
 		if not blackList then
@@ -847,41 +828,42 @@ synchFrame:SetScript("OnEvent", function(self, event, ...)
 	-- print(prefix, msg, channel, sender)
 	sender = sender:match("([^-]+)")
 	if sender == UnitName('player') then return end
+	local synch = interface.settings.Synchronization.content
 	local requestType, requestMSG = msg:match("([^|]+)|(.+)")
 	
 	if channel == "WHISPER" then
 		if requestType == "ERROR" then
-			interface.synch.ticker:responseReceived()
-			return interface.synch.infoLabel:Error(requestMSG)
+			synch.ticker:responseReceived()
+			return synch.infoLabel:Error(requestMSG)
 		elseif requestType == "SUCCESS" then
-			interface.synch.ticker:responseReceived()
-			return interface.synch.infoLabel:Success(requestMSG)
+			synch.ticker:responseReceived()
+			return synch.infoLabel:Success(requestMSG)
 		elseif requestType == "GET" then
 			return getSynchRequest(requestMSG, sender)
 		elseif requestType == "LOGIN" and requestMSG == "GET_FGI_USERS" then
-			return interface.synch.rightColumn.synchPlayerReadyDrop:AddItem(sender, sender)
+			return synch.rightColumn.synchPlayerReadyDrop:AddItem(sender, sender)
 		end
 		
-		interface.synch.timer:Cancel()
+		synch.timer:Cancel()
 		local Start, End = msg:find("%(.+%)")
 		End = End or 0
 		local s,e,mod = msg:sub(Start, End):match("(%d+)[^%d](%d+);(%w+)")
 		if not mod then return end
 		s, e = tonumber(s), tonumber(e)
-		interface.synch.infoLabel:Success(format(L.interface.synchState["Синхронизация с %s.\n %d/%d"], sender,s,e))
+		synch.infoLabel:Success(format(L.interface.synchState["Синхронизация с %s.\n %d/%d"], sender,s,e))
 		if s == 1 then ReceiveSynchStr[sender] = { [mod] = ''} end
 			msg = msg:sub(End+1, -1)
 			ReceiveSynchStr[sender][mod] = ReceiveSynchStr[sender][mod]..msg
 		if s == e then
 			readSynchStr(sender, mod)
-			interface.synch.infoLabel:Success(format(L.interface.synchState["Данные синхронизированы с игроком %s."], sender))
+			synch.infoLabel:Success(format(L.interface.synchState["Данные синхронизированы с игроком %s."], sender))
 		end
 		
 	elseif channel == "GUILD" then
 		if requestType == "GET" then
 			getSynchRequest(requestMSG, sender)
 		elseif requestType == "LOGIN" and requestMSG == "GET_FGI_USERS" then
-			interface.synch.rightColumn.synchPlayerReadyDrop:AddItem(sender, sender)
+			synch.rightColumn.synchPlayerReadyDrop:AddItem(sender, sender)
 			C_ChatInfo.SendAddonMessage(FGISYNCH_PREFIX, "LOGIN|GET_FGI_USERS", "WHISPER", sender)
 		elseif requestType == "REMEMBER"then
 			fn:rememberPlayer(requestMSG)
@@ -912,18 +894,19 @@ function fn.SendSynchArray(str, mod, playerName)
 end
 
 function fn:sendSynchRequest(player, type)
+	local synch = interface.settings.Synchronization.content
 	ReceiveSynchStr[player] = ReceiveSynchStr[player] or {}
 	ReceiveSynchStr[player].start = GetTime()
 	local start = GetTime()
-	interface.synch.ticker = C_Timer.NewTicker(1,function()
+	synch.ticker = C_Timer.NewTicker(1,function()
 		local time = math.ceil(start+FGI_MAXSYNCHWAIT-GetTime())
-		interface.synch.infoLabel:During(format(L.interface.synchState["Запрос синхронизации у: %s. %d"], player or L.interface["Все"], time))
-		if time == 0 then return interface.synch.infoLabel:Error(L.interface.synchState["Превышен лимит ожидания ответа"]) end
+		synch.infoLabel:During(format(L.interface.synchState["Запрос синхронизации у: %s. %d"], player or L.interface["Все"], time))
+		if time == 0 then return synch.infoLabel:Error(L.interface.synchState["Превышен лимит ожидания ответа"]) end
 	end, FGI_MAXSYNCHWAIT)
-	function interface.synch.ticker:responseReceived()
-		interface.synch.ticker:Cancel()
-		interface.synch.timer = C_Timer.NewTimer(FGI_MAXSYNCHWAIT, function()
-			interface.synch.infoLabel:Error(L.interface.synchState["Превышен лимит ожидания ответа"])
+	function synch.ticker:responseReceived()
+		synch.ticker:Cancel()
+		synch.timer = C_Timer.NewTimer(FGI_MAXSYNCHWAIT, function()
+			synch.infoLabel:Error(L.interface.synchState["Превышен лимит ожидания ответа"])
 		end)
 	end
 	if player == L.interface["Все"] then

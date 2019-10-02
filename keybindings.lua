@@ -11,87 +11,50 @@ local FastGuildInvite = addon.lib
 local DB
 local fontSize = fn.fontSize
 
-interface.keyBindings = GUI:Create("ClearFrame")
-local keyBindings = interface.keyBindings
-keyBindings:SetTitle("FGI key bindings")
-keyBindings:SetWidth(size.keyBindingsW)
-keyBindings:SetHeight(size.keyBindingsH)
-keyBindings:SetLayout("List")
-
-keyBindings.title:SetScript('OnMouseUp', function(mover)
-	local DB = addon.DB
-	local frame = mover:GetParent()
-	frame:StopMovingOrSizing()
-	local self = frame.obj
-	local status = self.status or self.localstatus
-	status.width = frame:GetWidth()
-	status.height = frame:GetHeight()
-	status.top = frame:GetTop()
-	status.left = frame:GetLeft()
-	
-	local point, relativeTo,relativePoint, xOfs, yOfs = keyBindings.frame:GetPoint(1)
-	DB.keyBindings = {}
-	DB.keyBindings.point=point
-	DB.keyBindings.relativeTo=relativeTo
-	DB.keyBindings.relativePoint=relativePoint
-	DB.keyBindings.xOfs=xOfs
-	DB.keyBindings.yOfs=yOfs
-end)
-
-keyBindings.closeButton = GUI:Create('Button')
-local frame = keyBindings.closeButton
-frame:SetText('X')
-frame:SetWidth(frame.frame:GetHeight())
-fn:closeBtn(frame)
-frame:SetCallback('OnClick', function()
-	interface.keyBindings:Hide()
-end)
-keyBindings:AddChild(frame)
 
 
+interface.settings.KeyBind.content = GUI:Create("SimpleGroup")
+local KeyBind = interface.settings.KeyBind.content
+KeyBind.frame:SetParent(interface.settings.KeyBind)
+KeyBind:SetPoint("TOPLEFT", interface.settings.KeyBind, "TOPLEFT", 10, -10)
+KeyBind:SetLayout("NIL")
 
-
-
-keyBindings.buttonsGRP = GUI:Create("GroupFrame")
-local buttonsGRP = keyBindings.buttonsGRP
-buttonsGRP:SetHeight(45)
-buttonsGRP:SetWidth(keyBindings.frame:GetWidth()-20)
-keyBindings:AddChild(buttonsGRP)
-
-buttonsGRP.keyBind = {}
-buttonsGRP.keyBind.invite = GUI:Create("TKeybinding")
-local frame = buttonsGRP.keyBind.invite
--- frame:SetTooltip(L.interface.tooltip["Назначить клавишу для приглашения"])
-fontSize(frame.label)
-frame:SetWidth(size.keyBind)
-frame:SetHeight(40)
-frame:SetCallback("OnKeyChanged", function(self) fn:SetKeybind(self:GetKey(), "invite") end)
-buttonsGRP:AddChild(frame)
-
-buttonsGRP.inviteLabel = GUI:Create("TLabel")
-local frame = buttonsGRP.inviteLabel
+KeyBind.inviteLabel = GUI:Create("TLabel")
+local frame = KeyBind.inviteLabel
 frame:SetText(L.interface.tooltip["Назначить клавишу для приглашения"])
 fontSize(frame.label)
 frame.label:SetJustifyH("CENTER")
 frame:SetWidth(size.keyBind)
-buttonsGRP:AddChild(frame)
+frame:SetPoint("TOPLEFT", KeyBind.frame, "TOPLEFT", 0, 0)
+KeyBind:AddChild(frame)
 
-buttonsGRP.keyBind.nextSearch = GUI:Create("TKeybinding")
-local frame = buttonsGRP.keyBind.nextSearch
--- frame:SetTooltip(L.interface.tooltip["Назначить клавишу следующего поиска"])
+KeyBind.invite = GUI:Create("TKeybinding")
+local frame = KeyBind.invite
 fontSize(frame.label)
-frame:SetWidth(size.keyBind-10)
+frame:SetWidth(size.keyBind)
 frame:SetHeight(40)
-frame:SetCallback("OnKeyChanged", function(self) fn:SetKeybind(self:GetKey(), "nextSearch") end)
-buttonsGRP:AddChild(frame)
+frame:SetCallback("OnKeyChanged", function(self) fn:SetKeybind(self:GetKey(), "invite") end)
+frame:SetPoint("TOP", KeyBind.inviteLabel.frame, "BOTTOM", 0, -40)
+KeyBind:AddChild(frame)
 
-buttonsGRP.nextSearchLabel = GUI:Create("TLabel")
-local frame = buttonsGRP.nextSearchLabel
+
+KeyBind.nextSearchLabel = GUI:Create("TLabel")
+local frame = KeyBind.nextSearchLabel
 frame:SetText(L.interface.tooltip["Назначить клавишу следующего поиска"])
 fontSize(frame.label)
 frame.label:SetJustifyH("CENTER")
 frame:SetWidth(size.keyBind)
-buttonsGRP:AddChild(frame)
+frame:SetPoint("LEFT", KeyBind.inviteLabel.frame, "RIGHT", 50, 0)
+KeyBind:AddChild(frame)
+
+KeyBind.nextSearch = GUI:Create("TKeybinding")
+local frame = KeyBind.nextSearch
+fontSize(frame.label)
+frame:SetWidth(size.keyBind)
+frame:SetHeight(40)
+frame:SetCallback("OnKeyChanged", function(self) fn:SetKeybind(self:GetKey(), "nextSearch") end)
+frame:SetPoint("TOP", KeyBind.nextSearchLabel.frame, "BOTTOM", 0, -40)
+KeyBind:AddChild(frame)
 
 
 
@@ -102,31 +65,15 @@ local frame = CreateFrame('Frame')
 frame:RegisterEvent('PLAYER_LOGIN')
 frame:SetScript('OnEvent', function()
 	DB = addon.DB
-	if DB.keyBindings then
-		interface.keyBindings:ClearAllPoints()
-		interface.keyBindings:SetPoint(DB.keyBindings.point, UIParent, DB.keyBindings.relativePoint, DB.keyBindings.xOfs, DB.keyBindings.yOfs)
-	else
-		interface.keyBindings:SetPoint("CENTER", UIParent)
-	end
-	C_Timer.After(0.1, function()
-	keyBindings.closeButton:ClearAllPoints()
-	keyBindings.closeButton:SetPoint("CENTER", keyBindings.frame, "TOPRIGHT", -8, -8)
-	
-	buttonsGRP:ClearAllPoints()
-	buttonsGRP:SetPoint("BOTTOM", keyBindings.frame, "BOTTOM", 0, 12)
-	
-	buttonsGRP.keyBind.invite:ClearAllPoints()
-	buttonsGRP.keyBind.invite:SetPoint("BOTTOMLEFT", buttonsGRP.frame, "BOTTOMLEFT", 2, 0)
-	
-	buttonsGRP.inviteLabel:ClearAllPoints()
-	buttonsGRP.inviteLabel:SetPoint("BOTTOM", buttonsGRP.keyBind.invite.frame, "TOP", 0, 20)
-	
-	buttonsGRP.keyBind.nextSearch:ClearAllPoints()
-	buttonsGRP.keyBind.nextSearch:SetPoint("LEFT", buttonsGRP.keyBind.invite.frame, "RIGHT", 2, 0)
-	
-	buttonsGRP.nextSearchLabel:ClearAllPoints()
-	buttonsGRP.nextSearchLabel:SetPoint("BOTTOM", buttonsGRP.keyBind.nextSearch.frame, "TOP", 0, 20)
-	
-	keyBindings:Hide()
-	end)
+	--[[C_Timer.After(0.1, function()
+		KeyBind.invite:ClearAllPoints()
+		
+		
+		KeyBind.nextSearchLabel:ClearAllPoints()
+		KeyBind.nextSearchLabel:SetPoint("LEFT", KeyBind.inviteLabel.frame, "RIGHT", 50, 0)
+		
+		KeyBind.nextSearch:ClearAllPoints()
+		KeyBind.nextSearch:SetPoint("TOP", KeyBind.nextSearchLabel.frame, "BOTTOM", 0, -40)
+		
+	end)]]
 end)
